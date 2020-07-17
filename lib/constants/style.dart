@@ -8,3 +8,9 @@ const kBannerTextStyle = TextStyle(
 
 const kBodyTextStyle = TextStyle(
     fontSize: 18.0, fontWeight: FontWeight.w300, color: Colors.white54);
+
+const kAppBarTitleTextStyle = TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.normal,
+    color: Colors.white60,
+    letterSpacing: 2.0);
