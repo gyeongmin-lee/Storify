@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 const kBannerTextStyle = TextStyle(
@@ -14,3 +16,5 @@ const kAppBarTitleTextStyle = TextStyle(
     fontWeight: FontWeight.normal,
     color: Colors.white60,
     letterSpacing: 2.0);
+
+final kLightBlur = ImageFilter.blur(sigmaX: 4, sigmaY: 4);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
+import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
+import 'package:storify/widgets/overlay_menu/overlay_menu.dart';
 
 class MyPlaylistPage extends StatelessWidget {
   final mockPlaylists = [
@@ -26,14 +28,14 @@ class MyPlaylistPage extends StatelessWidget {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
+        leading: CustomFlatIconButton(
           icon: Icon(
             Icons.menu,
             color: kAppBarTitleTextStyle.color,
           ),
-          onPressed: () => {},
+          onPressed: () {
+            Navigator.of(context).push(_createRoute());
+          },
         ),
         bottom: PreferredSize(
             child: Divider(
@@ -42,6 +44,25 @@ class MyPlaylistPage extends StatelessWidget {
             ),
             preferredSize: Size.fromHeight(14.0)),
       ),
+    );
+  }
+
+  PageRouteBuilder _createRoute() {
+    return PageRouteBuilder(
+      opaque: false,
+      pageBuilder: (BuildContext context, _, __) => OverlayMenu(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final tween = Tween(begin: 0.0, end: 1.0);
+        final curvedAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.ease,
+        );
+
+        return FadeTransition(
+          opacity: tween.animate(curvedAnimation),
+          child: child,
+        );
+      },
     );
   }
 }
