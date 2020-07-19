@@ -17,4 +17,5 @@ const kAppBarTitleTextStyle = TextStyle(
     color: Colors.white60,
     letterSpacing: 2.0);
 
-final kLightBlur = ImageFilter.blur(sigmaX: 4, sigmaY: 4);
+final kLightBlur =
+    ImageFilter.blur(sigmaX: 100, sigmaY: 100); // TODO Better frosted glass

@@ -3,7 +3,8 @@ import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/my_playlist_page/playlist_item.dart';
-import 'package:storify/widgets/overlay_menu/overlay_menu.dart';
+import 'package:storify/widgets/overlay_main_menu/overlay_main_menu.dart';
+import 'package:storify/widgets/player_page/player_page.dart';
 
 class MyPlaylistPage extends StatelessWidget {
   final mockPlaylists = [
@@ -38,31 +39,10 @@ class MyPlaylistPage extends StatelessWidget {
             Icons.menu,
             color: kAppBarTitleTextStyle.color,
           ),
-          onPressed: () {
-            Navigator.of(context).push(_createRoute());
-          },
+          onPressed: () => OverlayMainMenu.show(context),
         ),
       ),
       body: _buildContent(),
-    );
-  }
-
-  PageRouteBuilder _createRoute() {
-    return PageRouteBuilder(
-      opaque: false,
-      pageBuilder: (BuildContext context, _, __) => OverlayMenu(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        final tween = Tween(begin: 0.0, end: 1.0);
-        final curvedAnimation = CurvedAnimation(
-          parent: animation,
-          curve: Curves.ease,
-        );
-
-        return FadeTransition(
-          opacity: tween.animate(curvedAnimation),
-          child: child,
-        );
-      },
     );
   }
 
@@ -76,6 +56,7 @@ class MyPlaylistPage extends StatelessWidget {
             title: playlist.name,
             subtitle: '${playlist.songs.length.toString()} SONGS',
             imageUrl: playlist.playlistImageUrl,
+            onPressed: () => Navigator.pushNamed(context, PlayerPage.routeName),
           );
         },
         itemCount: mockPlaylists.length + 2,

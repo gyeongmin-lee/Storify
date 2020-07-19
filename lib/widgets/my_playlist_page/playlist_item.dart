@@ -21,6 +21,7 @@ class PlayListItem extends StatelessWidget {
       leading: CircleAvatar(
         radius: 25,
         backgroundImage: NetworkImage(imageUrl),
+        backgroundColor: Colors.transparent,
       ),
       title: Text(title,
           style: TextStyle(

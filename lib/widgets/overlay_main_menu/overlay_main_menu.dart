@@ -2,7 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 
-class OverlayMenu extends StatelessWidget {
+class OverlayMainMenu extends StatelessWidget {
+  static void show(BuildContext context) {
+    Navigator.of(context).push(PageRouteBuilder(
+      opaque: false,
+      pageBuilder: (BuildContext context, _, __) => OverlayMainMenu(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final tween = Tween(begin: 0.0, end: 1.0);
+        final curvedAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.ease,
+        );
+
+        return FadeTransition(
+          opacity: tween.animate(curvedAnimation),
+          child: child,
+        );
+      },
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(

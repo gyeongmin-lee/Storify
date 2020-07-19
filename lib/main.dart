@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:storify/widgets/landing_page/landing_page.dart';
+import 'package:storify/widgets/player_page/player_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
                         bodyColor: Colors.white54)),
         routes: {
           LandingPage.routeName: (context) => LandingPage(),
-          '/playlist': (context) => Container(),
+          PlayerPage.routeName: (context) => PlayerPage(),
         });
   }
 }
