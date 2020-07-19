@@ -29,7 +29,7 @@ class _PlayerState extends State<PlayerPage> {
       appBar: AppBar(
         title: Text(
           playlist.name,
-          style: kAppBarTitleTextStyle,
+          style: kAppBarTitleTextStyle.copyWith(letterSpacing: 0),
         ),
         centerTitle: true,
         elevation: 0,

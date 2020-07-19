@@ -21,6 +21,3 @@ const kAvatarTitleTextStyle = TextStyle(
   color: Colors.white70,
   fontSize: 22.0,
 );
-
-final kLightBlur =
-    ImageFilter.blur(sigmaX: 100, sigmaY: 100); // TODO Better frosted glass

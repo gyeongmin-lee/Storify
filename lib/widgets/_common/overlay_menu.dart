@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
@@ -15,7 +17,7 @@ class OverlayMenu extends StatelessWidget {
         final tween = Tween(begin: 0.0, end: 1.0);
         final curvedAnimation = CurvedAnimation(
           parent: animation,
-          curve: Curves.ease,
+          curve: Curves.linear,
         );
 
         return FadeTransition(
@@ -29,7 +31,7 @@ class OverlayMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(
-      filter: kLightBlur,
+      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
       child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(

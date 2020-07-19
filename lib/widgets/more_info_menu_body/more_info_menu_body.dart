@@ -72,8 +72,7 @@ class MoreInfoMenuBody extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Signed in as',
-                style: kBodyTextStyle.copyWith(fontSize: 14.0)),
+            Text('Created by', style: kBodyTextStyle.copyWith(fontSize: 14.0)),
             SizedBox(
               width: 8.0,
             ),
