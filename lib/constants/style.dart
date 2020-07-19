@@ -17,5 +17,10 @@ const kAppBarTitleTextStyle = TextStyle(
     color: Colors.white60,
     letterSpacing: 2.0);
 
+const kAvatarTitleTextStyle = TextStyle(
+  color: Colors.white70,
+  fontSize: 22.0,
+);
+
 final kLightBlur =
     ImageFilter.blur(sigmaX: 100, sigmaY: 100); // TODO Better frosted glass

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
-import 'package:storify/widgets/overlay_main_menu/overlay_main_menu.dart';
+import 'package:storify/widgets/_common/overlay_menu.dart';
+import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
+import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 
 class PlayerPage extends StatefulWidget {
   static const routeName = '/player';
@@ -37,7 +39,8 @@ class _PlayerState extends State<PlayerPage> {
               Icons.menu,
               color: kAppBarTitleTextStyle.color,
             ),
-            onPressed: () => OverlayMainMenu.show(context)),
+            onPressed: () =>
+                OverlayMenu.show(context, menuBody: MainMenuBody())),
         actions: <Widget>[
           FlatButton(
             child: Text(
@@ -49,7 +52,8 @@ class _PlayerState extends State<PlayerPage> {
                 letterSpacing: 1.5,
               ),
             ),
-            onPressed: () {},
+            onPressed: () =>
+                OverlayMenu.show(context, menuBody: MoreInfoMenuBody()),
           ),
         ],
       ),
