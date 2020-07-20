@@ -25,7 +25,9 @@ class SignInPage extends StatelessWidget {
                   height: 4.0,
                 ),
                 Text('Add a story to your Spotify Playlists',
-                    style: kBodyTextStyle)
+                    style: kLightTextStyle.copyWith(
+                      fontSize: 18.0,
+                    ))
               ],
             ),
             CustomRoundedButton(

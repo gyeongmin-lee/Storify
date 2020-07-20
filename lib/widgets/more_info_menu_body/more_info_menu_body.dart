@@ -18,10 +18,10 @@ class MoreInfoMenuBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 48.0),
+      padding: const EdgeInsets.symmetric(vertical: 96.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           _buildPlaylistInfo(),
           Column(
@@ -72,7 +72,7 @@ class MoreInfoMenuBody extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Created by', style: kBodyTextStyle.copyWith(fontSize: 14.0)),
+            Text('Created by', style: kLightTextStyle.copyWith(fontSize: 14.0)),
             SizedBox(
               width: 8.0,
             ),
@@ -83,7 +83,7 @@ class MoreInfoMenuBody extends StatelessWidget {
               width: 8.0,
             ),
             Text(playlist.creator.name,
-                style: kAvatarTitleTextStyle.copyWith(fontSize: 16.0)),
+                style: kPrimaryTextStyle.copyWith(fontSize: 16.0)),
           ],
         )
       ],

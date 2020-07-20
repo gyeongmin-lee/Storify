@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storify/constants/style.dart';
 
 class PlayListItem extends StatelessWidget {
   const PlayListItem(
@@ -24,10 +25,10 @@ class PlayListItem extends StatelessWidget {
         backgroundColor: Colors.transparent,
       ),
       title: Text(title,
-          style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white70)),
+          style: kPrimaryTextStyle.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+          )),
       subtitle: Text(subtitle,
           style: TextStyle(
             fontSize: 14.0,

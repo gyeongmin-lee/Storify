@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:storify/widgets/landing_page/landing_page.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
 

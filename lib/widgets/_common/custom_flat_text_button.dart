@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storify/constants/style.dart';
 
 class CustomFlatTextButton extends StatelessWidget {
   const CustomFlatTextButton(
@@ -11,11 +12,9 @@ class CustomFlatTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       child: Text(text,
-          style: TextStyle(
-              color: Colors.white70,
-              fontSize: 22.0,
-              fontWeight: FontWeight.w300,
-              letterSpacing: 4.0)),
+          style: kButtonTextStyle.copyWith(
+            fontSize: 22.0,
+          )),
       onPressed: onPressed,
     );
   }

@@ -12,39 +12,43 @@ class MainMenuBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            CircleAvatar(
-                radius: 54.0,
-                backgroundImage: NetworkImage(user.avatarImageUrl)),
-            SizedBox(
-              height: 8.0,
-            ),
-            Text('Signed in as',
-                style: kBodyTextStyle.copyWith(fontSize: 14.0)),
-            Text(user.name, style: kAvatarTitleTextStyle),
-          ],
-        ),
-        Column(
-          children: <Widget>[
-            CustomFlatTextButton(
-              text: 'MY PLAYLIST',
-              onPressed: () {},
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            CustomFlatTextButton(
-              text: 'SIGN OUT',
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ],
+        child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 96.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              CircleAvatar(
+                  radius: 54.0,
+                  backgroundImage: NetworkImage(user.avatarImageUrl)),
+              SizedBox(
+                height: 8.0,
+              ),
+              Text('Signed in as',
+                  style: kLightTextStyle.copyWith(fontSize: 14.0)),
+              Text(user.name,
+                  style: kPrimaryTextStyle.copyWith(fontSize: 22.0)),
+            ],
+          ),
+          Column(
+            children: <Widget>[
+              CustomFlatTextButton(
+                text: 'MY PLAYLIST',
+                onPressed: () {},
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              CustomFlatTextButton(
+                text: 'SIGN OUT',
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ],
+      ),
     ));
   }
 }
