@@ -22,7 +22,7 @@ class MainMenuBody extends StatelessWidget {
                 radius: 54.0,
                 backgroundImage: NetworkImage(user.avatarImageUrl)),
             SizedBox(
-              height: 4.0,
+              height: 8.0,
             ),
             Text('Signed in as',
                 style: kBodyTextStyle.copyWith(fontSize: 14.0)),

@@ -58,7 +58,7 @@ class MoreInfoMenuBody extends StatelessWidget {
             radius: 54.0,
             backgroundImage: NetworkImage(playlist.playlistImageUrl)),
         SizedBox(
-          height: 6.0,
+          height: 16.0,
         ),
         Text(
           playlist.name,
@@ -67,7 +67,7 @@ class MoreInfoMenuBody extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 6.0,
+          height: 3.0,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

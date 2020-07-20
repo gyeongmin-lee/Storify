@@ -19,7 +19,8 @@ class CustomRoundedButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
         child: Text(
           buttonText,
-          style: kBodyTextStyle.copyWith(letterSpacing: 3.0),
+          style: TextStyle(
+              fontSize: 18.0, color: Colors.white54, letterSpacing: 4.0),
         ),
       ),
     );

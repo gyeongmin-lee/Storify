@@ -13,9 +13,9 @@ class CustomFlatTextButton extends StatelessWidget {
       child: Text(text,
           style: TextStyle(
               color: Colors.white70,
-              fontSize: 24.0,
+              fontSize: 22.0,
               fontWeight: FontWeight.w300,
-              letterSpacing: 5.0)),
+              letterSpacing: 4.0)),
       onPressed: onPressed,
     );
   }

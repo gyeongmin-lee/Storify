@@ -14,12 +14,11 @@ class MyApp extends StatelessWidget {
         title: 'Storify',
         initialRoute: LandingPage.routeName,
         theme: ThemeData(
-            scaffoldBackgroundColor: Color(0xFF191414),
-            textTheme:
-                GoogleFonts.notoSansTextTheme(Theme.of(context).textTheme)
-                    .apply(
-                        displayColor: Colors.white70,
-                        bodyColor: Colors.white54)),
+          scaffoldBackgroundColor: Color(0xFF191414),
+          textTheme: Theme.of(context)
+              .textTheme
+              .apply(displayColor: Colors.white70, bodyColor: Colors.white54),
+        ),
         routes: {
           LandingPage.routeName: (context) => LandingPage(),
           PlayerPage.routeName: (context) => PlayerPage(),
