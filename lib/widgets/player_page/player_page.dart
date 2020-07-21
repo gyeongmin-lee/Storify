@@ -1,17 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/song.dart';
-import 'package:storify/widgets/_common/circular_progress_bar.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
 import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
+import 'package:storify/widgets/player_page/player_progress_bar.dart';
 
 class PlayerPage extends StatefulWidget {
   static const routeName = '/player';
@@ -85,7 +84,7 @@ class _PlayerState extends State<PlayerPage> {
   Widget _buildContent() {
     return Center(
         child: Padding(
-      padding: const EdgeInsets.only(top: 128.0, bottom: 24.0),
+      padding: const EdgeInsets.only(top: 128.0, bottom: 36.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -116,7 +115,11 @@ class _PlayerState extends State<PlayerPage> {
               )
             ],
           ),
-          CircularProgressBar(),
+          PlayerProgressBar(
+            totalValue: 360,
+            initialValue: 270,
+            onChangeEnd: (double value) {},
+          ),
         ],
       ),
     ));
