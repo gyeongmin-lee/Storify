@@ -17,7 +17,6 @@ class PlayerCarousel extends StatelessWidget {
         enlargeStrategy: CenterPageEnlargeStrategy.height,
       ),
       items: songs.map((song) {
-        // TODO: Click to scroll
         return CircleAvatar(
           radius: 32.0,
           backgroundColor: Colors.transparent,
