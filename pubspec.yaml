@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   google_fonts: ^1.1.0
   sleek_circular_slider: ^1.1.0
+  carousel_slider: ^2.2.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

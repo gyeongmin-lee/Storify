@@ -6,10 +6,12 @@ class PlayerProgressBar extends StatelessWidget {
       {Key key,
       @required this.totalValue,
       @required this.initialValue,
-      @required this.onChangeEnd})
+      this.onChangeEnd,
+      @required this.size})
       : super(key: key);
   final double totalValue;
   final double initialValue;
+  final double size;
   final Function(double) onChangeEnd;
 
   @override
@@ -19,16 +21,18 @@ class PlayerProgressBar extends StatelessWidget {
       max: totalValue,
       initialValue: initialValue,
       appearance: CircularSliderAppearance(
-        customColors: CustomSliderColors(
-          dotColor: Colors.white,
-          progressBarColor: Colors.green,
-          trackColor: Colors.white38,
-        ),
-        size: 80.0,
-        angleRange: 360.0,
-        startAngle: 0,
-      ),
+          customColors: CustomSliderColors(
+            dotColor: Colors.white,
+            progressBarColor: Colors.green,
+            trackColor: Colors.white38,
+          ),
+          size: size,
+          angleRange: 360.0,
+          startAngle: 0,
+          customWidths:
+              CustomSliderWidths(trackWidth: 3.0, progressBarWidth: 6.0)),
       onChangeEnd: onChangeEnd,
+      innerWidget: (percentage) => Container(),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/artist.dart';
@@ -10,6 +12,7 @@ import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
 import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
+import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
 
 class PlayerPage extends StatefulWidget {
@@ -29,6 +32,56 @@ class _PlayerState extends State<PlayerPage> {
               'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
       albumImageUrl:
           'https://image.genie.co.kr/Y/IMAGE/IMG_ALBUM/081/443/375/81443375_1589523123165_1_600x600.JPG');
+  List<Song> songs = [
+    Song(
+        name: 'DNA',
+        artist: Artist(
+            name: 'Ready',
+            artistImageUrl:
+                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
+        albumImageUrl:
+            'https://i.scdn.co/image/ab67616d0000b2738b52c6b9bc4e43d873869699'),
+    Song(
+        name: 'Hmmm',
+        artist: Artist(
+            name: 'Ready',
+            artistImageUrl:
+                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
+        albumImageUrl:
+            'https://image.genie.co.kr/Y/IMAGE/IMG_ALBUM/081/443/375/81443375_1589523123165_1_600x600.JPG'),
+    Song(
+        name: 'Street Lights',
+        artist: Artist(
+            name: 'Ready',
+            artistImageUrl:
+                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
+        albumImageUrl:
+            'https://i.scdn.co/image/ab67616d0000b273346d77e155d854735410ed18'),
+    Song(
+        name: 'Power Out',
+        artist: Artist(
+            name: 'Ready',
+            artistImageUrl:
+                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
+        albumImageUrl:
+            'https://i.scdn.co/image/ab67616d0000b2737870762a58313ad6f981d664'),
+    Song(
+        name: 'D',
+        artist: Artist(
+            name: 'Ready',
+            artistImageUrl:
+                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
+        albumImageUrl:
+            'https://img.discogs.com/vgOs5VD52OlkimY2PJQyxi4Qy8s=/fit-in/600x600/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/R-8845908-1469984148-2294.jpeg.jpg'),
+    Song(
+        name: 'NAPPA',
+        artist: Artist(
+            name: 'Ready',
+            artistImageUrl:
+                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
+        albumImageUrl:
+            'https://i.scdn.co/image/ab67616d0000b2739efc75bc81022179079b0b6b'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -115,11 +168,20 @@ class _PlayerState extends State<PlayerPage> {
               )
             ],
           ),
-          PlayerProgressBar(
-            totalValue: 360,
-            initialValue: 270,
-            onChangeEnd: (double value) {},
-          ),
+          Stack(
+            alignment: AlignmentDirectional.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: PlayerCarousel(songs: songs),
+              ),
+              PlayerProgressBar(
+                totalValue: 360,
+                initialValue: 270,
+                size: 72.0,
+              ),
+            ],
+          )
         ],
       ),
     ));
