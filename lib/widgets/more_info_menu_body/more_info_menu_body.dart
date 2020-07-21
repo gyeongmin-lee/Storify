@@ -27,7 +27,7 @@ class MoreInfoMenuBody extends StatelessWidget {
           Column(
             children: <Widget>[
               CustomFlatTextButton(
-                text: 'FOLLOW ON SPOTIFY',
+                text: 'OPEN IN SPOTIFY',
                 onPressed: () {},
               ),
               SizedBox(
@@ -56,6 +56,7 @@ class MoreInfoMenuBody extends StatelessWidget {
       children: <Widget>[
         CircleAvatar(
             radius: 54.0,
+            backgroundColor: Colors.transparent,
             backgroundImage: NetworkImage(playlist.playlistImageUrl)),
         SizedBox(
           height: 16.0,
@@ -78,6 +79,7 @@ class MoreInfoMenuBody extends StatelessWidget {
             ),
             CircleAvatar(
                 radius: 14.0,
+                backgroundColor: Colors.transparent,
                 backgroundImage: NetworkImage(playlist.creator.avatarImageUrl)),
             SizedBox(
               width: 8.0,

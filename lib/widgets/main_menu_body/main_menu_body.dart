@@ -22,6 +22,7 @@ class MainMenuBody extends StatelessWidget {
             children: <Widget>[
               CircleAvatar(
                   radius: 54.0,
+                  backgroundColor: Colors.transparent,
                   backgroundImage: NetworkImage(user.avatarImageUrl)),
               SizedBox(
                 height: 8.0,
