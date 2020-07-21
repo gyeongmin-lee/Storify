@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/landing_page/landing_page.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
 
@@ -18,6 +19,10 @@ class MyApp extends StatelessWidget {
               .textTheme
               .apply(displayColor: Colors.white70, bodyColor: Colors.white54),
         ),
+        builder: (context, child) => ScrollConfiguration(
+              behavior: DisableGlowScrollBehaviour(),
+              child: child,
+            ),
         routes: {
           LandingPage.routeName: (context) => LandingPage(),
           PlayerPage.routeName: (context) => PlayerPage(),

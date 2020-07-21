@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:carousel_slider/carousel_options.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/artist.dart';
@@ -82,6 +80,16 @@ class _PlayerState extends State<PlayerPage> {
         albumImageUrl:
             'https://i.scdn.co/image/ab67616d0000b2739efc75bc81022179079b0b6b'),
   ];
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      songs.forEach((song) {
+        precacheImage(NetworkImage(song.albumImageUrl), context);
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -28,3 +28,11 @@ final kSmallButtonTextStyle = kSecondaryTextStyle.copyWith(
   fontWeight: FontWeight.bold,
   letterSpacing: 1.5,
 );
+
+class DisableGlowScrollBehaviour extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
+  }
+}
