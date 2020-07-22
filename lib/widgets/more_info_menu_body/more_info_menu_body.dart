@@ -63,7 +63,7 @@ class MoreInfoMenuBody extends StatelessWidget {
         ),
         Text(
           playlist.name,
-          style: kBannerTextStyle.copyWith(
+          style: TextStyles.bannerText.copyWith(
             letterSpacing: 2.0,
           ),
         ),
@@ -73,7 +73,8 @@ class MoreInfoMenuBody extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Created by', style: kLightTextStyle.copyWith(fontSize: 14.0)),
+            Text('Created by',
+                style: TextStyles.light.copyWith(fontSize: 14.0)),
             SizedBox(
               width: 8.0,
             ),
@@ -85,7 +86,7 @@ class MoreInfoMenuBody extends StatelessWidget {
               width: 8.0,
             ),
             Text(playlist.creator.name,
-                style: kPrimaryTextStyle.copyWith(fontSize: 16.0)),
+                style: TextStyles.primary.copyWith(fontSize: 16.0)),
           ],
         )
       ],

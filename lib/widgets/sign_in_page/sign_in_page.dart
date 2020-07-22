@@ -19,13 +19,13 @@ class SignInPage extends StatelessWidget {
               children: <Widget>[
                 Text(
                   'STORIFY',
-                  style: kBannerTextStyle,
+                  style: TextStyles.bannerText,
                 ),
                 SizedBox(
                   height: 4.0,
                 ),
                 Text('Add a story to your Spotify Playlists',
-                    style: kLightTextStyle.copyWith(
+                    style: TextStyles.light.copyWith(
                       fontSize: 18.0,
                     ))
               ],

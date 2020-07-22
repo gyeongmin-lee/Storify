@@ -77,7 +77,7 @@ class EditStoryPage extends StatelessWidget {
                   keyboardType: TextInputType.multiline,
                   maxLength: null,
                   maxLines: null,
-                  style: kSecondaryTextStyle.copyWith(fontSize: 18.0),
+                  style: TextStyles.secondary.copyWith(fontSize: 18.0),
                   decoration: InputDecoration(
                       hintText: 'Add your description for this track',
                       border: InputBorder.none,
@@ -100,7 +100,7 @@ class EditStoryPage extends StatelessWidget {
     return AppBar(
       title: Text(
         song.name,
-        style: kPrimaryTextStyle.copyWith(fontSize: 20.0),
+        style: TextStyles.primary.copyWith(fontSize: 20.0),
       ),
       centerTitle: true,
       elevation: 0,
@@ -112,7 +112,7 @@ class EditStoryPage extends StatelessWidget {
           child: FlatButton(
               child: Text(
                 'CANCEL',
-                style: kSmallButtonTextStyle,
+                style: TextStyles.smallButtonText,
               ),
               onPressed: () => Navigator.of(context).pop()),
         ),
@@ -125,6 +125,7 @@ class EditStoryPage extends StatelessWidget {
                 size: ButtonSize.small,
                 backgroundColor: Colors.green,
                 borderColor: Colors.green,
+                textColor: CustomColors.primaryTextColor,
                 buttonText: 'SAVE',
                 onPressed: () => _onSubmitted(context)),
           ),

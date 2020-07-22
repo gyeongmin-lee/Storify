@@ -25,7 +25,7 @@ class PlayListItem extends StatelessWidget {
         backgroundColor: Colors.transparent,
       ),
       title: Text(title,
-          style: kPrimaryTextStyle.copyWith(
+          style: TextStyles.primary.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
           )),

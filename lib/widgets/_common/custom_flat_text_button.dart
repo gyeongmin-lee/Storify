@@ -12,7 +12,7 @@ class CustomFlatTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       child: Text(text,
-          style: kButtonTextStyle.copyWith(
+          style: TextStyles.buttonText.copyWith(
             fontSize: 22.0,
           )),
       onPressed: onPressed,

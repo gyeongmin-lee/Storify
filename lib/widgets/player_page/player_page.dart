@@ -117,7 +117,7 @@ class _PlayerState extends State<PlayerPage> {
             appBar: AppBar(
               title: Text(
                 playlist.name,
-                style: kAppBarTitleTextStyle.copyWith(letterSpacing: 0),
+                style: TextStyles.appBarTitle.copyWith(letterSpacing: 0),
               ),
               centerTitle: true,
               elevation: 0,
@@ -125,7 +125,7 @@ class _PlayerState extends State<PlayerPage> {
               leading: CustomFlatIconButton(
                   icon: Icon(
                     Icons.menu,
-                    color: kAppBarTitleTextStyle.color,
+                    color: TextStyles.appBarTitle.color,
                   ),
                   onPressed: () =>
                       OverlayMenu.show(context, menuBody: MainMenuBody())),
@@ -133,7 +133,7 @@ class _PlayerState extends State<PlayerPage> {
                 FlatButton(
                   child: Text(
                     'MORE',
-                    style: kSmallButtonTextStyle,
+                    style: TextStyles.smallButtonText,
                   ),
                   onPressed: () =>
                       OverlayMenu.show(context, menuBody: MoreInfoMenuBody()),
@@ -164,9 +164,9 @@ class _PlayerState extends State<PlayerPage> {
                 height: 8.0,
               ),
               Text(song.artist.name,
-                  style: kSecondaryTextStyle.copyWith(fontSize: 16.0)),
+                  style: TextStyles.secondary.copyWith(fontSize: 16.0)),
               Text(song.name,
-                  style: kPrimaryTextStyle.copyWith(
+                  style: TextStyles.primary.copyWith(
                       fontSize: 60.0,
                       fontWeight: FontWeight.w600,
                       height: 1.1,

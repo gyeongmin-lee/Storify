@@ -30,7 +30,7 @@ class MyPlaylistPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'MY PLAYLISTS',
-          style: kAppBarTitleTextStyle,
+          style: TextStyles.appBarTitle,
         ),
         centerTitle: true,
         elevation: 0,
@@ -38,7 +38,7 @@ class MyPlaylistPage extends StatelessWidget {
         leading: CustomFlatIconButton(
           icon: Icon(
             Icons.menu,
-            color: kAppBarTitleTextStyle.color,
+            color: TextStyles.appBarTitle.color,
           ),
           onPressed: () => OverlayMenu.show(context, menuBody: MainMenuBody()),
         ),

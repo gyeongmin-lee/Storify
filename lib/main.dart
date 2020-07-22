@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
           cursorColor: Colors.green[700],
           textSelectionColor: Colors.green[100].withOpacity(0.1),
           textSelectionHandleColor: Colors.green[700],
-          textTheme: Theme.of(context)
-              .textTheme
-              .apply(displayColor: Colors.white70, bodyColor: Colors.white54),
+          textTheme: Theme.of(context).textTheme.apply(
+              displayColor: Colors.white70,
+              bodyColor: CustomColors.secondaryTextColor),
         ),
         builder: (context, child) => ScrollConfiguration(
               behavior: DisableGlowScrollBehaviour(),

@@ -9,14 +9,16 @@ class CustomRoundedButton extends StatelessWidget {
     @required this.onPressed,
     @required this.buttonText,
     this.size = ButtonSize.regular,
-    this.borderColor = Colors.white54,
+    this.borderColor = CustomColors.secondaryTextColor,
     this.backgroundColor = Colors.transparent,
+    this.textColor = CustomColors.secondaryTextColor,
   }) : super(key: key);
   final VoidCallback onPressed;
   final String buttonText;
   final ButtonSize size;
   final Color borderColor;
   final Color backgroundColor;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +38,10 @@ class CustomRoundedButton extends StatelessWidget {
                 width: size == ButtonSize.regular ? 2.0 : 1.0)),
         child: Text(buttonText,
             style: size == ButtonSize.regular
-                ? kSecondaryTextStyle.copyWith(
-                    fontSize: 18.0, letterSpacing: 2.5)
-                : kSmallButtonTextStyle // TODO COLOR,
+                ? TextStyles.secondary.copyWith(
+                    fontSize: 18.0, letterSpacing: 2.5, color: textColor)
+                : TextStyles.smallButtonText
+                    .copyWith(color: textColor) // TODO COLOR,
             ),
       ),
     );

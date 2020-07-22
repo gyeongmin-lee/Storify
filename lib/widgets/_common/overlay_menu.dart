@@ -40,7 +40,7 @@ class OverlayMenu extends StatelessWidget {
               leading: CustomFlatIconButton(
                 icon: Icon(
                   Icons.close,
-                  color: kAppBarTitleTextStyle.color,
+                  color: TextStyles.appBarTitle.color,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               )),

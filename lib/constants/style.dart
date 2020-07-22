@@ -2,32 +2,33 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-final kPrimaryTextStyle = TextStyle(color: Colors.white.withOpacity(0.75));
+class CustomColors {
+  static final primaryTextColor = Colors.white.withOpacity(0.75);
+  static const secondaryTextColor = Colors.white54;
+}
 
-final kSecondaryTextStyle = TextStyle(color: Colors.white54);
+class TextStyles {
+  static final primary = TextStyle(color: CustomColors.primaryTextColor);
 
-final kButtonTextStyle =
-    kPrimaryTextStyle.copyWith(fontWeight: FontWeight.w300, letterSpacing: 4.0);
+  static final secondary = TextStyle(color: CustomColors.secondaryTextColor);
 
-final kLightTextStyle =
-    kSecondaryTextStyle.copyWith(fontWeight: FontWeight.w300);
+  static final buttonText =
+      primary.copyWith(fontWeight: FontWeight.w300, letterSpacing: 4.0);
 
-final kBannerTextStyle = kPrimaryTextStyle.copyWith(
-    fontSize: 36.0, fontWeight: FontWeight.bold, letterSpacing: 5.0);
+  static final light = secondary.copyWith(fontWeight: FontWeight.w300);
 
-final kAppBarTitleTextStyle =
-    kSecondaryTextStyle.copyWith(fontSize: 20.0, letterSpacing: 2.0);
+  static final bannerText = primary.copyWith(
+      fontSize: 36.0, fontWeight: FontWeight.bold, letterSpacing: 5.0);
 
-final kAvatarTitleTextStyle = kPrimaryTextStyle.copyWith(
-  fontWeight: FontWeight.bold,
-  fontSize: 22.0,
-);
+  static final appBarTitle =
+      secondary.copyWith(fontSize: 20.0, letterSpacing: 2.0);
 
-final kSmallButtonTextStyle = kSecondaryTextStyle.copyWith(
-  fontSize: 12.0,
-  fontWeight: FontWeight.bold,
-  letterSpacing: 1.5,
-);
+  static final smallButtonText = secondary.copyWith(
+    fontSize: 12.0,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 1.5,
+  );
+}
 
 class DisableGlowScrollBehaviour extends ScrollBehavior {
   @override

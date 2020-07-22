@@ -28,9 +28,9 @@ class MainMenuBody extends StatelessWidget {
                 height: 8.0,
               ),
               Text('Signed in as',
-                  style: kLightTextStyle.copyWith(fontSize: 14.0)),
+                  style: TextStyles.light.copyWith(fontSize: 14.0)),
               Text(user.name,
-                  style: kPrimaryTextStyle.copyWith(fontSize: 22.0)),
+                  style: TextStyles.primary.copyWith(fontSize: 22.0)),
             ],
           ),
           Column(
