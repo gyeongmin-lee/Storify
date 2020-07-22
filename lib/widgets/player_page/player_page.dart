@@ -96,6 +96,13 @@ class _PlayerState extends State<PlayerPage> {
     super.initState();
   }
 
+  void _onEditOrAddPressed() {
+    EditStoryPage.show(context,
+        song: song,
+        originalStoryText: storyText,
+        onStoryTextEdited: (newValue) => setState(() => storyText = newValue));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -148,61 +155,89 @@ class _PlayerState extends State<PlayerPage> {
   }
 
   Widget _buildContent() {
-    return Center(
-        child: Padding(
-      padding: const EdgeInsets.only(top: 128.0, bottom: 36.0),
+    return Padding(
+      padding: const EdgeInsets.only(top: 80.0, bottom: 36.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              CircleAvatar(
-                  radius: 54.0,
-                  backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage(song.artist.artistImageUrl)),
-              SizedBox(
-                height: 8.0,
-              ),
-              Text(song.artist.name,
-                  style: TextStyles.secondary.copyWith(fontSize: 16.0)),
-              Text(song.name,
-                  style: TextStyles.primary.copyWith(
-                      fontSize: 60.0,
-                      fontWeight: FontWeight.w600,
-                      height: 1.1,
-                      letterSpacing: -1.5)),
-              SizedBox(
-                height: 16.0,
-              ),
-              storyText == ''
-                  ? CustomRoundedButton(
+          Expanded(
+            child: SingleChildScrollView(
+              // TODO Display arrow if scroll
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 48.0,
+                  ),
+                  CircleAvatar(
+                      radius: 54.0,
+                      backgroundColor: Colors.transparent,
+                      backgroundImage:
+                          NetworkImage(song.artist.artistImageUrl)),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Text(song.artist.name,
+                      style: TextStyles.secondary.copyWith(fontSize: 16.0)),
+                  Text(song.name,
+                      style: TextStyles.primary.copyWith(
+                          fontSize: 60.0,
+                          fontWeight: FontWeight.w600,
+                          height: 1.1,
+                          letterSpacing: -1.5)),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  if (storyText != '')
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 24.0),
+                      width: double.infinity,
+                      child: Text(
+                        storyText,
+                        textAlign: TextAlign.start,
+                        style: TextStyles.secondary
+                            .copyWith(fontSize: 18.0, height: 1.5),
+                      ),
+                    ),
+                  if (storyText == '')
+                    CustomRoundedButton(
                       size: ButtonSize.small,
                       buttonText: 'ADD A STORY',
-                      onPressed: () => EditStoryPage.show(context,
-                          song: song,
-                          originalStoryText: storyText,
-                          onStoryTextEdited: (_) => {}),
+                      onPressed: _onEditOrAddPressed,
                     )
-                  : CustomRoundedButton(
-                      size: ButtonSize.small,
-                      buttonText: 'EDIT A STORY',
-                      onPressed: () {},
-                    )
-            ],
-          ),
-          Stack(
-            alignment: AlignmentDirectional.center,
-            children: <Widget>[
-              PlayerCarousel(songs: songs),
-              PlayerProgressBar(
-                totalValue: 360,
-                initialValue: 270,
-                size: 72.0,
+                ],
               ),
-            ],
-          )
+            ),
+          ),
+          Column(children: [
+            if (storyText != '')
+              Column(children: [
+                SizedBox(
+                  height: 16.0,
+                ),
+                CustomRoundedButton(
+                  size: ButtonSize.small,
+                  buttonText: 'EDIT YOUR STORY',
+                  onPressed: _onEditOrAddPressed,
+                ),
+                SizedBox(
+                  height: 16.0,
+                )
+              ]),
+            Stack(
+              alignment: AlignmentDirectional.center,
+              children: <Widget>[
+                PlayerCarousel(songs: songs),
+                PlayerProgressBar(
+                  totalValue: 360,
+                  initialValue: 270,
+                  size: 72.0,
+                ),
+              ],
+            )
+          ])
         ],
       ),
-    ));
+    );
   }
 }

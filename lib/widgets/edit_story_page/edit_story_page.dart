@@ -5,7 +5,7 @@ import 'package:storify/constants/style.dart';
 import 'package:storify/models/song.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 
-class EditStoryPage extends StatelessWidget {
+class EditStoryPage extends StatefulWidget {
   const EditStoryPage(
       {Key key,
       @required this.song,
@@ -46,8 +46,21 @@ class EditStoryPage extends StatelessWidget {
     ));
   }
 
+  @override
+  _EditStoryPageState createState() => _EditStoryPageState();
+}
+
+class _EditStoryPageState extends State<EditStoryPage> {
+  String _storyText;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() => _storyText = widget.originalStoryText ?? '');
+  }
+
   Future<void> _onSubmitted(BuildContext context) async {
-    onStoryTextEdited("NEW TEXT");
+    widget.onStoryTextEdited(_storyText);
     Navigator.of(context).pop();
   }
 
@@ -74,20 +87,24 @@ class EditStoryPage extends StatelessWidget {
                     bottom: 16.0,
                     left: 16.0),
                 child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLength: null,
-                  maxLines: null,
-                  style: TextStyles.secondary.copyWith(fontSize: 18.0),
-                  decoration: InputDecoration(
-                      hintText: 'Add your description for this track',
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      hintStyle: TextStyle(
-                          color: Colors.white12, fontWeight: FontWeight.w300)),
-                ),
+                    // TODO Validation
+                    keyboardType: TextInputType.multiline,
+                    maxLength: null,
+                    maxLines: null,
+                    autofocus: true,
+                    controller: TextEditingController(text: _storyText),
+                    style: TextStyles.secondary.copyWith(fontSize: 18.0),
+                    decoration: InputDecoration(
+                        hintText: 'Add your description for this track',
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintStyle: TextStyle(
+                            color: Colors.white12,
+                            fontWeight: FontWeight.w300)),
+                    onChanged: (storyText) => _storyText = storyText),
               ),
             ),
           ),
@@ -99,7 +116,7 @@ class EditStoryPage extends StatelessWidget {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text(
-        song.name,
+        widget.song.name,
         style: TextStyles.primary.copyWith(fontSize: 20.0),
       ),
       centerTitle: true,

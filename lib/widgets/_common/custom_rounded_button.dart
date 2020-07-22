@@ -40,9 +40,7 @@ class CustomRoundedButton extends StatelessWidget {
             style: size == ButtonSize.regular
                 ? TextStyles.secondary.copyWith(
                     fontSize: 18.0, letterSpacing: 2.5, color: textColor)
-                : TextStyles.smallButtonText
-                    .copyWith(color: textColor) // TODO COLOR,
-            ),
+                : TextStyles.smallButtonText.copyWith(color: textColor)),
       ),
     );
   }

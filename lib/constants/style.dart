@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class CustomColors {
-  static final primaryTextColor = Colors.white.withOpacity(0.75);
+  static const primaryTextColor = Color.fromRGBO(255, 255, 255, 0.75);
   static const secondaryTextColor = Colors.white54;
 }
 
