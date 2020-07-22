@@ -9,6 +9,7 @@ import 'package:storify/models/song.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
+import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
 import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
@@ -81,6 +82,7 @@ class _PlayerState extends State<PlayerPage> {
         albumImageUrl:
             'https://i.scdn.co/image/ab67616d0000b2739efc75bc81022179079b0b6b'),
   ];
+  String storyText = '';
 
   @override
   void initState() {
@@ -172,20 +174,26 @@ class _PlayerState extends State<PlayerPage> {
               SizedBox(
                 height: 16.0,
               ),
-              CustomRoundedButton(
-                size: ButtonSize.small,
-                buttonText: 'ADD A STORY',
-                onPressed: () {},
-              )
+              storyText == ''
+                  ? CustomRoundedButton(
+                      size: ButtonSize.small,
+                      buttonText: 'ADD A STORY',
+                      onPressed: () => EditStoryPage.show(context,
+                          song: song,
+                          originalStoryText: storyText,
+                          onStoryTextEdited: (_) => {}),
+                    )
+                  : CustomRoundedButton(
+                      size: ButtonSize.small,
+                      buttonText: 'EDIT A STORY',
+                      onPressed: () {},
+                    )
             ],
           ),
           Stack(
             alignment: AlignmentDirectional.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: PlayerCarousel(songs: songs),
-              ),
+              PlayerCarousel(songs: songs),
               PlayerProgressBar(
                 totalValue: 360,
                 initialValue: 270,

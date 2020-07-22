@@ -34,12 +34,12 @@ class CustomRoundedButton extends StatelessWidget {
             side: BorderSide(
                 color: borderColor,
                 width: size == ButtonSize.regular ? 2.0 : 1.0)),
-        child: Text(
-          buttonText,
-          style: size == ButtonSize.regular
-              ? kSecondaryTextStyle.copyWith(fontSize: 18.0, letterSpacing: 2.5)
-              : kSmallButtonTextStyle,
-        ),
+        child: Text(buttonText,
+            style: size == ButtonSize.regular
+                ? kSecondaryTextStyle.copyWith(
+                    fontSize: 18.0, letterSpacing: 2.5)
+                : kSmallButtonTextStyle // TODO COLOR,
+            ),
       ),
     );
   }

@@ -12,9 +12,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Storify',
+        themeMode: ThemeMode.dark,
         initialRoute: LandingPage.routeName,
-        theme: ThemeData(
+        theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: Color(0xFF191414),
+          cursorColor: Colors.green[700],
+          textSelectionColor: Colors.green[100].withOpacity(0.1),
+          textSelectionHandleColor: Colors.green[700],
           textTheme: Theme.of(context)
               .textTheme
               .apply(displayColor: Colors.white70, bodyColor: Colors.white54),
