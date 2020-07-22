@@ -37,7 +37,7 @@ class CustomRoundedButton extends StatelessWidget {
         child: Text(
           buttonText,
           style: size == ButtonSize.regular
-              ? kSecondaryTextStyle.copyWith(fontSize: 18.0, letterSpacing: 4.0)
+              ? kSecondaryTextStyle.copyWith(fontSize: 18.0, letterSpacing: 2.5)
               : kSmallButtonTextStyle,
         ),
       ),

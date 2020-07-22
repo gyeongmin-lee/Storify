@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
+import 'package:storify/constants/values.dart' as CONST_VALUES;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/song.dart';
@@ -84,9 +85,11 @@ class _PlayerState extends State<PlayerPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      songs.forEach((song) {
-        precacheImage(NetworkImage(song.albumImageUrl), context);
-      });
+      if (songs.length < CONST_VALUES.prefetchImageLimit) {
+        songs.forEach((song) {
+          precacheImage(NetworkImage(song.albumImageUrl), context);
+        });
+      }
     });
     super.initState();
   }
