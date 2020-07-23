@@ -1,15 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'package:storify/models/auth_tokens.dart';
 import 'package:storify/models/user.dart';
 import 'package:storify/services/api_path.dart';
+import 'package:storify/services/spotify_api.dart';
 import 'package:storify/utils/general.dart';
 
 class SpotifyAuth extends ChangeNotifier {
   User user;
+  AuthTokens tokens;
 
   Future<void> authenticate() async {
     final clientId = DotEnv().env['CLIENT_ID'];
@@ -26,13 +28,12 @@ class SpotifyAuth extends ChangeNotifier {
       if (state != returnedState) throw HttpException('Invalid access');
 
       final code = Uri.parse(result).queryParameters['code'];
-      print(code);
-    } on HttpException catch (e) {
-      print(e); // TODO Handle error
-      rethrow;
-    } on PlatformException catch (e) {
-      print(e); // TODO Handle error
-      rethrow;
+
+      tokens = await SpotifyApi.getAuthTokens(code, redirectUri);
+      user = await SpotifyApi.getCurrentUser(token: tokens.accessToken);
+      notifyListeners();
+    } on Exception catch (e) {
+      print(e); // TODO: Handle error
     }
   }
 }

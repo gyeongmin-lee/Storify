@@ -4,10 +4,8 @@ import 'package:storify/models/user.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
 
 class MainMenuBody extends StatelessWidget {
-  final User user = User(
-      name: 'METROSTILE',
-      avatarImageUrl:
-          'https://cdn.iconscout.com/icon/free/png-512/avatar-370-456322.png');
+  const MainMenuBody({Key key, @required this.user}) : super(key: key);
+  final User user;
 
   @override
   Widget build(BuildContext context) {

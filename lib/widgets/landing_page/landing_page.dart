@@ -12,6 +12,10 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  void _handleSignIn(SpotifyAuth auth) async {
+    await auth.authenticate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SpotifyAuth>(
@@ -20,7 +24,7 @@ class _LandingPageState extends State<LandingPage> {
           builder: (_, auth, __) {
             return auth.user != null
                 ? MyPlaylistPage()
-                : SignInPage(onSignIn: () => auth.authenticate());
+                : SignInPage(onSignIn: () => _handleSignIn(auth));
           },
         ));
   }

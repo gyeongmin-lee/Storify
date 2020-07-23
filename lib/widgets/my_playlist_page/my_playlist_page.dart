@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
+import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
 import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/my_playlist_page/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
+import 'package:provider/provider.dart';
 
 class MyPlaylistPage extends StatelessWidget {
   final mockPlaylists = [
@@ -40,7 +42,8 @@ class MyPlaylistPage extends StatelessWidget {
             Icons.menu,
             color: TextStyles.appBarTitle.color,
           ),
-          onPressed: () => OverlayMenu.show(context, menuBody: MainMenuBody()),
+          onPressed: () => OverlayMenu.show(context,
+              menuBody: MainMenuBody(user: context.read<SpotifyAuth>().user)),
         ),
       ),
       body: _buildContent(),
