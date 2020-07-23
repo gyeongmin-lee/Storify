@@ -18,14 +18,12 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<SpotifyAuth>(
-        create: (_) => SpotifyAuth(),
-        child: Consumer<SpotifyAuth>(
-          builder: (_, auth, __) {
-            return auth.user != null
-                ? MyPlaylistPage()
-                : SignInPage(onSignIn: () => _handleSignIn(auth));
-          },
-        ));
+    return Consumer<SpotifyAuth>(
+      builder: (_, auth, __) {
+        return auth.user != null
+            ? MyPlaylistPage()
+            : SignInPage(onSignIn: () => _handleSignIn(auth));
+      },
+    );
   }
 }
