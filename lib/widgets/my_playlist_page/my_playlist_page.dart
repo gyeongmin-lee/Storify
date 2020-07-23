@@ -43,7 +43,7 @@ class MyPlaylistPage extends StatelessWidget {
             color: TextStyles.appBarTitle.color,
           ),
           onPressed: () => OverlayMenu.show(context,
-              menuBody: MainMenuBody(user: context.read<SpotifyAuth>().user)),
+              menuBody: MainMenuBody(auth: context.read<SpotifyAuth>())),
         ),
       ),
       body: _buildContent(),

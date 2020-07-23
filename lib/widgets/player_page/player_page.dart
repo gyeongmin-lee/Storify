@@ -138,7 +138,7 @@ class _PlayerState extends State<PlayerPage> {
                   ),
                   onPressed: () => OverlayMenu.show(context,
                       menuBody: MainMenuBody(
-                        user: context.read<SpotifyAuth>().user,
+                        auth: context.read<SpotifyAuth>(),
                       ))),
               actions: <Widget>[
                 FlatButton(
