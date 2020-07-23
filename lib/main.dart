@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/landing_page/landing_page.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
 
-void main() {
+Future main() async {
+  await DotEnv().load('.env');
   runApp(MyApp());
 }
 

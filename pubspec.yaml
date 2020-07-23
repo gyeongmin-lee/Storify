@@ -26,6 +26,9 @@ dependencies:
   google_fonts: ^1.1.0
   sleek_circular_slider: ^1.1.0
   carousel_slider: ^2.2.1
+  flutter_web_auth: ^0.2.4
+  provider: ^4.3.1
+  flutter_dotenv: ^2.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,6 +43,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  assets:
+    - .env
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
