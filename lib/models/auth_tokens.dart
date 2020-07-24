@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:storify/services/spotify_auth_api.dart';
 
 class AuthTokens {
   AuthTokens(this.accessToken, this.refreshToken);
@@ -37,5 +38,14 @@ class AuthTokens {
     if (accessKey == null || refreshKey == null) return null;
 
     return AuthTokens(accessKey, refreshKey);
+  }
+
+  static Future<void> updateTokenToLatest() async {
+    final savedTokens = await readFromStorage();
+    if (savedTokens == null) throw Exception("No saved token found");
+
+    final tokens =
+        await SpotifyAuthApi.getNewTokens(originalTokens: savedTokens);
+    await tokens.saveToStorage();
   }
 }

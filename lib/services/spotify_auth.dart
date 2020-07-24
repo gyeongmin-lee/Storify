@@ -8,10 +8,10 @@ import 'package:storify/models/auth_tokens.dart';
 import 'package:storify/models/user.dart';
 import 'package:storify/services/api_path.dart';
 import 'package:storify/services/spotify_api.dart';
+import 'package:storify/services/spotify_auth_api.dart';
 
 class SpotifyAuth extends ChangeNotifier {
   User user;
-  AuthTokens tokens;
 
   /// Authenticate user and and get token and user information
   ///
@@ -28,40 +28,33 @@ class SpotifyAuth extends ChangeNotifier {
         callbackUrlScheme: DotEnv().env['CALLBACK_URL_SCHEME'],
       );
 
+      // Validate state from response
       final returnedState = Uri.parse(result).queryParameters['state'];
       if (state != returnedState) throw HttpException('Invalid access');
 
       final code = Uri.parse(result).queryParameters['code'];
-
-      tokens = await SpotifyApi.getAuthTokens(code, redirectUri);
+      final tokens = await SpotifyAuthApi.getAuthTokens(code, redirectUri);
       await tokens.saveToStorage();
 
-      await _updateUserWithToken();
+      user = await SpotifyApi.getCurrentUser(); // Uses token in storage
+      notifyListeners();
     } on Exception catch (e) {
       print(e);
       rethrow;
     }
   }
 
-  /// If there is a saved token, use it to get new tokens and sign in
+  /// If there is a saved token, update the token and sign in
   Future<void> signInFromSavedTokens() async {
     try {
-      final savedTokens = await AuthTokens.readFromStorage();
-      if (savedTokens == null) throw Exception("No saved token found");
+      await AuthTokens.updateTokenToLatest();
 
-      tokens = await SpotifyApi.getNewTokens(originalTokens: savedTokens);
-      await tokens.saveToStorage();
-
-      await _updateUserWithToken();
+      user = await SpotifyApi.getCurrentUser(); // Uses token in storage
+      notifyListeners();
     } catch (e) {
       print(e);
       rethrow;
     }
-  }
-
-  Future<void> _updateUserWithToken() async {
-    user = await SpotifyApi.getCurrentUser(token: tokens.accessToken);
-    notifyListeners();
   }
 
   static String _getRandomString(int length) {
