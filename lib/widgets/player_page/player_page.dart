@@ -6,6 +6,7 @@ import 'package:storify/constants/values.dart' as CONST_VALUES;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/song.dart';
+import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
@@ -14,6 +15,7 @@ import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
+import 'package:provider/provider.dart';
 
 class PlayerPage extends StatefulWidget {
   static const routeName = '/player';
@@ -134,8 +136,10 @@ class _PlayerState extends State<PlayerPage> {
                     Icons.menu,
                     color: TextStyles.appBarTitle.color,
                   ),
-                  onPressed: () =>
-                      OverlayMenu.show(context, menuBody: MainMenuBody())),
+                  onPressed: () => OverlayMenu.show(context,
+                      menuBody: MainMenuBody(
+                        auth: context.read<SpotifyAuth>(),
+                      ))),
               actions: <Widget>[
                 FlatButton(
                   child: Text(
