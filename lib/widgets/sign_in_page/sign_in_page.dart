@@ -1,5 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
@@ -19,6 +20,23 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _signInFromSavedTokens();
+  }
+
+  Future<void> _signInFromSavedTokens() async {
+    final auth = context.read<SpotifyAuth>();
+    setState(() => _isLoading = true);
+    try {
+      await auth.signInFromSavedTokens();
+      Navigator.pushNamed(context, MyPlaylistPage.routeName);
+    } on PlatformException catch (_) {} finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   Future<void> _handleSignIn(SpotifyAuth auth, BuildContext context) async {
     try {

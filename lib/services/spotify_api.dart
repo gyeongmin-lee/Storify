@@ -11,11 +11,11 @@ import 'package:storify/services/api_path.dart';
 class SpotifyApi {
   static final clientId = DotEnv().env['CLIENT_ID'];
   static final clientSecret = DotEnv().env['CLIENT_SECRET'];
+  static final base64Credential =
+      utf8.fuse(base64).encode('$clientId:$clientSecret');
 
   static Future<AuthTokens> getAuthTokens(
       String code, String redirectUri) async {
-    final base64Credential =
-        utf8.fuse(base64).encode('$clientId:$clientSecret');
     final response = await http.post(
       APIPath.requestToken,
       body: {
@@ -43,6 +43,29 @@ class SpotifyApi {
     } else {
       throw Exception(
           'Failed to get user with status code ${response.statusCode}');
+    }
+  }
+
+  static Future<AuthTokens> getNewTokens(
+      {@required AuthTokens originalTokens}) async {
+    final response = await http.post(
+      APIPath.requestToken,
+      body: {
+        'grant_type': 'refresh_token',
+        'refresh_token': originalTokens.refreshToken,
+      },
+      headers: {HttpHeaders.authorizationHeader: 'Basic $base64Credential'},
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      if (responseBody['refresh_token'] == null)
+        responseBody['refresh_token'] = originalTokens.refreshToken;
+
+      return AuthTokens.fromJson(responseBody);
+    } else {
+      throw Exception(
+          'Failed to refresh token with status code ${response.statusCode}');
     }
   }
 }
