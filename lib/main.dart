@@ -1,10 +1,12 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
-import 'package:storify/widgets/landing_page/landing_page.dart';
+import 'package:storify/widgets/my_playlist_page/my_playlist_page.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
+import 'package:storify/widgets/sign_in_page/sign_in_page.dart';
 
 Future main() async {
   await DotEnv().load('.env');
@@ -14,12 +16,13 @@ Future main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final botToastBuilder = BotToastInit();
     return ChangeNotifierProvider<SpotifyAuth>(
       create: (_) => SpotifyAuth(),
       child: MaterialApp(
           title: 'Storify',
           themeMode: ThemeMode.dark,
-          initialRoute: LandingPage.routeName,
+          initialRoute: SignInPage.routeName,
           theme: ThemeData.dark().copyWith(
             scaffoldBackgroundColor: Color(0xFF191414),
             cursorColor: Colors.green[700],
@@ -29,12 +32,21 @@ class MyApp extends StatelessWidget {
                 displayColor: Colors.white70,
                 bodyColor: CustomColors.secondaryTextColor),
           ),
-          builder: (context, child) => ScrollConfiguration(
-                behavior: DisableGlowScrollBehaviour(),
-                child: child,
-              ),
+          builder: (context, child) {
+            child = ScrollConfiguration(
+              behavior: DisableGlowScrollBehaviour(),
+              child: child,
+            );
+
+            child = botToastBuilder(context, child);
+            return child;
+          },
+          navigatorObservers: [
+            BotToastNavigatorObserver()
+          ],
           routes: {
-            LandingPage.routeName: (context) => LandingPage(),
+            SignInPage.routeName: (context) => SignInPage(),
+            MyPlaylistPage.routeName: (context) => MyPlaylistPage(),
             PlayerPage.routeName: (context) => PlayerPage(),
           }),
     );

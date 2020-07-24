@@ -10,6 +10,8 @@ import 'package:storify/widgets/player_page/player_page.dart';
 import 'package:provider/provider.dart';
 
 class MyPlaylistPage extends StatelessWidget {
+  static const routeName = '/my_playlist';
+
   final mockPlaylists = [
     Playlist(
         name: 'ROTATION',

@@ -34,6 +34,7 @@ class SpotifyAuth extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (e) {
       print(e); // TODO: Handle error
+      rethrow;
     }
   }
 }
