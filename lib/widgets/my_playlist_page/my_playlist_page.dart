@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/services/spotify_api.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
+import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
+import 'package:storify/widgets/_common/status_indicator.dart';
 import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/my_playlist_page/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
-import 'package:provider/provider.dart';
 
 class MyPlaylistPage extends StatefulWidget {
   static const routeName = '/my_playlist';
@@ -84,11 +86,14 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
                     height: 1.0,
                   ));
         } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
+          return StatusIndicator(
+            status: Status.error,
+            errorMessage: 'Failed to fetch playlists',
+          );
         }
 
         // By default, show a loading spinner.
-        return CircularProgressIndicator();
+        return StatusIndicator(status: Status.loading);
       },
     );
   }

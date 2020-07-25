@@ -28,6 +28,9 @@ class TextStyles {
     fontWeight: FontWeight.bold,
     letterSpacing: 1.5,
   );
+
+  static final loadingButtonText = secondary.copyWith(
+      fontSize: 14.0, letterSpacing: 2.0, fontWeight: FontWeight.w300);
 }
 
 class DisableGlowScrollBehaviour extends ScrollBehavior {
