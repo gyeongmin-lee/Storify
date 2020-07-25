@@ -7,7 +7,7 @@ import 'package:storify/widgets/_common/custom_flat_text_button.dart';
 class MoreInfoMenuBody extends StatelessWidget {
   final Playlist playlist = Playlist(
       name: 'ROTATION',
-      creator: User(
+      owner: User(
           name: 'METROSTILE',
           avatarImageUrl:
               'https://cdn.iconscout.com/icon/free/png-512/avatar-370-456322.png'),
@@ -81,11 +81,11 @@ class MoreInfoMenuBody extends StatelessWidget {
             CircleAvatar(
                 radius: 14.0,
                 backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage(playlist.creator.avatarImageUrl)),
+                backgroundImage: NetworkImage(playlist.owner.avatarImageUrl)),
             SizedBox(
               width: 8.0,
             ),
-            Text(playlist.creator.name,
+            Text(playlist.owner.name,
                 style: TextStyles.primary.copyWith(fontSize: 16.0)),
           ],
         )

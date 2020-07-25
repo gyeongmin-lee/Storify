@@ -2,30 +2,30 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
-import 'package:storify/models/song.dart';
+import 'package:storify/models/track.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 
 class EditStoryPage extends StatefulWidget {
   const EditStoryPage(
       {Key key,
-      @required this.song,
+      @required this.track,
       @required this.originalStoryText,
       @required this.onStoryTextEdited})
       : super(key: key);
-  final Song song;
+  final Track track;
   final String originalStoryText;
   final Function(String) onStoryTextEdited;
 
   static void show(
     BuildContext context, {
-    @required Song song,
+    @required Track track,
     @required String originalStoryText,
     @required Function(String) onStoryTextEdited,
   }) {
     Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
       pageBuilder: (BuildContext context, _, __) => EditStoryPage(
-        song: song,
+        track: track,
         originalStoryText: originalStoryText,
         onStoryTextEdited: onStoryTextEdited,
       ),
@@ -116,7 +116,7 @@ class _EditStoryPageState extends State<EditStoryPage> {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text(
-        widget.song.name,
+        widget.track.name,
         style: TextStyles.primary.copyWith(fontSize: 20.0),
       ),
       centerTitle: true,

@@ -5,7 +5,7 @@ import 'package:storify/constants/style.dart';
 import 'package:storify/constants/values.dart' as CONST_VALUES;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
-import 'package:storify/models/song.dart';
+import 'package:storify/models/track.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
@@ -26,7 +26,7 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerState extends State<PlayerPage> {
   Playlist playlist = Playlist(name: 'John\'s playlist');
-  Song song = Song(
+  Track track = Track(
       name: 'Hmmm',
       artist: Artist(
           name: 'Ready',
@@ -34,8 +34,8 @@ class _PlayerState extends State<PlayerPage> {
               'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
       albumImageUrl:
           'https://image.genie.co.kr/Y/IMAGE/IMG_ALBUM/081/443/375/81443375_1589523123165_1_600x600.JPG');
-  List<Song> songs = [
-    Song(
+  List<Track> tracks = [
+    Track(
         name: 'DNA',
         artist: Artist(
             name: 'Ready',
@@ -43,7 +43,7 @@ class _PlayerState extends State<PlayerPage> {
                 'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
         albumImageUrl:
             'https://i.scdn.co/image/ab67616d0000b2738b52c6b9bc4e43d873869699'),
-    Song(
+    Track(
         name: 'Hmmm',
         artist: Artist(
             name: 'Ready',
@@ -51,7 +51,7 @@ class _PlayerState extends State<PlayerPage> {
                 'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
         albumImageUrl:
             'https://image.genie.co.kr/Y/IMAGE/IMG_ALBUM/081/443/375/81443375_1589523123165_1_600x600.JPG'),
-    Song(
+    Track(
         name: 'Street Lights',
         artist: Artist(
             name: 'Ready',
@@ -59,7 +59,7 @@ class _PlayerState extends State<PlayerPage> {
                 'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
         albumImageUrl:
             'https://i.scdn.co/image/ab67616d0000b273346d77e155d854735410ed18'),
-    Song(
+    Track(
         name: 'Power Out',
         artist: Artist(
             name: 'Ready',
@@ -67,7 +67,7 @@ class _PlayerState extends State<PlayerPage> {
                 'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
         albumImageUrl:
             'https://i.scdn.co/image/ab67616d0000b2737870762a58313ad6f981d664'),
-    Song(
+    Track(
         name: 'D',
         artist: Artist(
             name: 'Ready',
@@ -75,7 +75,7 @@ class _PlayerState extends State<PlayerPage> {
                 'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
         albumImageUrl:
             'https://img.discogs.com/vgOs5VD52OlkimY2PJQyxi4Qy8s=/fit-in/600x600/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/R-8845908-1469984148-2294.jpeg.jpg'),
-    Song(
+    Track(
         name: 'NAPPA',
         artist: Artist(
             name: 'Ready',
@@ -89,9 +89,9 @@ class _PlayerState extends State<PlayerPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (songs.length < CONST_VALUES.prefetchImageLimit) {
-        songs.forEach((song) {
-          precacheImage(NetworkImage(song.albumImageUrl), context);
+      if (tracks.length < CONST_VALUES.prefetchImageLimit) {
+        tracks.forEach((track) {
+          precacheImage(NetworkImage(track.albumImageUrl), context);
         });
       }
     });
@@ -100,7 +100,7 @@ class _PlayerState extends State<PlayerPage> {
 
   void _onEditOrAddPressed() {
     EditStoryPage.show(context,
-        song: song,
+        track: track,
         originalStoryText: storyText,
         onStoryTextEdited: (newValue) => setState(() => storyText = newValue));
   }
@@ -110,7 +110,7 @@ class _PlayerState extends State<PlayerPage> {
     return Stack(
       children: [
         Image.network(
-          song.albumImageUrl,
+          track.albumImageUrl,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           fit: BoxFit.cover,
@@ -177,13 +177,13 @@ class _PlayerState extends State<PlayerPage> {
                       radius: 54.0,
                       backgroundColor: Colors.transparent,
                       backgroundImage:
-                          NetworkImage(song.artist.artistImageUrl)),
+                          NetworkImage(track.artist.artistImageUrl)),
                   SizedBox(
                     height: 8.0,
                   ),
-                  Text(song.artist.name,
+                  Text(track.artist.name,
                       style: TextStyles.secondary.copyWith(fontSize: 16.0)),
-                  Text(song.name,
+                  Text(track.name,
                       style: TextStyles.primary.copyWith(
                           fontSize: 60.0,
                           fontWeight: FontWeight.w600,
@@ -231,7 +231,7 @@ class _PlayerState extends State<PlayerPage> {
             Stack(
               alignment: AlignmentDirectional.center,
               children: <Widget>[
-                PlayerCarousel(songs: songs),
+                PlayerCarousel(tracks: tracks),
                 PlayerProgressBar(
                   totalValue: 360,
                   initialValue: 270,

@@ -1,10 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:storify/models/song.dart';
+import 'package:storify/models/track.dart';
 
 class PlayerCarousel extends StatelessWidget {
-  const PlayerCarousel({Key key, @required this.songs}) : super(key: key);
-  final List<Song> songs;
+  const PlayerCarousel({Key key, @required this.tracks}) : super(key: key);
+  final List<Track> tracks;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class PlayerCarousel extends StatelessWidget {
           enlargeCenterPage: true,
           enlargeStrategy: CenterPageEnlargeStrategy.height,
         ),
-        items: songs.map((song) {
+        items: tracks.map((song) {
           return CircleAvatar(
             radius: 32.0,
             backgroundColor: Colors.transparent,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
+import 'package:storify/services/spotify_api.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
@@ -9,23 +10,21 @@ import 'package:storify/widgets/my_playlist_page/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
 import 'package:provider/provider.dart';
 
-class MyPlaylistPage extends StatelessWidget {
+class MyPlaylistPage extends StatefulWidget {
   static const routeName = '/my_playlist';
 
-  final mockPlaylists = [
-    Playlist(
-        name: 'ROTATION',
-        playlistImageUrl:
-            'https://i.scdn.co/image/ab67616d0000b273ca086099c509810cb97fd227'),
-    Playlist(
-        name: 'Funeral',
-        playlistImageUrl:
-            'https://i.scdn.co/image/ab67616d0000b2737870762a58313ad6f981d664'),
-    Playlist(
-        name: 'Sufjan',
-        playlistImageUrl:
-            'https://i.scdn.co/image/ab67616d0000b273a7054529bcdd1ea5dcb852bc')
-  ];
+  @override
+  _MyPlaylistPageState createState() => _MyPlaylistPageState();
+}
+
+class _MyPlaylistPageState extends State<MyPlaylistPage> {
+  Future<List<Playlist>> futurePlaylists;
+
+  @override
+  void initState() {
+    super.initState();
+    futurePlaylists = SpotifyApi.getListOfPlaylists();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,23 +52,37 @@ class MyPlaylistPage extends StatelessWidget {
   }
 
   Widget _buildContent() {
-    return ListView.separated(
-        itemBuilder: (context, index) {
-          if (index == 0 || index == mockPlaylists.length + 1)
-            return Container();
-          final playlist = mockPlaylists[index - 1];
-          return PlayListItem(
-            title: playlist.name,
-            subtitle: '${playlist.songs.length.toString()} SONGS',
-            imageUrl: playlist.playlistImageUrl,
-            onPressed: () => Navigator.pushNamed(context, PlayerPage.routeName),
-          );
-        },
-        itemCount: mockPlaylists.length + 2,
-        separatorBuilder: (context, index) => Divider(
-              color: Colors.white10,
-              thickness: 1.0,
-              height: 1.0,
-            ));
+    return FutureBuilder<List<Playlist>>(
+      future: futurePlaylists,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final playlists = snapshot.data;
+          return ListView.separated(
+              itemBuilder: (context, index) {
+                if (index == 0 || index == playlists.length + 1)
+                  return Container();
+                final playlist = playlists[index - 1];
+                return PlayListItem(
+                  title: playlist.name,
+                  subtitle: '${playlist.numOfTracks} SONGS',
+                  imageUrl: playlist.playlistImageUrl,
+                  onPressed: () =>
+                      Navigator.pushNamed(context, PlayerPage.routeName),
+                );
+              },
+              itemCount: playlists.length + 2,
+              separatorBuilder: (context, index) => Divider(
+                    color: Colors.white10,
+                    thickness: 1.0,
+                    height: 1.0,
+                  ));
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+
+        // By default, show a loading spinner.
+        return CircularProgressIndicator();
+      },
+    );
   }
 }
