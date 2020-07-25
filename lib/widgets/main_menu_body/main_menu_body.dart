@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
@@ -21,7 +22,9 @@ class MainMenuBody extends StatelessWidget {
               CircleAvatar(
                   radius: 54.0,
                   backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage(auth.user.avatarImageUrl)),
+                  backgroundImage: auth.user.avatarImageUrl != null
+                      ? CachedNetworkImageProvider(auth.user.avatarImageUrl)
+                      : null),
               SizedBox(
                 height: 8.0,
               ),

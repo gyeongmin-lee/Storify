@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
@@ -57,7 +58,8 @@ class MoreInfoMenuBody extends StatelessWidget {
         CircleAvatar(
             radius: 54.0,
             backgroundColor: Colors.transparent,
-            backgroundImage: NetworkImage(playlist.playlistImageUrl)),
+            backgroundImage:
+                CachedNetworkImageProvider(playlist.playlistImageUrl)),
         SizedBox(
           height: 16.0,
         ),
@@ -81,7 +83,8 @@ class MoreInfoMenuBody extends StatelessWidget {
             CircleAvatar(
                 radius: 14.0,
                 backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage(playlist.owner.avatarImageUrl)),
+                backgroundImage:
+                    CachedNetworkImageProvider(playlist.owner.avatarImageUrl)),
             SizedBox(
               width: 8.0,
             ),

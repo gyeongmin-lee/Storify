@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/constants/values.dart' as CONST_VALUES;
@@ -91,7 +92,8 @@ class _PlayerState extends State<PlayerPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (tracks.length < CONST_VALUES.prefetchImageLimit) {
         tracks.forEach((track) {
-          precacheImage(NetworkImage(track.albumImageUrl), context);
+          precacheImage(
+              CachedNetworkImageProvider(track.albumImageUrl), context);
         });
       }
     });
@@ -176,8 +178,8 @@ class _PlayerState extends State<PlayerPage> {
                   CircleAvatar(
                       radius: 54.0,
                       backgroundColor: Colors.transparent,
-                      backgroundImage:
-                          NetworkImage(track.artist.artistImageUrl)),
+                      backgroundImage: CachedNetworkImageProvider(
+                          track.artist.artistImageUrl)),
                   SizedBox(
                     height: 8.0,
                   ),
