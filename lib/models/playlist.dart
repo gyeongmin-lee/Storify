@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:storify/models/track.dart';
 import 'package:storify/models/user.dart';
 
 class Playlist {
