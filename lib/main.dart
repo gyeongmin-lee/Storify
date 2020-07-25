@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/my_playlist_page/my_playlist_page.dart';
-import 'package:storify/widgets/player_page/player_page.dart';
 import 'package:storify/widgets/sign_in_page/sign_in_page.dart';
 
 Future main() async {
@@ -47,7 +46,6 @@ class MyApp extends StatelessWidget {
           routes: {
             SignInPage.routeName: (context) => SignInPage(),
             MyPlaylistPage.routeName: (context) => MyPlaylistPage(),
-            PlayerPage.routeName: (context) => PlayerPage(),
           }),
     );
   }

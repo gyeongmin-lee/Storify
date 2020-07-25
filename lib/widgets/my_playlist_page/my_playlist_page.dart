@@ -29,7 +29,7 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: AppBar(
         title: Text(
           'MY PLAYLISTS',
@@ -38,6 +38,14 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Divider(
+            color: Colors.white10,
+            thickness: 1.0,
+            height: 1.0,
+          ),
+        ),
         leading: CustomFlatIconButton(
           icon: Icon(
             Icons.menu,
@@ -59,18 +67,17 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
           final playlists = snapshot.data;
           return ListView.separated(
               itemBuilder: (context, index) {
-                if (index == 0 || index == playlists.length + 1)
-                  return Container();
-                final playlist = playlists[index - 1];
+                final playlist = playlists[index];
                 return PlayListItem(
-                  title: playlist.name,
-                  subtitle: '${playlist.numOfTracks} SONGS',
-                  imageUrl: playlist.playlistImageUrl,
-                  onPressed: () =>
-                      Navigator.pushNamed(context, PlayerPage.routeName),
-                );
+                    title: playlist.name,
+                    subtitle: '${playlist.numOfTracks} SONGS',
+                    imageUrl: playlist.playlistImageUrl,
+                    onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PlayerPage()),
+                        ));
               },
-              itemCount: playlists.length + 2,
+              itemCount: playlists.length,
               separatorBuilder: (context, index) => Divider(
                     color: Colors.white10,
                     thickness: 1.0,

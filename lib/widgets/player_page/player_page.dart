@@ -19,8 +19,6 @@ import 'package:storify/widgets/player_page/player_progress_bar.dart';
 import 'package:provider/provider.dart';
 
 class PlayerPage extends StatefulWidget {
-  static const routeName = '/player';
-
   @override
   _PlayerState createState() => _PlayerState();
 }

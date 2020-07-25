@@ -31,7 +31,7 @@ class _SignInPageState extends State<SignInPage> {
     setState(() => _isLoading = true);
     try {
       await auth.signInFromSavedTokens();
-      Navigator.pushNamed(context, MyPlaylistPage.routeName);
+      Navigator.popAndPushNamed(context, MyPlaylistPage.routeName);
     } on PlatformException catch (_) {} finally {
       setState(() => _isLoading = false);
     }
@@ -41,7 +41,7 @@ class _SignInPageState extends State<SignInPage> {
     try {
       setState(() => _isLoading = true);
       await auth.authenticate();
-      Navigator.pushNamed(context, MyPlaylistPage.routeName);
+      Navigator.popAndPushNamed(context, MyPlaylistPage.routeName);
     } catch (e) {
       CustomToast.showTextToast(
           text: "Failed to sign in", toastType: ToastType.error);
