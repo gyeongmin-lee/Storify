@@ -58,8 +58,9 @@ class MoreInfoMenuBody extends StatelessWidget {
         CircleAvatar(
             radius: 54.0,
             backgroundColor: Colors.transparent,
-            backgroundImage:
-                CachedNetworkImageProvider(playlist.playlistImageUrl)),
+            backgroundImage: playlist.playlistImageUrl != null
+                ? CachedNetworkImageProvider(playlist.playlistImageUrl)
+                : null),
         SizedBox(
           height: 16.0,
         ),
@@ -83,8 +84,9 @@ class MoreInfoMenuBody extends StatelessWidget {
             CircleAvatar(
                 radius: 14.0,
                 backgroundColor: Colors.transparent,
-                backgroundImage:
-                    CachedNetworkImageProvider(playlist.owner.avatarImageUrl)),
+                backgroundImage: playlist.owner.avatarImageUrl != null
+                    ? CachedNetworkImageProvider(playlist.owner.avatarImageUrl)
+                    : null),
             SizedBox(
               width: 8.0,
             ),

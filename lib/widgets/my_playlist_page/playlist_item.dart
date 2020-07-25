@@ -22,7 +22,8 @@ class PlayListItem extends StatelessWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage: CachedNetworkImageProvider(imageUrl),
+        backgroundImage:
+            imageUrl != null ? CachedNetworkImageProvider(imageUrl) : null,
         backgroundColor: Colors.transparent,
       ),
       title: Text(title,

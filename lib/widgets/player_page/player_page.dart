@@ -178,8 +178,10 @@ class _PlayerState extends State<PlayerPage> {
                   CircleAvatar(
                       radius: 54.0,
                       backgroundColor: Colors.transparent,
-                      backgroundImage: CachedNetworkImageProvider(
-                          track.artist.artistImageUrl)),
+                      backgroundImage: track.artist.artistImageUrl != null
+                          ? CachedNetworkImageProvider(
+                              track.artist.artistImageUrl)
+                          : null),
                   SizedBox(
                     height: 8.0,
                   ),

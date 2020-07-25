@@ -24,7 +24,8 @@ class Playlist {
         id = json['id'],
         externalUrl = json['external_urls']['spotify'],
         isPublic = json['public'],
-        playlistImageUrl = json['images'][0]['url'],
+        playlistImageUrl =
+            json['images'].length != 0 ? json['images'][0]['url'] : null,
         numOfTracks = json['tracks']['total'],
         owner = User.fromJson(json['owner']);
 }
