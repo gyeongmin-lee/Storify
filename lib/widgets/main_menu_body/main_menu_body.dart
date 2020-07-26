@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
+import 'package:storify/widgets/my_playlist_page/my_playlist_page.dart';
 
 class MainMenuBody extends StatelessWidget {
   const MainMenuBody({Key key, @required this.auth}) : super(key: key);
@@ -21,7 +23,9 @@ class MainMenuBody extends StatelessWidget {
               CircleAvatar(
                   radius: 54.0,
                   backgroundColor: Colors.transparent,
-                  backgroundImage: NetworkImage(auth.user.avatarImageUrl)),
+                  backgroundImage: auth.user.avatarImageUrl != null
+                      ? CachedNetworkImageProvider(auth.user.avatarImageUrl)
+                      : null),
               SizedBox(
                 height: 8.0,
               ),
@@ -34,8 +38,9 @@ class MainMenuBody extends StatelessWidget {
           Column(
             children: <Widget>[
               CustomFlatTextButton(
-                text: 'MY PLAYLIST',
-                onPressed: () {},
+                text: 'MY PLAYLISTS',
+                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                    MyPlaylistPage.routeName, (Route<dynamic> route) => false),
               ),
               SizedBox(
                 height: 16.0,

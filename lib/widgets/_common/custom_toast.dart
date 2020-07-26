@@ -2,7 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 
-enum ToastType { error, warning, info }
+enum ToastType { error, warning, info, success }
 
 class CustomToast {
   static Map<ToastType, Widget> toastIcon = {
@@ -11,7 +11,8 @@ class CustomToast {
       color: Colors.red,
     ),
     ToastType.warning: Icon(Icons.warning, color: Colors.orange),
-    ToastType.info: Icon(Icons.info, color: CustomColors.primaryTextColor)
+    ToastType.info: Icon(Icons.info, color: CustomColors.primaryTextColor),
+    ToastType.success: Icon(Icons.check_circle, color: Colors.green),
   };
 
   static void showTextToast(
@@ -22,7 +23,7 @@ class CustomToast {
           borderRadius: BorderRadius.circular(30.0),
         ),
         elevation: 0,
-        color: Colors.white12,
+        color: Colors.grey[800],
         child: Padding(
           padding: const EdgeInsets.only(
               left: 4.0, right: 8.0, top: 4.0, bottom: 4.0),

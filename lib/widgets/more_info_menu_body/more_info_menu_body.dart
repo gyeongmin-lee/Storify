@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
@@ -6,8 +7,13 @@ import 'package:storify/widgets/_common/custom_flat_text_button.dart';
 
 class MoreInfoMenuBody extends StatelessWidget {
   final Playlist playlist = Playlist(
+      externalUrl: '',
+      id: '',
+      isPublic: true,
+      numOfTracks: 10,
       name: 'ROTATION',
-      creator: User(
+      owner: User(
+          id: '',
           name: 'METROSTILE',
           avatarImageUrl:
               'https://cdn.iconscout.com/icon/free/png-512/avatar-370-456322.png'),
@@ -57,7 +63,9 @@ class MoreInfoMenuBody extends StatelessWidget {
         CircleAvatar(
             radius: 54.0,
             backgroundColor: Colors.transparent,
-            backgroundImage: NetworkImage(playlist.playlistImageUrl)),
+            backgroundImage: playlist.playlistImageUrl != null
+                ? CachedNetworkImageProvider(playlist.playlistImageUrl)
+                : null),
         SizedBox(
           height: 16.0,
         ),
@@ -81,11 +89,13 @@ class MoreInfoMenuBody extends StatelessWidget {
             CircleAvatar(
                 radius: 14.0,
                 backgroundColor: Colors.transparent,
-                backgroundImage: NetworkImage(playlist.creator.avatarImageUrl)),
+                backgroundImage: playlist.owner.avatarImageUrl != null
+                    ? CachedNetworkImageProvider(playlist.owner.avatarImageUrl)
+                    : null),
             SizedBox(
               width: 8.0,
             ),
-            Text(playlist.creator.name,
+            Text(playlist.owner.name,
                 style: TextStyles.primary.copyWith(fontSize: 16.0)),
           ],
         )

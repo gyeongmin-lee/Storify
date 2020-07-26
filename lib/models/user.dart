@@ -8,6 +8,7 @@ class User {
 
   User.fromJson(Map<String, dynamic> json)
       : name = json['display_name'],
-        avatarImageUrl = json['images'][0]['url'],
+        avatarImageUrl =
+            json['images'].length != 0 ? json['images'][0]['url'] : null,
         id = json['id'];
 }

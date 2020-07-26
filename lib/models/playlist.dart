@@ -1,17 +1,30 @@
 import 'package:flutter/foundation.dart';
-import 'package:storify/models/song.dart';
 import 'package:storify/models/user.dart';
 
 class Playlist {
   Playlist(
       {@required this.name,
-      this.songs = const [],
-      this.playlistImageUrl,
-      this.spotifyLink, // TODO required
-      this.creator}); // TODO required
+      @required this.id,
+      @required this.isPublic,
+      @required this.playlistImageUrl,
+      @required this.numOfTracks,
+      @required this.externalUrl,
+      @required this.owner});
   final String name;
-  final List<Song> songs;
-  final String spotifyLink;
-  final User creator;
+  final String id;
+  final String externalUrl;
+  final User owner;
+  final bool isPublic;
+  final int numOfTracks;
   final String playlistImageUrl;
+
+  Playlist.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        id = json['id'],
+        externalUrl = json['external_urls']['spotify'],
+        isPublic = json['public'],
+        playlistImageUrl =
+            json['images'].length != 0 ? json['images'][0]['url'] : null,
+        numOfTracks = json['tracks']['total'],
+        owner = User.fromJson(json['owner']);
 }

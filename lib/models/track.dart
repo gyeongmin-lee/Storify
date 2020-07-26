@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:storify/models/artist.dart';
 
-class Song {
-  Song(
+class Track {
+  Track(
       {@required this.name,
       @required this.artist,
       @required this.albumImageUrl,
