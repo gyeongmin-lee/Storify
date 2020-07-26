@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:http_interceptor/http_client_with_interceptor.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:storify/models/playlist.dart';
+import 'package:storify/models/playlists_page.dart';
 import 'package:storify/models/user.dart';
 import 'package:storify/services/api_path.dart';
 import 'package:storify/services/spotify_interceptor.dart';
@@ -42,8 +43,10 @@ class SpotifyApi {
     }
   }
 
-  static Future<List<Playlist>> getListOfPlaylists() async {
-    final response = await client.get(APIPath.getListOfPlaylists);
+  static Future<PlayListsPage> getListOfPlaylists(
+      {int limit = 20, int offset = 0}) async {
+    final response =
+        await client.get(APIPath.getListOfPlaylists(offset, limit));
 
     if (response.statusCode == 200) {
       List items = json.decode(response.body)['items'];
@@ -53,9 +56,10 @@ class SpotifyApi {
               APIPath.getUserById(item['owner']['id']),
           paramToExpand: 'owner');
 
-      return items.map((item) {
-        return Playlist.fromJson(item);
-      }).toList();
+      final List<Playlist> playlists =
+          items.map((item) => Playlist.fromJson(item)).toList();
+      final int totalLength = json.decode(response.body)['total'];
+      return PlayListsPage(playlists: playlists, totalLength: totalLength);
     } else {
       throw Exception(
           'Failed to get list of playlists with status code ${response.statusCode}');

@@ -13,5 +13,6 @@ class APIPath {
   static String getCurrentUser = 'https://api.spotify.com/v1/me';
   static String getUserById(String userId) =>
       'https://api.spotify.com/v1/users/$userId';
-  static String getListOfPlaylists = 'https://api.spotify.com/v1/me/playlists';
+  static String getListOfPlaylists(int offset, int limit) =>
+      'https://api.spotify.com/v1/me/playlists?limit=$limit&offset=$offset';
 }
