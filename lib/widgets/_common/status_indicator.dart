@@ -2,18 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:storify/constants/style.dart';
 
-enum Status { loading, error }
+enum Status { loading, error, warning }
 
 class StatusIndicator extends StatelessWidget {
-  const StatusIndicator(
-      {Key key,
-      @required this.status,
-      this.errorMessage = 'ERROR',
-      this.loadingMessage = 'LOADING'})
-      : super(key: key);
+  const StatusIndicator({
+    Key key,
+    @required this.status,
+    @required this.message,
+  }) : super(key: key);
   final Status status;
-  final String loadingMessage;
-  final String errorMessage;
+  final String message;
+
+  Map<Status, Map<String, dynamic>> get statusItems => {
+        Status.error: {
+          'text_color': Colors.red,
+          'icon': Icon(
+            Icons.error,
+            size: 72,
+            color: Colors.red.withOpacity(0.75),
+          ),
+          'spacing': 8.0
+        },
+        Status.warning: {
+          'text_color': Colors.orange,
+          'icon': Icon(
+            Icons.inbox,
+            size: 72,
+            color: Colors.orange.withOpacity(0.75),
+          ),
+          'spacing': 8.0
+        },
+        Status.loading: {
+          'text_color': CustomColors.secondaryTextColor,
+          'icon': SpinKitFadingCube(
+              size: 36, color: CustomColors.secondaryTextColor),
+          'spacing': 24.0
+        }
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -21,24 +46,14 @@ class StatusIndicator extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          status == Status.loading
-              ? SpinKitFadingCube(
-                  size: 36, color: CustomColors.secondaryTextColor)
-              : Icon(
-                  Icons.error,
-                  size: 72,
-                  color: Colors.red.withOpacity(0.75),
-                ),
+          statusItems[status]['icon'],
           SizedBox(
-            height: status == Status.loading ? 24.0 : 8.0,
+            height: statusItems[status]['spacing'],
           ),
-          Text(
-            status == Status.loading ? loadingMessage : errorMessage,
-            style: TextStyles.loadingButtonText.copyWith(
-                color: status == Status.loading
-                    ? CustomColors.secondaryTextColor
-                    : Colors.red),
-          )
+          Text(message,
+              textAlign: TextAlign.center,
+              style: TextStyles.loadingButtonText.copyWith(
+                  color: statusItems[status]['text_color'], height: 1.3))
         ],
       ),
     );

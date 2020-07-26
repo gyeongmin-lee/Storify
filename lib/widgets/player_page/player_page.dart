@@ -7,6 +7,7 @@ import 'package:storify/constants/values.dart' as CONST_VALUES;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
+import 'package:storify/models/user.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
@@ -24,7 +25,14 @@ class PlayerPage extends StatefulWidget {
 }
 
 class _PlayerState extends State<PlayerPage> {
-  Playlist playlist = Playlist(name: 'John\'s playlist');
+  Playlist playlist = Playlist(
+      externalUrl: '',
+      id: '',
+      isPublic: true,
+      numOfTracks: 10,
+      playlistImageUrl: '',
+      owner: User(avatarImageUrl: '', id: '', name: ''),
+      name: 'John\'s playlist');
   Track track = Track(
       name: 'Hmmm',
       artist: Artist(

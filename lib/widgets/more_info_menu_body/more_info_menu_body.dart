@@ -7,8 +7,13 @@ import 'package:storify/widgets/_common/custom_flat_text_button.dart';
 
 class MoreInfoMenuBody extends StatelessWidget {
   final Playlist playlist = Playlist(
+      externalUrl: '',
+      id: '',
+      isPublic: true,
+      numOfTracks: 10,
       name: 'ROTATION',
       owner: User(
+          id: '',
           name: 'METROSTILE',
           avatarImageUrl:
               'https://cdn.iconscout.com/icon/free/png-512/avatar-370-456322.png'),

@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playlist.dart';
@@ -26,6 +29,8 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
   int _totalLength;
   ScrollController _controller =
       ScrollController(initialScrollOffset: 0.0, keepScrollOffset: true);
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -38,6 +43,20 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
         });
     });
     _futurePlaylists = loadPlaylists();
+  }
+
+  Future<void> _onRefresh() async {
+    setState(() {
+      _offset = 0;
+      _playlists = [];
+      _totalLength = 0;
+      try {
+        _futurePlaylists = loadPlaylists();
+        _refreshController.refreshCompleted();
+      } catch (_) {
+        _refreshController.refreshFailed();
+      }
+    });
   }
 
   Future<List<Playlist>> loadPlaylists() async {
@@ -89,34 +108,55 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final playlists = snapshot.data;
-          return ListView.separated(
-              controller: _controller,
-              itemBuilder: (context, index) {
-                final playlist = playlists[index];
-                return PlayListItem(
-                    title: playlist.name,
-                    subtitle: '${playlist.numOfTracks} SONGS',
-                    imageUrl: playlist.playlistImageUrl,
-                    onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PlayerPage()),
-                        ));
-              },
-              itemCount: playlists.length,
-              separatorBuilder: (context, index) => Divider(
-                    color: Colors.white10,
-                    thickness: 1.0,
-                    height: 1.0,
-                  ));
+          final isEmpty = playlists.length == 0;
+          return SmartRefresher(
+            enablePullDown: true,
+            header: ClassicHeader(
+              idleText: 'Pull down to refresh',
+              refreshingIcon: SizedBox(
+                height: 25,
+                width: 25,
+                child: SpinKitFadingCube(
+                    size: 16, color: CustomColors.secondaryTextColor),
+              ),
+            ),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            child: isEmpty
+                ? StatusIndicator(
+                    status: Status.warning,
+                    message:
+                        'No playlist found on your Spotify\nCreate a playlist to add stories!')
+                : ListView.separated(
+                    controller: _controller,
+                    itemBuilder: (context, index) {
+                      final playlist = playlists[index];
+                      return PlayListItem(
+                          title: playlist.name,
+                          subtitle: '${playlist.numOfTracks} SONGS',
+                          imageUrl: playlist.playlistImageUrl,
+                          onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PlayerPage()),
+                              ));
+                    },
+                    itemCount: playlists.length,
+                    separatorBuilder: (context, index) => Divider(
+                          color: Colors.white10,
+                          thickness: 1.0,
+                          height: 1.0,
+                        )),
+          );
         } else if (snapshot.hasError) {
           return StatusIndicator(
             status: Status.error,
-            errorMessage: 'Failed to fetch playlists',
+            message: 'Failed to fetch playlists',
           );
         }
 
         // By default, show a loading spinner.
-        return StatusIndicator(status: Status.loading);
+        return StatusIndicator(status: Status.loading, message: 'LOADING');
       },
     );
   }
