@@ -133,7 +133,7 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
                       final playlist = playlists[index];
                       return PlayListItem(
                           title: playlist.name,
-                          subtitle: '${playlist.numOfTracks} SONGS',
+                          subtitle: '${playlist.numOfTracks} TRACKS',
                           imageUrl: playlist.playlistImageUrl,
                           onPressed: () => Navigator.push(
                                 context,
