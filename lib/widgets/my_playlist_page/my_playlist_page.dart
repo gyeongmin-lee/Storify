@@ -138,7 +138,9 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
                           onPressed: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => PlayerPage()),
+                                    builder: (context) => PlayerPage(
+                                          playlist: playlist,
+                                        )),
                               ));
                     },
                     itemCount: playlists.length,

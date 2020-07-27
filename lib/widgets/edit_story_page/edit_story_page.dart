@@ -74,18 +74,14 @@ class _EditStoryPageState extends State<EditStoryPage> {
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 65.0, sigmaY: 65.0),
           child: Scaffold(
-            extendBodyBehindAppBar: true,
+            extendBodyBehindAppBar: false,
             backgroundColor: Colors.transparent,
             appBar: _buildAppBar(context),
             body: Container(
               height: double.infinity,
               width: double.infinity,
               child: Padding(
-                padding: const EdgeInsets.only(
-                    top: kToolbarHeight + 24.0,
-                    right: 16.0,
-                    bottom: 16.0,
-                    left: 16.0),
+                padding: const EdgeInsets.only(right: 16.0, left: 16.0),
                 child: TextField(
                     // TODO Validation
                     keyboardType: TextInputType.multiline,

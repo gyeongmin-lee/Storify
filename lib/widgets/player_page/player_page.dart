@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/constants/values.dart' as CONST_VALUES;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
-import 'package:storify/models/user.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
@@ -17,22 +17,16 @@ import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
-import 'package:provider/provider.dart';
 
 class PlayerPage extends StatefulWidget {
+  const PlayerPage({Key key, @required this.playlist}) : super(key: key);
+  final Playlist playlist;
+
   @override
   _PlayerState createState() => _PlayerState();
 }
 
 class _PlayerState extends State<PlayerPage> {
-  Playlist playlist = Playlist(
-      externalUrl: '',
-      id: '',
-      isPublic: true,
-      numOfTracks: 10,
-      playlistImageUrl: '',
-      owner: User(avatarImageUrl: '', id: '', name: ''),
-      name: 'John\'s playlist');
   Track track = Track(
       name: 'Hmmm',
       artist: Artist(
@@ -95,6 +89,7 @@ class _PlayerState extends State<PlayerPage> {
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (tracks.length < CONST_VALUES.prefetchImageLimit) {
         tracks.forEach((track) {
@@ -103,7 +98,6 @@ class _PlayerState extends State<PlayerPage> {
         });
       }
     });
-    super.initState();
   }
 
   void _onEditOrAddPressed() {
@@ -131,37 +125,41 @@ class _PlayerState extends State<PlayerPage> {
           child: Scaffold(
             extendBodyBehindAppBar: true,
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              title: Text(
-                playlist.name,
-                style: TextStyles.appBarTitle.copyWith(letterSpacing: 0),
-              ),
-              centerTitle: true,
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              leading: CustomFlatIconButton(
-                  icon: Icon(
-                    Icons.menu,
-                    color: TextStyles.appBarTitle.color,
-                  ),
-                  onPressed: () => OverlayMenu.show(context,
-                      menuBody: MainMenuBody(
-                        auth: context.read<SpotifyAuth>(),
-                      ))),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(
-                    'MORE',
-                    style: TextStyles.smallButtonText,
-                  ),
-                  onPressed: () =>
-                      OverlayMenu.show(context, menuBody: MoreInfoMenuBody()),
-                ),
-              ],
-            ),
+            appBar: _buildAppBar(context),
             body: _buildContent(),
           ),
         )
+      ],
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Text(
+        widget.playlist.name,
+        style: TextStyles.appBarTitle.copyWith(letterSpacing: 0),
+      ),
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      leading: CustomFlatIconButton(
+          icon: Icon(
+            Icons.menu,
+            color: TextStyles.appBarTitle.color,
+          ),
+          onPressed: () => OverlayMenu.show(context,
+              menuBody: MainMenuBody(
+                auth: context.read<SpotifyAuth>(),
+              ))),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(
+            'MORE',
+            style: TextStyles.smallButtonText,
+          ),
+          onPressed: () =>
+              OverlayMenu.show(context, menuBody: MoreInfoMenuBody()),
+        ),
       ],
     );
   }
@@ -174,70 +172,24 @@ class _PlayerState extends State<PlayerPage> {
         children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              // TODO Display arrow if scroll
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 48.0,
-                  ),
-                  CircleAvatar(
-                      radius: 54.0,
-                      backgroundColor: Colors.transparent,
-                      backgroundImage: track.artist.artistImageUrl != null
-                          ? CachedNetworkImageProvider(
-                              track.artist.artistImageUrl)
-                          : null),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  Text(track.artist.name,
-                      style: TextStyles.secondary.copyWith(fontSize: 16.0)),
-                  Text(track.name,
-                      style: TextStyles.primary.copyWith(
-                          fontSize: 60.0,
-                          fontWeight: FontWeight.w600,
-                          height: 1.1,
-                          letterSpacing: -1.5)),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  if (storyText != '')
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 24.0),
-                      width: double.infinity,
-                      child: Text(
-                        storyText,
-                        textAlign: TextAlign.start,
-                        style: TextStyles.secondary
-                            .copyWith(fontSize: 18.0, height: 1.5),
-                      ),
-                    ),
-                  if (storyText == '')
-                    CustomRoundedButton(
-                      size: ButtonSize.small,
-                      buttonText: 'ADD A STORY',
-                      onPressed: _onEditOrAddPressed,
-                    )
-                ],
-              ),
+              child: _buildTrackInfo(),
             ),
           ),
           Column(children: [
-            if (storyText != '')
-              Column(children: [
-                SizedBox(
-                  height: 16.0,
-                ),
+            Column(children: [
+              SizedBox(
+                height: 8.0,
+              ),
+              if (storyText != '')
                 CustomRoundedButton(
                   size: ButtonSize.small,
                   buttonText: 'EDIT YOUR STORY',
                   onPressed: _onEditOrAddPressed,
                 ),
-                SizedBox(
-                  height: 16.0,
-                )
-              ]),
+              SizedBox(
+                height: 16.0,
+              )
+            ]),
             Stack(
               alignment: AlignmentDirectional.center,
               children: <Widget>[
@@ -252,6 +204,53 @@ class _PlayerState extends State<PlayerPage> {
           ])
         ],
       ),
+    );
+  }
+
+  Column _buildTrackInfo() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(
+          height: 48.0,
+        ),
+        CircleAvatar(
+            radius: 54.0,
+            backgroundColor: Colors.transparent,
+            backgroundImage: track.artist.artistImageUrl != null
+                ? CachedNetworkImageProvider(track.artist.artistImageUrl)
+                : null),
+        SizedBox(
+          height: 8.0,
+        ),
+        Text(track.artist.name,
+            style: TextStyles.secondary.copyWith(fontSize: 16.0)),
+        Text(track.name,
+            style: TextStyles.primary.copyWith(
+                fontSize: 60.0,
+                fontWeight: FontWeight.w600,
+                height: 1.1,
+                letterSpacing: -1.5)),
+        SizedBox(
+          height: 16.0,
+        ),
+        if (storyText != '')
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            width: double.infinity,
+            child: Text(
+              storyText,
+              textAlign: TextAlign.start,
+              style: TextStyles.secondary.copyWith(fontSize: 18.0, height: 1.5),
+            ),
+          ),
+        if (storyText == '')
+          CustomRoundedButton(
+            size: ButtonSize.small,
+            buttonText: 'ADD A STORY',
+            onPressed: _onEditOrAddPressed,
+          )
+      ],
     );
   }
 }
