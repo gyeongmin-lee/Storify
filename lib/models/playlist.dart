@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:storify/models/user.dart';
 
-class Playlist {
+class Playlist extends Equatable {
   Playlist(
       {@required this.name,
       @required this.id,
@@ -18,13 +19,34 @@ class Playlist {
   final int numOfTracks;
   final String playlistImageUrl;
 
-  Playlist.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        id = json['id'],
-        externalUrl = json['external_urls']['spotify'],
-        isPublic = json['public'],
-        playlistImageUrl =
-            json['images'].length != 0 ? json['images'][0]['url'] : null,
-        numOfTracks = json['tracks']['total'],
-        owner = User.fromJson(json['owner']);
+  factory Playlist.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
+    final name = json['name'];
+    final id = json['id'];
+    final externalUrl = json['external_urls']['spotify'];
+    final isPublic = json['public'];
+    final playlistImageUrl =
+        json['images'].length != 0 ? json['images'][0]['url'] : null;
+    final numOfTracks = json['tracks']['total'];
+    final owner = User.fromJson(json['owner']);
+    return Playlist(
+        name: name,
+        id: id,
+        externalUrl: externalUrl,
+        isPublic: isPublic,
+        playlistImageUrl: playlistImageUrl,
+        numOfTracks: numOfTracks,
+        owner: owner);
+  }
+
+  @override
+  List<Object> get props => [
+        name,
+        id,
+        externalUrl,
+        owner,
+        isPublic,
+        numOfTracks,
+        playlistImageUrl,
+      ];
 }
