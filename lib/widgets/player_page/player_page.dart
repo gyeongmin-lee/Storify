@@ -157,8 +157,10 @@ class _PlayerState extends State<PlayerPage> {
             'MORE',
             style: TextStyles.smallButtonText,
           ),
-          onPressed: () =>
-              OverlayMenu.show(context, menuBody: MoreInfoMenuBody()),
+          onPressed: () => OverlayMenu.show(context,
+              menuBody: MoreInfoMenuBody(
+                playlist: widget.playlist,
+              )),
         ),
       ],
     );
@@ -180,12 +182,11 @@ class _PlayerState extends State<PlayerPage> {
               SizedBox(
                 height: 8.0,
               ),
-              if (storyText != '')
-                CustomRoundedButton(
-                  size: ButtonSize.small,
-                  buttonText: 'EDIT YOUR STORY',
-                  onPressed: _onEditOrAddPressed,
-                ),
+              CustomRoundedButton(
+                size: ButtonSize.small,
+                buttonText: storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
+                onPressed: _onEditOrAddPressed,
+              ),
               SizedBox(
                 height: 16.0,
               )
@@ -244,12 +245,6 @@ class _PlayerState extends State<PlayerPage> {
               style: TextStyles.secondary.copyWith(fontSize: 18.0, height: 1.5),
             ),
           ),
-        if (storyText == '')
-          CustomRoundedButton(
-            size: ButtonSize.small,
-            buttonText: 'ADD A STORY',
-            onPressed: _onEditOrAddPressed,
-          )
       ],
     );
   }

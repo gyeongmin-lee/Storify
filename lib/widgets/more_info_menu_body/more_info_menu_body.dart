@@ -2,23 +2,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
-import 'package:storify/models/user.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
+import 'package:storify/widgets/_common/custom_toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MoreInfoMenuBody extends StatelessWidget {
-  final Playlist playlist = Playlist(
-      externalUrl: '',
-      id: '',
-      isPublic: true,
-      numOfTracks: 10,
-      name: 'ROTATION',
-      owner: User(
-          id: '',
-          name: 'METROSTILE',
-          avatarImageUrl:
-              'https://cdn.iconscout.com/icon/free/png-512/avatar-370-456322.png'),
-      playlistImageUrl:
-          'https://i.scdn.co/image/ab67616d0000b273ca086099c509810cb97fd227');
+  const MoreInfoMenuBody({Key key, @required this.playlist}) : super(key: key);
+  final Playlist playlist;
+
+  void _onOpenInSpotify() async {
+    final url = playlist.externalUrl;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      CustomToast.showTextToast(
+          text: 'Failed to open spotify link', toastType: ToastType.error);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class MoreInfoMenuBody extends StatelessWidget {
             children: <Widget>[
               CustomFlatTextButton(
                 text: 'OPEN IN SPOTIFY',
-                onPressed: () {},
+                onPressed: _onOpenInSpotify,
               ),
               SizedBox(
                 height: 16.0,
@@ -71,9 +71,9 @@ class MoreInfoMenuBody extends StatelessWidget {
         ),
         Text(
           playlist.name,
-          style: TextStyles.bannerText.copyWith(
-            letterSpacing: 2.0,
-          ),
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyles.bannerText.copyWith(letterSpacing: 0.0),
         ),
         SizedBox(
           height: 3.0,
