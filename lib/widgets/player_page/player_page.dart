@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
+import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
@@ -19,7 +20,6 @@ import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
-import 'package:storify/constants/values.dart' as Constants;
 
 class PlayerPage extends StatefulWidget {
   const PlayerPage({Key key, @required this.playlist}) : super(key: key);
@@ -35,6 +35,7 @@ class _PlayerState extends State<PlayerPage> {
   int _currentTrackIndex = 0;
   String _currentTrackArtistImageUrl;
   Debouncer _debouncer = Debouncer(milliseconds: Constants.debounceMillisecond);
+  ScrollController _trackNameController = ScrollController();
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class _PlayerState extends State<PlayerPage> {
   }
 
   Future<void> _handleTrackChanged(int index, List<Track> tracks) async {
+    _trackNameController.jumpTo(0);
     setState(() {
       _currentTrackArtistImageUrl = null;
       _currentTrackIndex = index;
@@ -232,14 +234,24 @@ class _PlayerState extends State<PlayerPage> {
         SizedBox(
           height: 8.0,
         ),
-        Text(_artistNames(currentTrack.artists),
-            style: TextStyles.secondary.copyWith(fontSize: 16.0)),
-        Text(currentTrack.name,
-            style: TextStyles.primary.copyWith(
-                fontSize: 60.0,
-                fontWeight: FontWeight.w600,
-                height: 1.1,
-                letterSpacing: -1.5)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(children: [
+            Text(_artistNames(currentTrack.artists),
+                style: TextStyles.secondary.copyWith(fontSize: 16.0)),
+            SingleChildScrollView(
+              controller: _trackNameController,
+              scrollDirection: Axis.horizontal,
+              child: Text(currentTrack.name,
+                  textAlign: TextAlign.center,
+                  style: TextStyles.primary.copyWith(
+                      fontSize: 48.0,
+                      fontWeight: FontWeight.w600,
+                      height: 1.1,
+                      letterSpacing: -1.5)),
+            ),
+          ]),
+        ),
         SizedBox(
           height: 16.0,
         ),
