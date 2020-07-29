@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:storify/models/track.dart';
 
 class PlayerCarousel extends StatelessWidget {
-  const PlayerCarousel({Key key, @required this.tracks}) : super(key: key);
+  const PlayerCarousel(
+      {Key key, @required this.tracks, @required this.onPageChanged})
+      : super(key: key);
   final List<Track> tracks;
+  final Function(int index, CarouselPageChangedReason reason) onPageChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +20,7 @@ class PlayerCarousel extends StatelessWidget {
           enableInfiniteScroll: false,
           enlargeCenterPage: true,
           enlargeStrategy: CenterPageEnlargeStrategy.height,
+          onPageChanged: onPageChanged,
         ),
         items: tracks.map((song) {
           return CircleAvatar(

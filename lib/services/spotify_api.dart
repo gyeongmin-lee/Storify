@@ -6,6 +6,7 @@ import 'package:http_interceptor/http_client_with_interceptor.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/playlists_page.dart';
+import 'package:storify/models/track.dart';
 import 'package:storify/models/user.dart';
 import 'package:storify/services/api_path.dart';
 import 'package:storify/services/spotify_interceptor.dart';
@@ -63,6 +64,18 @@ class SpotifyApi {
     } else {
       throw Exception(
           'Failed to get list of playlists with status code ${response.statusCode}');
+    }
+  }
+
+  static Future<List<Track>> getTracks(String playlistId) async {
+    final response = await client.get(APIPath.getTracks(playlistId));
+
+    if (response.statusCode == 200) {
+      List items = json.decode(response.body)['items'];
+      return items.map((item) => Track.fromJson(item['track'])).toList();
+    } else {
+      throw Exception(
+          'Failed to get tracks. with status code ${response.statusCode}');
     }
   }
 

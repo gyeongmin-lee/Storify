@@ -4,14 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
-import 'package:storify/constants/values.dart' as CONST_VALUES;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
+import 'package:storify/services/spotify_api.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
+import 'package:storify/widgets/_common/status_indicator.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
 import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
@@ -27,110 +28,92 @@ class PlayerPage extends StatefulWidget {
 }
 
 class _PlayerState extends State<PlayerPage> {
-  Track track = Track(
-      name: 'Hmmm',
-      artist: Artist(
-          name: 'Ready',
-          artistImageUrl:
-              'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
-      albumImageUrl:
-          'https://image.genie.co.kr/Y/IMAGE/IMG_ALBUM/081/443/375/81443375_1589523123165_1_600x600.JPG');
-  List<Track> tracks = [
-    Track(
-        name: 'DNA',
-        artist: Artist(
-            name: 'Ready',
-            artistImageUrl:
-                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
-        albumImageUrl:
-            'https://i.scdn.co/image/ab67616d0000b2738b52c6b9bc4e43d873869699'),
-    Track(
-        name: 'Hmmm',
-        artist: Artist(
-            name: 'Ready',
-            artistImageUrl:
-                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
-        albumImageUrl:
-            'https://image.genie.co.kr/Y/IMAGE/IMG_ALBUM/081/443/375/81443375_1589523123165_1_600x600.JPG'),
-    Track(
-        name: 'Street Lights',
-        artist: Artist(
-            name: 'Ready',
-            artistImageUrl:
-                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
-        albumImageUrl:
-            'https://i.scdn.co/image/ab67616d0000b273346d77e155d854735410ed18'),
-    Track(
-        name: 'Power Out',
-        artist: Artist(
-            name: 'Ready',
-            artistImageUrl:
-                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
-        albumImageUrl:
-            'https://i.scdn.co/image/ab67616d0000b2737870762a58313ad6f981d664'),
-    Track(
-        name: 'D',
-        artist: Artist(
-            name: 'Ready',
-            artistImageUrl:
-                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
-        albumImageUrl:
-            'https://img.discogs.com/vgOs5VD52OlkimY2PJQyxi4Qy8s=/fit-in/600x600/filters:strip_icc():format(jpeg):mode_rgb():quality(90)/discogs-images/R-8845908-1469984148-2294.jpeg.jpg'),
-    Track(
-        name: 'NAPPA',
-        artist: Artist(
-            name: 'Ready',
-            artistImageUrl:
-                'https://cdn.icon-icons.com/icons2/1736/PNG/512/4043260-avatar-male-man-portrait_113269.png'),
-        albumImageUrl:
-            'https://i.scdn.co/image/ab67616d0000b2739efc75bc81022179079b0b6b'),
-  ];
+  Future<List<Track>> _futureTracks;
   String storyText = '';
+  int currentTrackIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (tracks.length < CONST_VALUES.prefetchImageLimit) {
-        tracks.forEach((track) {
-          precacheImage(
-              CachedNetworkImageProvider(track.albumImageUrl), context);
-        });
-      }
+    _futureTracks = SpotifyApi.getTracks(widget.playlist.id);
+  }
+
+  _handleTrackChanged(int index, _) {
+    setState(() {
+      currentTrackIndex = index;
     });
   }
 
-  void _onEditOrAddPressed() {
+  void _onEditOrAddPressed(Track currentTrack) {
     EditStoryPage.show(context,
-        track: track,
+        track: currentTrack,
         originalStoryText: storyText,
         onStoryTextEdited: (newValue) => setState(() => storyText = newValue));
   }
 
+  String _artistNames(List<Artist> artists) {
+    return artists.map((artist) => artist.name).join(', ');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Image.network(
-          track.albumImageUrl,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
-        ),
-        Container(
-          decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
-        ),
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 35.0, sigmaY: 35.0),
-          child: Scaffold(
-            extendBodyBehindAppBar: true,
-            backgroundColor: Colors.transparent,
-            appBar: _buildAppBar(context),
-            body: _buildContent(),
-          ),
-        )
-      ],
-    );
+    return FutureBuilder(
+        future: _futureTracks,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final tracks = snapshot.data;
+            final currentTrack =
+                tracks.length != 0 ? tracks[currentTrackIndex] : null;
+            return Stack(
+              children: [
+                Image.network(
+                  currentTrack.albumImageUrl,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  decoration:
+                      BoxDecoration(color: Colors.black.withOpacity(0.7)),
+                ),
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 35.0, sigmaY: 35.0),
+                  child: Scaffold(
+                    extendBodyBehindAppBar: true,
+                    backgroundColor: Colors.transparent,
+                    appBar: _buildAppBar(context),
+                    body: _buildContent(tracks, currentTrack),
+                  ),
+                )
+              ],
+            );
+          } else if (snapshot.hasError) {
+            print(snapshot.error);
+            return Scaffold(
+              extendBodyBehindAppBar: true,
+              backgroundColor: Colors.transparent,
+              appBar: _buildAppBar(context),
+              body: Center(
+                child: StatusIndicator(
+                  message: 'Failed to load tracks',
+                  status: Status.error,
+                ),
+              ),
+            );
+          } else {
+            return Scaffold(
+              extendBodyBehindAppBar: true,
+              backgroundColor: Colors.transparent,
+              appBar: _buildAppBar(context),
+              body: Center(
+                child: StatusIndicator(
+                  message: 'Loading Tracks',
+                  status: Status.loading,
+                ),
+              ),
+            );
+          }
+        });
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -166,7 +149,7 @@ class _PlayerState extends State<PlayerPage> {
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(List<Track> tracks, Track currentTrack) {
     return Padding(
       padding: const EdgeInsets.only(top: 80.0, bottom: 36.0),
       child: Column(
@@ -174,7 +157,7 @@ class _PlayerState extends State<PlayerPage> {
         children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child: _buildTrackInfo(),
+              child: _buildTrackInfo(currentTrack),
             ),
           ),
           Column(children: [
@@ -185,7 +168,7 @@ class _PlayerState extends State<PlayerPage> {
               CustomRoundedButton(
                 size: ButtonSize.small,
                 buttonText: storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
-                onPressed: _onEditOrAddPressed,
+                onPressed: () => _onEditOrAddPressed(currentTrack),
               ),
               SizedBox(
                 height: 16.0,
@@ -194,7 +177,10 @@ class _PlayerState extends State<PlayerPage> {
             Stack(
               alignment: AlignmentDirectional.center,
               children: <Widget>[
-                PlayerCarousel(tracks: tracks),
+                PlayerCarousel(
+                  tracks: tracks,
+                  onPageChanged: _handleTrackChanged,
+                ),
                 PlayerProgressBar(
                   totalValue: 360,
                   initialValue: 270,
@@ -208,7 +194,7 @@ class _PlayerState extends State<PlayerPage> {
     );
   }
 
-  Column _buildTrackInfo() {
+  Column _buildTrackInfo(Track currentTrack) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -218,15 +204,16 @@ class _PlayerState extends State<PlayerPage> {
         CircleAvatar(
             radius: 54.0,
             backgroundColor: Colors.transparent,
-            backgroundImage: track.artist.artistImageUrl != null
-                ? CachedNetworkImageProvider(track.artist.artistImageUrl)
+            backgroundImage: currentTrack.artists[0].artistImageUrl != null
+                ? CachedNetworkImageProvider(
+                    currentTrack.artists[0].artistImageUrl)
                 : null),
         SizedBox(
           height: 8.0,
         ),
-        Text(track.artist.name,
+        Text(_artistNames(currentTrack.artists),
             style: TextStyles.secondary.copyWith(fontSize: 16.0)),
-        Text(track.name,
+        Text(currentTrack.name,
             style: TextStyles.primary.copyWith(
                 fontSize: 60.0,
                 fontWeight: FontWeight.w600,
