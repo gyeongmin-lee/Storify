@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 class Artist {
-  Artist({@required this.name, this.artistImageUrl, this.href});
+  Artist({@required this.name, this.href});
   final String name;
-  final String artistImageUrl;
+  String artistImageUrl;
   final String href;
 
   factory Artist.fromJson(Map<String, dynamic> json) {

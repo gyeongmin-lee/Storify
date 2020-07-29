@@ -9,6 +9,7 @@ import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/services/spotify_api.dart';
 import 'package:storify/services/spotify_auth.dart';
+import 'package:storify/utils/debouncer.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
@@ -18,6 +19,7 @@ import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
+import 'package:storify/constants/values.dart' as Constants;
 
 class PlayerPage extends StatefulWidget {
   const PlayerPage({Key key, @required this.playlist}) : super(key: key);
@@ -30,7 +32,9 @@ class PlayerPage extends StatefulWidget {
 class _PlayerState extends State<PlayerPage> {
   Future<List<Track>> _futureTracks;
   String storyText = '';
-  int currentTrackIndex = 0;
+  int _currentTrackIndex = 0;
+  String _currentTrackArtistImageUrl;
+  Debouncer _debouncer = Debouncer(milliseconds: Constants.debounceMillisecond);
 
   @override
   void initState() {
@@ -38,9 +42,24 @@ class _PlayerState extends State<PlayerPage> {
     _futureTracks = SpotifyApi.getTracks(widget.playlist.id);
   }
 
-  _handleTrackChanged(int index, _) {
+  @override
+  void dispose() {
+    _debouncer.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadArtistImage(Track currentTrack) async {
+    final newImageUrl =
+        await SpotifyApi.getArtistImageUrl(currentTrack.artists[0].href);
     setState(() {
-      currentTrackIndex = index;
+      _currentTrackArtistImageUrl = newImageUrl;
+    });
+  }
+
+  Future<void> _handleTrackChanged(int index, List<Track> tracks) async {
+    setState(() {
+      _currentTrackArtistImageUrl = null;
+      _currentTrackIndex = index;
     });
   }
 
@@ -63,7 +82,9 @@ class _PlayerState extends State<PlayerPage> {
           if (snapshot.hasData) {
             final tracks = snapshot.data;
             final currentTrack =
-                tracks.length != 0 ? tracks[currentTrackIndex] : null;
+                tracks.length != 0 ? tracks[_currentTrackIndex] : null;
+            _debouncer.run(() => _loadArtistImage(currentTrack));
+
             return Stack(
               children: [
                 Image.network(
@@ -179,7 +200,8 @@ class _PlayerState extends State<PlayerPage> {
               children: <Widget>[
                 PlayerCarousel(
                   tracks: tracks,
-                  onPageChanged: _handleTrackChanged,
+                  onPageChanged: (index, _) =>
+                      _handleTrackChanged(index, tracks),
                 ),
                 PlayerProgressBar(
                   totalValue: 360,
@@ -204,9 +226,8 @@ class _PlayerState extends State<PlayerPage> {
         CircleAvatar(
             radius: 54.0,
             backgroundColor: Colors.transparent,
-            backgroundImage: currentTrack.artists[0].artistImageUrl != null
-                ? CachedNetworkImageProvider(
-                    currentTrack.artists[0].artistImageUrl)
+            backgroundImage: _currentTrackArtistImageUrl != null
+                ? CachedNetworkImageProvider(_currentTrackArtistImageUrl)
                 : null),
         SizedBox(
           height: 8.0,

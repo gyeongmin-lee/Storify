@@ -10,6 +10,7 @@ import 'package:storify/models/track.dart';
 import 'package:storify/models/user.dart';
 import 'package:storify/services/api_path.dart';
 import 'package:storify/services/spotify_interceptor.dart';
+import 'package:storify/constants/values.dart' as Constants;
 
 typedef NestedApiPathBuilder<T> = String Function(T listItem);
 
@@ -76,6 +77,28 @@ class SpotifyApi {
     } else {
       throw Exception(
           'Failed to get tracks. with status code ${response.statusCode}');
+    }
+  }
+
+  static Future<String> getArtistImageUrl(String href) async {
+    final response = await client.get(href);
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      final images = responseBody['images'];
+      if (images.length == 0) return null;
+      for (final image in images) {
+        final imageWidth = image['width'];
+        final imageHeight = image['height'];
+        if (imageWidth < Constants.artistImageMaxSize ||
+            imageHeight < Constants.artistImageMaxSize) {
+          return image['url'];
+        }
+      }
+      return images[0]['url'];
+    } else {
+      throw Exception(
+          'Failed to get artist image url with status code ${response.statusCode}');
     }
   }
 
