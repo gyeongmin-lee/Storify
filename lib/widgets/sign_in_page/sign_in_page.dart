@@ -32,7 +32,7 @@ class _SignInPageState extends State<SignInPage> {
     try {
       await auth.signInFromSavedTokens();
       Navigator.popAndPushNamed(context, MyPlaylistPage.routeName);
-    } on PlatformException catch (_) {} finally {
+    } catch (_) {} finally {
       setState(() => _isLoading = false);
     }
   }
