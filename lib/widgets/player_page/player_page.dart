@@ -8,12 +8,14 @@ import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
+import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/spotify_api.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/utils/debouncer.dart';
 import 'package:storify/widgets/_common/custom_auto_size_text.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
+import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
@@ -21,6 +23,8 @@ import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
+
+// TODO Refactor into smaller, reusable widgets
 
 class PlayerPage extends StatefulWidget {
   const PlayerPage({Key key, @required this.playlist}) : super(key: key);
@@ -32,10 +36,10 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerState extends State<PlayerPage> {
   Future<List<Track>> _futureTracks;
-  String storyText = '';
   int _currentTrackIndex = 0;
   String _currentTrackArtistImageUrl;
   Debouncer _debouncer = Debouncer(milliseconds: Constants.debounceMillisecond);
+  FirebaseDB database = FirebaseDB();
 
   @override
   void initState() {
@@ -64,11 +68,32 @@ class _PlayerState extends State<PlayerPage> {
     });
   }
 
-  void _onEditOrAddPressed(Track currentTrack) {
-    EditStoryPage.show(context,
-        track: currentTrack,
-        originalStoryText: storyText,
-        onStoryTextEdited: (newValue) => setState(() => storyText = newValue));
+  void _onEditOrAddPressed(String storyText, Track currentTrack) {
+    EditStoryPage.show(
+      context,
+      track: currentTrack,
+      originalStoryText: storyText,
+      onStoryTextEdited: (String newText) => _handleEditStoryText(
+        newStoryText: newText,
+        currentTrack: currentTrack,
+      ),
+    );
+  }
+
+  Future<void> _handleEditStoryText({
+    @required String newStoryText,
+    @required Track currentTrack,
+  }) async {
+    try {
+      final playlistId = widget.playlist.id;
+      final trackId = currentTrack.id;
+      await database.setStory(newStoryText, playlistId, trackId);
+      CustomToast.showTextToast(text: 'Updated', toastType: ToastType.success);
+    } catch (e) {
+      print(e);
+      CustomToast.showTextToast(
+          text: 'Failed to update story', toastType: ToastType.error);
+    }
   }
 
   String _artistNames(List<Artist> artists) {
@@ -104,7 +129,10 @@ class _PlayerState extends State<PlayerPage> {
                     extendBodyBehindAppBar: true,
                     backgroundColor: Colors.transparent,
                     appBar: _buildAppBar(context),
-                    body: _buildContent(tracks, currentTrack),
+                    body: _buildContent(
+                      tracks,
+                      currentTrack,
+                    ),
                   ),
                 )
               ],
@@ -174,50 +202,58 @@ class _PlayerState extends State<PlayerPage> {
   Widget _buildContent(List<Track> tracks, Track currentTrack) {
     return Padding(
       padding: const EdgeInsets.only(top: 80.0, bottom: 36.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Expanded(
-            child: SingleChildScrollView(
-              child: _buildTrackInfo(currentTrack),
-            ),
-          ),
-          Column(children: [
-            Column(children: [
-              SizedBox(
-                height: 8.0,
-              ),
-              CustomRoundedButton(
-                size: ButtonSize.small,
-                buttonText: storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
-                onPressed: () => _onEditOrAddPressed(currentTrack),
-              ),
-              SizedBox(
-                height: 16.0,
-              )
-            ]),
-            Stack(
-              alignment: AlignmentDirectional.center,
+      child: StreamBuilder(
+          stream: database.storyStream(
+              playlistId: widget.playlist.id, trackId: currentTrack.id),
+          builder: (context, snapshot) {
+            final storyText = snapshot?.data ?? '';
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                PlayerCarousel(
-                  tracks: tracks,
-                  onPageChanged: (index, _) =>
-                      _handleTrackChanged(index, tracks),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: _buildTrackInfo(storyText, currentTrack),
+                  ),
                 ),
-                PlayerProgressBar(
-                  totalValue: 360,
-                  initialValue: 270,
-                  size: 72.0,
-                ),
+                Column(children: [
+                  Column(children: [
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    CustomRoundedButton(
+                      size: ButtonSize.small,
+                      buttonText:
+                          storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
+                      onPressed: () =>
+                          _onEditOrAddPressed(storyText, currentTrack),
+                    ),
+                    SizedBox(
+                      height: 16.0,
+                    )
+                  ]),
+                  Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: <Widget>[
+                      PlayerCarousel(
+                        tracks: tracks,
+                        onPageChanged: (index, _) =>
+                            _handleTrackChanged(index, tracks),
+                      ),
+                      PlayerProgressBar(
+                        totalValue: 360,
+                        initialValue: 270,
+                        size: 72.0,
+                      ),
+                    ],
+                  )
+                ]),
               ],
-            )
-          ])
-        ],
-      ),
+            );
+          }),
     );
   }
 
-  Column _buildTrackInfo(Track currentTrack) {
+  Column _buildTrackInfo(String storyText, Track currentTrack) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[

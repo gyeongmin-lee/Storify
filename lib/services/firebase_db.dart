@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:storify/services/api_path.dart';
 import 'package:storify/services/firestore_service.dart';
 
-class FirebaseDatabase {
+class FirebaseDB {
   final _service = FirestoreService.instance;
 
   Future<void> setStory(

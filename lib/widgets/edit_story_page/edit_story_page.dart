@@ -60,7 +60,7 @@ class _EditStoryPageState extends State<EditStoryPage> {
   }
 
   Future<void> _onSubmitted(BuildContext context) async {
-    widget.onStoryTextEdited(_storyText);
+    await widget.onStoryTextEdited(_storyText); // TODO Add loading state
     Navigator.of(context).pop();
   }
 
