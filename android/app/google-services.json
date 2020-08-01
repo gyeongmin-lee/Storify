@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "431594792101",
+    "firebase_url": "https://storify-cd21c.firebaseio.com",
+    "project_id": "storify-cd21c",
+    "storage_bucket": "storify-cd21c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431594792101:android:1b2fb143dc3fc8268e194c",
+        "android_client_info": {
+          "package_name": "com.example.storify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431594792101-f46cc1ek5tau613bpd0pf3stnnt71eak.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq6OdRefxz-ff2MWJlCuyspp2_NlDp0-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431594792101-f46cc1ek5tau613bpd0pf3stnnt71eak.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "431594792101-0jdi6fs8e0h3953vf4oge7p15mik3ke7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.storify"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
