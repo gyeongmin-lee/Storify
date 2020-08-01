@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import 'package:storify/models/track.dart';
 import 'package:storify/services/spotify_api.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/utils/debouncer.dart';
+import 'package:storify/widgets/_common/custom_auto_size_text.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
@@ -35,7 +37,6 @@ class _PlayerState extends State<PlayerPage> {
   int _currentTrackIndex = 0;
   String _currentTrackArtistImageUrl;
   Debouncer _debouncer = Debouncer(milliseconds: Constants.debounceMillisecond);
-  ScrollController _trackNameController = ScrollController();
 
   @override
   void initState() {
@@ -58,7 +59,6 @@ class _PlayerState extends State<PlayerPage> {
   }
 
   Future<void> _handleTrackChanged(int index, List<Track> tracks) async {
-    _trackNameController.jumpTo(0);
     setState(() {
       _currentTrackArtistImageUrl = null;
       _currentTrackIndex = index;
@@ -238,17 +238,18 @@ class _PlayerState extends State<PlayerPage> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(children: [
             Text(_artistNames(currentTrack.artists),
+                textAlign: TextAlign.center,
                 style: TextStyles.secondary.copyWith(fontSize: 16.0)),
-            SingleChildScrollView(
-              controller: _trackNameController,
-              scrollDirection: Axis.horizontal,
-              child: Text(currentTrack.name,
-                  textAlign: TextAlign.center,
-                  style: TextStyles.primary.copyWith(
-                      fontSize: 48.0,
-                      fontWeight: FontWeight.w600,
-                      height: 1.1,
-                      letterSpacing: -1.5)),
+            CustomAutoSizeText(
+              currentTrack.name,
+              maxLines: 1,
+              minFontSize: 32.0,
+              fontSize: 48.0,
+              overflowReplacement: CustomAutoSizeText(currentTrack.name,
+                  maxLines: 2,
+                  minFontSize: 32.0,
+                  fontSize: 32.0,
+                  overflow: TextOverflow.ellipsis),
             ),
           ]),
         ),
