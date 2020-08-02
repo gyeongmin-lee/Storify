@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/artist.dart';
@@ -10,16 +9,13 @@ import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/spotify_api.dart';
-import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/utils/debouncer.dart';
 import 'package:storify/widgets/_common/custom_auto_size_text.dart';
-import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
-import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
@@ -109,7 +105,8 @@ class _PlayerState extends State<PlayerPage> {
             final tracks = snapshot.data;
             final currentTrack =
                 tracks.length != 0 ? tracks[_currentTrackIndex] : null;
-            _debouncer.run(() => _loadArtistImage(currentTrack));
+            _debouncer.run(() => _loadArtistImage(
+                currentTrack)); // TODO FIX SETSTATE AFTER DISPOSE ERROR
 
             return Stack(
               children: [
