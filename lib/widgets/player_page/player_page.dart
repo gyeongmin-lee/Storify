@@ -50,11 +50,13 @@ class _PlayerState extends State<PlayerPage> {
   }
 
   Future<void> _loadArtistImage(Track currentTrack) async {
-    final newImageUrl =
-        await SpotifyApi.getArtistImageUrl(currentTrack.artists[0].href);
-    setState(() {
-      _currentTrackArtistImageUrl = newImageUrl;
-    });
+    if (mounted) {
+      final newImageUrl =
+          await SpotifyApi.getArtistImageUrl(currentTrack.artists[0].href);
+      setState(() {
+        _currentTrackArtistImageUrl = newImageUrl;
+      });
+    }
   }
 
   Future<void> _handleTrackChanged(int index, List<Track> tracks) async {
