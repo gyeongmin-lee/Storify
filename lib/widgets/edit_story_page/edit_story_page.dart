@@ -1,9 +1,12 @@
 import 'dart:ui';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
+import 'package:storify/widgets/_common/overlay_loader.dart';
+import 'package:storify/widgets/_common/status_indicator.dart';
 
 class EditStoryPage extends StatefulWidget {
   const EditStoryPage(
@@ -60,6 +63,7 @@ class _EditStoryPageState extends State<EditStoryPage> {
   }
 
   Future<void> _onSubmitted(BuildContext context) async {
+    OverlayLoader.show(loadingText: 'UPDATING');
     await widget.onStoryTextEdited(_storyText); // TODO Add loading state
     Navigator.of(context).pop();
   }
