@@ -175,15 +175,9 @@ class _PlayerState extends State<PlayerPage> {
       centerTitle: true,
       elevation: 0,
       backgroundColor: Colors.transparent,
-      leading: CustomFlatIconButton(
-          icon: Icon(
-            Icons.menu,
-            color: TextStyles.appBarTitle.color,
-          ),
-          onPressed: () => OverlayMenu.show(context,
-              menuBody: MainMenuBody(
-                auth: context.read<SpotifyAuth>(),
-              ))),
+      iconTheme: IconThemeData(
+        color: CustomColors.secondaryTextColor, //change your color here
+      ),
       actions: <Widget>[
         FlatButton(
           child: Text(

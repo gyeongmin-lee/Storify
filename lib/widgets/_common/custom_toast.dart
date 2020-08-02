@@ -23,7 +23,7 @@ class CustomToast {
           borderRadius: BorderRadius.circular(30.0),
         ),
         elevation: 0,
-        color: Colors.grey[800],
+        color: Colors.grey[850],
         child: Padding(
           padding: const EdgeInsets.only(
               left: 4.0, right: 8.0, top: 4.0, bottom: 4.0),
@@ -37,9 +37,9 @@ class CustomToast {
               Text(
                 text,
                 style: TextStyles.primary.copyWith(
-                    fontSize: 18.0,
-                    letterSpacing: 0.3,
-                    fontWeight: FontWeight.w300),
+                    fontSize: 14.0,
+                    letterSpacing: 0.6,
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),
