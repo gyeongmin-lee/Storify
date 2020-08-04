@@ -107,8 +107,7 @@ class _PlayerState extends State<PlayerPage> {
             final tracks = snapshot.data;
             final currentTrack =
                 tracks.length != 0 ? tracks[_currentTrackIndex] : null;
-            _debouncer.run(() => _loadArtistImage(
-                currentTrack)); // TODO FIX SETSTATE AFTER DISPOSE ERROR
+            _debouncer.run(() => _loadArtistImage(currentTrack));
 
             return Stack(
               children: [
