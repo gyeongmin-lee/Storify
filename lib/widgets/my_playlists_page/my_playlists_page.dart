@@ -12,17 +12,17 @@ import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
 import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
-import 'package:storify/widgets/my_playlist_page/playlist_item.dart';
+import 'package:storify/widgets/my_playlists_page/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
 
-class MyPlaylistPage extends StatefulWidget {
+class MyPlaylistsPage extends StatefulWidget {
   static const routeName = '/my_playlist';
 
   @override
-  _MyPlaylistPageState createState() => _MyPlaylistPageState();
+  _MyPlaylistsPageState createState() => _MyPlaylistsPageState();
 }
 
-class _MyPlaylistPageState extends State<MyPlaylistPage> {
+class _MyPlaylistsPageState extends State<MyPlaylistsPage> {
   Future<List<Playlist>> _futurePlaylists;
   List<Playlist> _playlists = [];
   int _offset = 0, _limit = Constants.playlistsLimit;
