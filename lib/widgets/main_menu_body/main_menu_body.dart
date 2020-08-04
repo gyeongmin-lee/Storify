@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
-import 'package:storify/widgets/my_playlists_page/my_playlists_page_bloc_based.dart';
+import 'package:storify/widgets/my_playlists_page/my_playlists_page.dart';
 
 class MainMenuBody extends StatelessWidget {
   const MainMenuBody({Key key, @required this.auth}) : super(key: key);
@@ -40,8 +40,7 @@ class MainMenuBody extends StatelessWidget {
               CustomFlatTextButton(
                 text: 'MY PLAYLISTS',
                 onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                    MyPlaylistsPageBlocBased.routeName,
-                    (Route<dynamic> route) => false),
+                    MyPlaylistsPage.routeName, (Route<dynamic> route) => false),
               ),
               SizedBox(
                 height: 16.0,

@@ -1,14 +1,18 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:storify/blocs/blocs.dart';
+import 'package:storify/blocs/my_playlists/my_playlists.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
-import 'package:storify/widgets/my_playlists_page/my_playlists_page_bloc_based.dart';
+import 'package:storify/widgets/my_playlists_page/my_playlists_page.dart';
 import 'package:storify/widgets/sign_in_page/sign_in_page.dart';
 
 Future main() async {
   await DotEnv().load('.env');
+  Bloc.observer = LoggerBlocObserver();
   runApp(MyApp());
 }
 
@@ -45,8 +49,9 @@ class MyApp extends StatelessWidget {
           ],
           routes: {
             SignInPage.routeName: (context) => SignInPage(),
-            MyPlaylistsPageBlocBased.routeName: (context) =>
-                MyPlaylistsPageBlocBased(),
+            MyPlaylistsPage.routeName: (context) => BlocProvider(
+                create: (_) => MyPlaylistsBloc()..add(MyPlaylistsFetched()),
+                child: MyPlaylistsPage()),
           }),
     );
   }
