@@ -129,8 +129,11 @@ class _MyPlaylistsPageState extends State<MyPlaylistsPage> {
                             onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => PlayerPage(
-                                            playlist: playlist,
+                                      builder: (context) => BlocProvider(
+                                            create: (_) => PlayerTracksBloc(
+                                              playlist: playlist,
+                                            )..add(PlayerTracksFetched()),
+                                            child: PlayerPage(),
                                           )),
                                 ));
                       },

@@ -2,15 +2,15 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/style.dart';
-import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/services/firebase_db.dart';
-import 'package:storify/services/spotify_api.dart';
-import 'package:storify/utils/debouncer.dart';
 import 'package:storify/widgets/_common/custom_auto_size_text.dart';
+import 'package:storify/widgets/_common/custom_image_provider.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/_common/overlay_menu.dart';
@@ -23,67 +23,43 @@ import 'package:storify/widgets/player_page/player_progress_bar.dart';
 // TODO Refactor into smaller, reusable widgets
 
 class PlayerPage extends StatefulWidget {
-  const PlayerPage({Key key, @required this.playlist}) : super(key: key);
-  final Playlist playlist;
-
   @override
   _PlayerState createState() => _PlayerState();
 }
 
 class _PlayerState extends State<PlayerPage> {
-  Future<List<Track>> _futureTracks;
-  int _currentTrackIndex = 0;
-  String _currentTrackArtistImageUrl;
-  Debouncer _debouncer = Debouncer(milliseconds: Constants.debounceMillisecond);
+  PlayerTracksBloc _playerTracksBloc;
   FirebaseDB database = FirebaseDB();
 
   @override
   void initState() {
     super.initState();
-    _futureTracks = SpotifyApi.getTracks(widget.playlist.id);
+    _playerTracksBloc = BlocProvider.of<PlayerTracksBloc>(context);
   }
 
-  @override
-  void dispose() {
-    _debouncer.cancel();
-    super.dispose();
+  void _handleTrackChanged(int index) {
+    _playerTracksBloc.add(PlayerTracksTrackSelected(selectedTrackIndex: index));
   }
 
-  Future<void> _loadArtistImage(Track currentTrack) async {
-    if (mounted) {
-      final newImageUrl =
-          await SpotifyApi.getArtistImageUrl(currentTrack.artists[0].href);
-      setState(() {
-        _currentTrackArtistImageUrl = newImageUrl;
-      });
-    }
-  }
-
-  Future<void> _handleTrackChanged(int index, List<Track> tracks) async {
-    setState(() {
-      _currentTrackArtistImageUrl = null;
-      _currentTrackIndex = index;
-    });
-  }
-
-  void _onEditOrAddPressed(String storyText, Track currentTrack) {
+  void _onEditOrAddPressed(
+      String storyText, Track currentTrack, Playlist playlist) {
     EditStoryPage.show(
       context,
       track: currentTrack,
       originalStoryText: storyText,
       onStoryTextEdited: (String newText) => _handleEditStoryText(
-        newStoryText: newText,
-        currentTrack: currentTrack,
-      ),
+          newStoryText: newText,
+          currentTrack: currentTrack,
+          playlist: playlist),
     );
   }
 
-  Future<void> _handleEditStoryText({
-    @required String newStoryText,
-    @required Track currentTrack,
-  }) async {
+  Future<void> _handleEditStoryText(
+      {@required String newStoryText,
+      @required Track currentTrack,
+      @required Playlist playlist}) async {
     try {
-      final playlistId = widget.playlist.id;
+      final playlistId = playlist.id;
       final trackId = currentTrack.id;
       await database.setStory(newStoryText, playlistId, trackId);
       CustomToast.showTextToast(text: 'Updated', toastType: ToastType.success);
@@ -100,74 +76,69 @@ class _PlayerState extends State<PlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _futureTracks,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final tracks = snapshot.data;
-            final currentTrack =
-                tracks.length != 0 ? tracks[_currentTrackIndex] : null;
-            _debouncer.run(() => _loadArtistImage(currentTrack));
+    return BlocBuilder<PlayerTracksBloc, PlayerTracksState>(
+        builder: (context, state) {
+      if (state is PlayerTracksInitial) {
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          backgroundColor: Colors.transparent,
+          appBar: _buildAppBar(context, state.playlist),
+          body: Center(
+            child: StatusIndicator(
+              message: 'Loading Tracks',
+              status: Status.loading,
+            ),
+          ),
+        );
+      }
+      if (state is PlayerTracksFailure) {
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          backgroundColor: Colors.transparent,
+          appBar: _buildAppBar(context, state.playlist),
+          body: Center(
+            child: StatusIndicator(
+              message: 'Failed to load tracks',
+              status: Status.error,
+            ),
+          ),
+        );
+      }
 
-            return Stack(
-              children: [
-                Image.network(
-                  currentTrack.albumImageUrl,
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
-                ),
-                Container(
-                  decoration:
-                      BoxDecoration(color: Colors.black.withOpacity(0.7)),
-                ),
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 35.0, sigmaY: 35.0),
-                  child: Scaffold(
-                    extendBodyBehindAppBar: true,
-                    backgroundColor: Colors.transparent,
-                    appBar: _buildAppBar(context),
-                    body: _buildContent(
-                      tracks,
-                      currentTrack,
-                    ),
-                  ),
-                )
-              ],
-            );
-          } else if (snapshot.hasError) {
-            print(snapshot.error);
-            return Scaffold(
-              extendBodyBehindAppBar: true,
-              backgroundColor: Colors.transparent,
-              appBar: _buildAppBar(context),
-              body: Center(
-                child: StatusIndicator(
-                  message: 'Failed to load tracks',
-                  status: Status.error,
-                ),
+      if (state is PlayerTracksSuccess) {
+        return Stack(
+          children: [
+            Image.network(
+              state.currentTrack.albumImageUrl,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
+            ),
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 35.0, sigmaY: 35.0),
+              child: Scaffold(
+                extendBodyBehindAppBar: true,
+                backgroundColor: Colors.transparent,
+                appBar: _buildAppBar(context, state.playlist),
+                body: _buildContent(state.playlist, state.tracks,
+                    state.currentTrack, state.currentTrackArtistImageUrl),
               ),
-            );
-          } else {
-            return Scaffold(
-              extendBodyBehindAppBar: true,
-              backgroundColor: Colors.transparent,
-              appBar: _buildAppBar(context),
-              body: Center(
-                child: StatusIndicator(
-                  message: 'Loading Tracks',
-                  status: Status.loading,
-                ),
-              ),
-            );
-          }
-        });
+            )
+          ],
+        );
+      }
+
+      return Container();
+    });
   }
 
-  AppBar _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar(BuildContext context, Playlist playlist) {
     return AppBar(
       title: Text(
-        widget.playlist.name,
+        playlist.name,
         style: TextStyles.appBarTitle.copyWith(letterSpacing: 0),
       ),
       centerTitle: true,
@@ -184,19 +155,20 @@ class _PlayerState extends State<PlayerPage> {
           ),
           onPressed: () => OverlayMenu.show(context,
               menuBody: MoreInfoMenuBody(
-                playlist: widget.playlist,
+                playlist: playlist,
               )),
         ),
       ],
     );
   }
 
-  Widget _buildContent(List<Track> tracks, Track currentTrack) {
+  Widget _buildContent(Playlist playlist, List<Track> tracks,
+      Track currentTrack, String artistImageUrl) {
     return Padding(
       padding: const EdgeInsets.only(top: 80.0, bottom: 36.0),
       child: StreamBuilder(
           stream: database.storyStream(
-              playlistId: widget.playlist.id, trackId: currentTrack.id),
+              playlistId: playlist.id, trackId: currentTrack.id),
           builder: (context, snapshot) {
             final storyText = snapshot?.data ?? '';
             return Column(
@@ -204,7 +176,8 @@ class _PlayerState extends State<PlayerPage> {
               children: <Widget>[
                 Expanded(
                   child: SingleChildScrollView(
-                    child: _buildTrackInfo(storyText, currentTrack),
+                    child: _buildTrackInfo(
+                        storyText, currentTrack, artistImageUrl),
                   ),
                 ),
                 Column(children: [
@@ -216,8 +189,8 @@ class _PlayerState extends State<PlayerPage> {
                       size: ButtonSize.small,
                       buttonText:
                           storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
-                      onPressed: () =>
-                          _onEditOrAddPressed(storyText, currentTrack),
+                      onPressed: () => _onEditOrAddPressed(
+                          storyText, currentTrack, playlist),
                     ),
                     SizedBox(
                       height: 16.0,
@@ -228,8 +201,7 @@ class _PlayerState extends State<PlayerPage> {
                     children: <Widget>[
                       PlayerCarousel(
                         tracks: tracks,
-                        onPageChanged: (index, _) =>
-                            _handleTrackChanged(index, tracks),
+                        onPageChanged: (index, _) => _handleTrackChanged(index),
                       ),
                       PlayerProgressBar(
                         totalValue: 360,
@@ -245,7 +217,8 @@ class _PlayerState extends State<PlayerPage> {
     );
   }
 
-  Column _buildTrackInfo(String storyText, Track currentTrack) {
+  Column _buildTrackInfo(
+      String storyText, Track currentTrack, String artistImageUrl) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -255,9 +228,7 @@ class _PlayerState extends State<PlayerPage> {
         CircleAvatar(
             radius: 54.0,
             backgroundColor: Colors.transparent,
-            backgroundImage: _currentTrackArtistImageUrl != null
-                ? CachedNetworkImageProvider(_currentTrackArtistImageUrl)
-                : null),
+            backgroundImage: CustomImageProvider.cachedImage(artistImageUrl)),
         SizedBox(
           height: 8.0,
         ),
