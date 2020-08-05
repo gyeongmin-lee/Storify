@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
+import 'package:storify/widgets/_common/custom_image_provider.dart';
 
 class PlayListItem extends StatelessWidget {
   const PlayListItem(
@@ -22,8 +22,7 @@ class PlayListItem extends StatelessWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage:
-            imageUrl != null ? CachedNetworkImageProvider(imageUrl) : null,
+        backgroundImage: CustomImageProvider.cachedImage(imageUrl),
         backgroundColor: Colors.transparent,
       ),
       title: Text(title,
