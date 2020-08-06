@@ -149,12 +149,14 @@ class _PlayerState extends State<PlayerPage> {
                     children: <Widget>[
                       PlayerCarousel(
                         tracks: tracks,
-                        onPageChanged: (index, _) => _handleTrackChanged(index),
+                        onPageChanged: _handleTrackChanged,
                       ),
-                      PlayerProgressBar(
-                        totalValue: 360,
-                        initialValue: 270,
-                        size: 72.0,
+                      IgnorePointer(
+                        child: PlayerProgressBar(
+                          totalValue: 360,
+                          initialValue: 270,
+                          size: 72.0,
+                        ),
                       ),
                     ],
                   )
