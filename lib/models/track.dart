@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:storify/models/artist.dart';
 
-class Track {
+class Track extends Equatable {
   Track({
     @required this.name,
     @required this.id,
@@ -26,4 +27,7 @@ class Track {
     return Track(
         name: name, id: id, artists: artists, albumImageUrl: albumImageUrl);
   }
+
+  @override
+  List<Object> get props => [name, id, artists, albumImageUrl];
 }

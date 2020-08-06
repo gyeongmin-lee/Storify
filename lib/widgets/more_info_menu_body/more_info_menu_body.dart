@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
+import 'package:storify/widgets/_common/custom_image_provider.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -63,9 +63,8 @@ class MoreInfoMenuBody extends StatelessWidget {
         CircleAvatar(
             radius: 54.0,
             backgroundColor: Colors.transparent,
-            backgroundImage: playlist.playlistImageUrl != null
-                ? CachedNetworkImageProvider(playlist.playlistImageUrl)
-                : null),
+            backgroundImage:
+                CustomImageProvider.cachedImage(playlist.playlistImageUrl)),
         SizedBox(
           height: 16.0,
         ),
@@ -89,9 +88,8 @@ class MoreInfoMenuBody extends StatelessWidget {
             CircleAvatar(
                 radius: 14.0,
                 backgroundColor: Colors.transparent,
-                backgroundImage: playlist.owner.avatarImageUrl != null
-                    ? CachedNetworkImageProvider(playlist.owner.avatarImageUrl)
-                    : null),
+                backgroundImage: CustomImageProvider.cachedImage(
+                    playlist.owner.avatarImageUrl)),
             SizedBox(
               width: 8.0,
             ),

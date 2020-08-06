@@ -1,9 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-class Artist {
+class Artist extends Equatable {
   Artist({@required this.name, this.href});
   final String name;
-  String artistImageUrl;
   final String href;
 
   factory Artist.fromJson(Map<String, dynamic> json) {
@@ -11,4 +11,7 @@ class Artist {
     final href = json['href'];
     return Artist(name: name, href: href);
   }
+
+  @override
+  List<Object> get props => [name, href];
 }
