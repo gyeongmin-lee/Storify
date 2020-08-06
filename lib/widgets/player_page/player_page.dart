@@ -15,6 +15,7 @@ import 'package:storify/widgets/player_page/player_page_error.dart';
 import 'package:storify/widgets/player_page/player_page_loading.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
 import 'package:storify/widgets/player_page/player_track_info.dart';
+import 'package:storify/constants/values.dart' as Constants;
 
 class PlayerPage extends StatefulWidget {
   @override
@@ -24,14 +25,18 @@ class PlayerPage extends StatefulWidget {
 class _PlayerState extends State<PlayerPage> {
   PlayerTracksBloc _playerTracksBloc;
   FirebaseDB database = FirebaseDB();
+  ScrollController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
     _playerTracksBloc = BlocProvider.of<PlayerTracksBloc>(context);
   }
 
   void _handleTrackChanged(int index) {
+    _controller.animateTo(0,
+        duration: Constants.scrollResetDuration, curve: Curves.ease);
     _playerTracksBloc.add(PlayerTracksTrackSelected(selectedTrackIndex: index));
   }
 
@@ -127,6 +132,7 @@ class _PlayerState extends State<PlayerPage> {
                   storyText: storyText,
                   artistImageUrl: artistImageUrl,
                   currentTrack: currentTrack,
+                  controller: _controller,
                 ),
                 Column(children: [
                   Column(children: [

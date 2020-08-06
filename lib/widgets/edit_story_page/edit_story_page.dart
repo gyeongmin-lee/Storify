@@ -5,6 +5,8 @@ import 'package:storify/constants/style.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/overlay_loader.dart';
+import 'package:storify/constants/values.dart' as Constants;
+import 'package:storify/widgets/edit_story_page/text_counter.dart';
 
 class EditStoryPage extends StatefulWidget {
   const EditStoryPage(
@@ -52,19 +54,22 @@ class EditStoryPage extends StatefulWidget {
 }
 
 class _EditStoryPageState extends State<EditStoryPage> {
-  String _storyText;
+  TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    setState(() => _storyText = widget.originalStoryText ?? '');
+    _controller = TextEditingController(text: widget.originalStoryText ?? '');
   }
 
   Future<void> _onSubmitted(BuildContext context) async {
     OverlayLoader.show(loadingText: 'UPDATING');
-    await widget.onStoryTextEdited(_storyText);
+    await widget.onStoryTextEdited(_controller.text);
     Navigator.of(context).pop();
   }
+
+  bool get _shouldDisplayCounter =>
+      _controller.text.length > Constants.displayCounterWhenLength;
 
   @override
   Widget build(BuildContext context) {
@@ -83,18 +88,27 @@ class _EditStoryPageState extends State<EditStoryPage> {
               height: double.infinity,
               width: double.infinity,
               child: Padding(
-                padding: const EdgeInsets.only(right: 16.0, left: 16.0),
-                child: TextField(
-                    // TODO Validation
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: TextField(
                     keyboardType: TextInputType.multiline,
-                    maxLength: null,
+                    maxLength: Constants.storyTextMaxLength,
                     maxLines: null,
                     autofocus: true,
-                    controller: TextEditingController(text: _storyText),
+                    controller: _controller,
                     style: TextStyles.secondary.copyWith(fontSize: 18.0),
+                    onChanged: (_) => setState(() {}),
                     decoration: InputDecoration(
                         hintText: 'Add your description for this track',
                         border: InputBorder.none,
+                        counter: _shouldDisplayCounter
+                            ? TextCounter(
+                                textLength: _controller.text.length,
+                                maxLength: Constants.storyTextMaxLength,
+                              )
+                            : null,
+                        counterText: '',
+                        contentPadding: EdgeInsets.only(
+                            bottom: 4.0, left: 16.0, right: 16.0, top: 16.0),
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         errorBorder: InputBorder.none,
@@ -102,8 +116,7 @@ class _EditStoryPageState extends State<EditStoryPage> {
                         hintStyle: TextStyle(
                             color: Colors.white12,
                             fontWeight: FontWeight.w300)),
-                    onChanged: (storyText) => _storyText = storyText),
-              ),
+                  )),
             ),
           ),
         )

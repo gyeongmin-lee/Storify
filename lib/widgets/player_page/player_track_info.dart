@@ -10,11 +10,13 @@ class PlayerTrackInfo extends StatelessWidget {
       {Key key,
       @required this.storyText,
       @required this.currentTrack,
-      @required this.artistImageUrl})
+      @required this.artistImageUrl,
+      @required this.controller})
       : super(key: key);
   final String storyText;
   final Track currentTrack;
   final String artistImageUrl;
+  final ScrollController controller;
 
   String _artistNames(List<Artist> artists) =>
       artists.map((artist) => artist.name).join(', ');
@@ -23,6 +25,7 @@ class PlayerTrackInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: SingleChildScrollView(
+        controller: controller,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
