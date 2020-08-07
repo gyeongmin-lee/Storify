@@ -10,7 +10,9 @@ class CustomToast {
       Icons.error,
       color: Colors.red,
     ),
-    ToastType.warning: Icon(Icons.warning, color: Colors.orange),
+    ToastType.warning: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4.0),
+        child: Icon(Icons.warning, color: Colors.orange, size: 16.0)),
     ToastType.info: Icon(Icons.info, color: CustomColors.primaryTextColor),
     ToastType.success: Icon(Icons.check_circle, color: Colors.green),
   };

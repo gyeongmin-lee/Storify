@@ -2,7 +2,8 @@ class APIPath {
   static List<String> _scopes = [
     'user-read-private',
     'user-read-email',
-    'playlist-read-private'
+    'playlist-read-private',
+    'user-modify-playback-state'
   ];
 
   static String requestAuthorization(
@@ -19,4 +20,5 @@ class APIPath {
       'https://api.spotify.com/v1/playlists/$playlistId/tracks?fields=items(track(id,name,artists,album(images)))';
   static String story(String playlistId, String trackId) =>
       'playlists/$playlistId/tracks/$trackId';
+  static String play = 'https://api.spotify.com/v1/me/player/play';
 }

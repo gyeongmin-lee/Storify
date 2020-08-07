@@ -7,11 +7,13 @@ class PlayerProgressBar extends StatelessWidget {
       @required this.totalValue,
       @required this.initialValue,
       this.onChangeEnd,
-      @required this.size})
+      @required this.size,
+      this.innerWidget})
       : super(key: key);
   final double totalValue;
   final double initialValue;
   final double size;
+  final Widget innerWidget;
   final Function(double) onChangeEnd;
 
   @override
@@ -32,7 +34,7 @@ class PlayerProgressBar extends StatelessWidget {
           customWidths:
               CustomSliderWidths(trackWidth: 3.0, progressBarWidth: 6.0)),
       onChangeEnd: onChangeEnd,
-      innerWidget: (percentage) => Container(),
+      innerWidget: (_) => innerWidget,
     );
   }
 }

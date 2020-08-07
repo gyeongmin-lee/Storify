@@ -13,6 +13,10 @@ import 'package:storify/services/spotify_interceptor.dart';
 
 typedef NestedApiPathBuilder<T> = String Function(T listItem);
 
+class PremiumRequiredException implements Exception {}
+
+class NoActiveDeviceFoundException implements Exception {}
+
 class SpotifyApi {
   static Client client = HttpClientWithInterceptor.build(interceptors: [
     SpotifyInterceptor(),
@@ -96,6 +100,28 @@ class SpotifyApi {
       throw Exception(
           'Failed to get artist image url with status code ${response.statusCode}');
     }
+  }
+
+  static Future<void> play(
+      {@required String playlistId,
+      @required String trackId,
+      int positionMs = 0}) async {
+    final response = await client.put(APIPath.play,
+        body: json.encode({
+          'context_uri': 'spotify:playlist:$playlistId',
+          'offset': {'uri': 'spotify:track:$trackId'},
+          'position_ms': '$positionMs'
+        }));
+    print(trackId);
+
+    if (response.statusCode == 204) return;
+    if (response.statusCode == 403) {
+      print(response);
+      final reason = json.decode(response.body)['error']['reason'];
+      if (reason == 'PREMIUM_REQUIRED ') throw PremiumRequiredException();
+    }
+    ;
+    if (response.statusCode == 404) throw NoActiveDeviceFoundException();
   }
 
   static Future _expandNestedParam(

@@ -6,6 +6,7 @@ import 'package:storify/blocs/blocs.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/services/firebase_db.dart';
+import 'package:storify/services/spotify_api.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
@@ -13,6 +14,7 @@ import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_page_app_bar.dart';
 import 'package:storify/widgets/player_page/player_page_error.dart';
 import 'package:storify/widgets/player_page/player_page_loading.dart';
+import 'package:storify/widgets/player_page/player_play_button.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
 import 'package:storify/widgets/player_page/player_track_info.dart';
 import 'package:storify/constants/values.dart' as Constants;
@@ -51,6 +53,20 @@ class _PlayerState extends State<PlayerPage> {
           currentTrack: currentTrack,
           playlist: playlist),
     );
+  }
+
+  Future<void> _onPlayButtonTapped(String playlistId, String trackId) async {
+    try {
+      await SpotifyApi.play(playlistId: playlistId, trackId: trackId);
+    } on NoActiveDeviceFoundException catch (_) {
+      CustomToast.showTextToast(
+          text: 'Play any track in Spotify app \nto activate this feature',
+          toastType: ToastType.warning);
+    } on PremiumRequiredException catch (_) {
+      CustomToast.showTextToast(
+          text: 'You must be a Spotify premium user',
+          toastType: ToastType.error);
+    }
   }
 
   Future<void> _handleEditStoryText(
@@ -156,12 +172,17 @@ class _PlayerState extends State<PlayerPage> {
                       PlayerCarousel(
                         tracks: tracks,
                         onPageChanged: _handleTrackChanged,
+                        onPlayButtonTap: () =>
+                            _onPlayButtonTapped(playlist.id, currentTrack.id),
                       ),
                       IgnorePointer(
                         child: PlayerProgressBar(
                           totalValue: 360,
                           initialValue: 270,
                           size: 72.0,
+                          innerWidget: PlayerPlayButton(
+                            isPlaying: false,
+                          ),
                         ),
                       ),
                     ],
