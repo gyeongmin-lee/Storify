@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:storify/blocs/blocs.dart';
+import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
-import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/spotify_api.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
@@ -17,7 +17,6 @@ import 'package:storify/widgets/player_page/player_page_loading.dart';
 import 'package:storify/widgets/player_page/player_play_button.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
 import 'package:storify/widgets/player_page/player_track_info.dart';
-import 'package:storify/constants/values.dart' as Constants;
 
 class PlayerPage extends StatefulWidget {
   @override
