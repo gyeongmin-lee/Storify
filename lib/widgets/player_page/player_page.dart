@@ -26,7 +26,6 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerState extends State<PlayerPage> {
   PlayerTracksBloc _playerTracksBloc;
-  FirebaseDB database = FirebaseDB();
   ScrollController _controller;
 
   @override
@@ -44,15 +43,10 @@ class _PlayerState extends State<PlayerPage> {
 
   void _onEditOrAddPressed(
       String storyText, Track currentTrack, Playlist playlist) {
-    EditStoryPage.show(
-      context,
-      track: currentTrack,
-      originalStoryText: storyText,
-      onStoryTextEdited: (String newText) => _handleEditStoryText(
-          newStoryText: newText,
-          currentTrack: currentTrack,
-          playlist: playlist),
-    );
+    EditStoryPage.show(context,
+        track: currentTrack,
+        originalStoryText: storyText,
+        onStoryTextEdited: _handleEditStoryText);
   }
 
   Future<void> _onPlayButtonTapped(String playlistId, String trackId) async {
@@ -69,20 +63,8 @@ class _PlayerState extends State<PlayerPage> {
     }
   }
 
-  Future<void> _handleEditStoryText(
-      {@required String newStoryText,
-      @required Track currentTrack,
-      @required Playlist playlist}) async {
-    try {
-      final playlistId = playlist.id;
-      final trackId = currentTrack.id;
-      await database.setStory(newStoryText, playlistId, trackId);
-      CustomToast.showTextToast(text: 'Updated', toastType: ToastType.success);
-    } catch (e) {
-      print(e);
-      CustomToast.showTextToast(
-          text: 'Failed to update story', toastType: ToastType.error);
-    }
+  Future<void> _handleEditStoryText(String newStoryText) async {
+    _playerTracksBloc.add(PlayerTrackStoryTextEdited(newStoryText));
   }
 
   @override
@@ -134,63 +116,57 @@ class _PlayerState extends State<PlayerPage> {
     final currentTrack = state.currentTrack;
     final artistImageUrl = state.currentTrackArtistImageUrl;
     final tracks = state.tracks;
+    final storyText = state.storyText ?? '';
     return Padding(
       padding: const EdgeInsets.only(top: 80.0, bottom: 36.0),
-      child: StreamBuilder(
-          stream: database.storyStream(
-              playlistId: playlist.id, trackId: currentTrack.id),
-          builder: (context, snapshot) {
-            final storyText = snapshot?.data ?? '';
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          PlayerTrackInfo(
+            storyText: storyText,
+            artistImageUrl: artistImageUrl,
+            currentTrack: currentTrack,
+            controller: _controller,
+          ),
+          Column(children: [
+            Column(children: [
+              SizedBox(
+                height: 8.0,
+              ),
+              CustomRoundedButton(
+                size: ButtonSize.small,
+                buttonText: storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
+                onPressed: () =>
+                    _onEditOrAddPressed(storyText, currentTrack, playlist),
+              ),
+              SizedBox(
+                height: 16.0,
+              )
+            ]),
+            Stack(
+              alignment: AlignmentDirectional.center,
               children: <Widget>[
-                PlayerTrackInfo(
-                  storyText: storyText,
-                  artistImageUrl: artistImageUrl,
-                  currentTrack: currentTrack,
-                  controller: _controller,
+                PlayerCarousel(
+                  tracks: tracks,
+                  onPageChanged: _handleTrackChanged,
+                  onPlayButtonTap: () =>
+                      _onPlayButtonTapped(playlist.id, currentTrack.id),
                 ),
-                Column(children: [
-                  Column(children: [
-                    SizedBox(
-                      height: 8.0,
+                IgnorePointer(
+                  child: PlayerProgressBar(
+                    totalValue: 360,
+                    initialValue: 270,
+                    size: 72.0,
+                    innerWidget: PlayerPlayButton(
+                      isPlaying: false,
                     ),
-                    CustomRoundedButton(
-                      size: ButtonSize.small,
-                      buttonText:
-                          storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
-                      onPressed: () => _onEditOrAddPressed(
-                          storyText, currentTrack, playlist),
-                    ),
-                    SizedBox(
-                      height: 16.0,
-                    )
-                  ]),
-                  Stack(
-                    alignment: AlignmentDirectional.center,
-                    children: <Widget>[
-                      PlayerCarousel(
-                        tracks: tracks,
-                        onPageChanged: _handleTrackChanged,
-                        onPlayButtonTap: () =>
-                            _onPlayButtonTapped(playlist.id, currentTrack.id),
-                      ),
-                      IgnorePointer(
-                        child: PlayerProgressBar(
-                          totalValue: 360,
-                          initialValue: 270,
-                          size: 72.0,
-                          innerWidget: PlayerPlayButton(
-                            isPlaying: false,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                ]),
+                  ),
+                ),
               ],
-            );
-          }),
+            )
+          ]),
+        ],
+      ),
     );
   }
 }

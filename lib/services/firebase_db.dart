@@ -14,5 +14,5 @@ class FirebaseDB {
           {@required String playlistId, @required String trackId}) =>
       _service.documentStream(
           path: APIPath.story(playlistId, trackId),
-          builder: (data, _) => (data['text'] as String));
+          builder: (data, _) => data != null ? (data['text'] as String) : '');
 }

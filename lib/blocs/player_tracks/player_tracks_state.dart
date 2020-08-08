@@ -24,27 +24,31 @@ class PlayerTracksSuccess extends PlayerTracksState {
   final Track currentTrack;
   final Playlist playlist;
   final String currentTrackArtistImageUrl;
+  final String storyText;
 
-  PlayerTracksSuccess(
-      {@required this.playlist,
-      @required this.tracks,
-      @required this.currentTrack,
-      this.currentTrackArtistImageUrl})
-      : super(playlist: playlist);
+  PlayerTracksSuccess({
+    @required this.playlist,
+    @required this.tracks,
+    @required this.currentTrack,
+    this.currentTrackArtistImageUrl = '',
+    this.storyText,
+  }) : super(playlist: playlist);
 
   PlayerTracksSuccess copyWith(
           {List<Track> tracks,
           Playlist playlist,
           Track currentTrack,
-          String currentTrackArtistImageUrl}) =>
+          String currentTrackArtistImageUrl,
+          String storyText}) =>
       PlayerTracksSuccess(
           tracks: tracks ?? this.tracks,
           playlist: playlist ?? this.playlist,
           currentTrack: currentTrack ?? this.currentTrack,
           currentTrackArtistImageUrl:
-              currentTrackArtistImageUrl ?? this.currentTrackArtistImageUrl);
+              currentTrackArtistImageUrl ?? this.currentTrackArtistImageUrl,
+          storyText: storyText ?? this.storyText);
 
   @override
   List<Object> get props =>
-      [playlist, currentTrack, currentTrackArtistImageUrl];
+      [playlist, currentTrack, currentTrackArtistImageUrl, tracks, storyText];
 }
