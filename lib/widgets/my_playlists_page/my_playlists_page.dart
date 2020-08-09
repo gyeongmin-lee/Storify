@@ -133,7 +133,16 @@ class _MyPlaylistsPageState extends State<MyPlaylistsPage> {
                                             create: (_) => PlayerTracksBloc(
                                               playlist: playlist,
                                             )..add(PlayerTracksFetched()),
-                                            child: PlayerPage(),
+                                            child: Builder(builder: (context) {
+                                              return BlocProvider(
+                                                  create: (_) => CurrentPlaybackBloc(
+                                                      playerTracksBloc: BlocProvider
+                                                          .of<PlayerTracksBloc>(
+                                                              context))
+                                                    ..add(
+                                                        CurrentPlaybackLoaded()),
+                                                  child: PlayerPage());
+                                            }),
                                           )),
                                 ));
                       },

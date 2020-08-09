@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:storify/blocs/blocs.dart';
 
 class LoggerBlocObserver extends BlocObserver {
   @override
   void onTransition(Bloc bloc, Transition transition) {
-    print('${bloc.runtimeType} $transition');
+    if (bloc.runtimeType != CurrentPlaybackBloc)
+      print('${bloc.runtimeType} $transition');
     super.onTransition(bloc, transition);
   }
 

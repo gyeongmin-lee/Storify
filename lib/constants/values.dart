@@ -8,3 +8,5 @@ const Duration carouselAnimationDuration = Duration(milliseconds: 250);
 const Duration scrollResetDuration = Duration(milliseconds: 250);
 const int storyTextMaxLength = 2048;
 const int displayCounterWhenLength = 1536;
+const Duration playerStatePollDuration = Duration(milliseconds: 1000);
+const Duration dialogAnimationDuration = Duration(milliseconds: 300);

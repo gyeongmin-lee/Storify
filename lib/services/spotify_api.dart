@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:http_interceptor/http_client_with_interceptor.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:storify/constants/values.dart' as Constants;
+import 'package:storify/models/playback.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/models/user.dart';
@@ -102,26 +103,65 @@ class SpotifyApi {
     }
   }
 
-  static Future<void> play(
-      {@required String playlistId,
-      @required String trackId,
-      int positionMs = 0}) async {
+  static Future<void> play({
+    @required String playlistId,
+    @required String trackId,
+    int positionMs = 0,
+  }) async {
     final response = await client.put(APIPath.play,
         body: json.encode({
           'context_uri': 'spotify:playlist:$playlistId',
           'offset': {'uri': 'spotify:track:$trackId'},
-          'position_ms': '$positionMs'
+          'position_ms': positionMs,
         }));
-    print(trackId);
 
     if (response.statusCode == 204) return;
     if (response.statusCode == 403) {
-      print(response);
       final reason = json.decode(response.body)['error']['reason'];
       if (reason == 'PREMIUM_REQUIRED ') throw PremiumRequiredException();
     }
-    ;
     if (response.statusCode == 404) throw NoActiveDeviceFoundException();
+  }
+
+  static Future<void> pause() async {
+    final response = await client.put(APIPath.pause);
+    if (response.statusCode == 204)
+      try {
+        final playback = await _getCurrentPlayback();
+        if (!playback.isPlaying)
+          return;
+        else
+          throw Exception();
+      } catch (_) {
+        throw Exception('Failed to pause');
+      }
+
+    if (response.statusCode == 403) {
+      final reason = json.decode(response.body)['error']['reason'];
+      if (reason == 'PREMIUM_REQUIRED ') throw PremiumRequiredException();
+    }
+    if (response.statusCode == 404) throw NoActiveDeviceFoundException();
+  }
+
+  static Future<Playback> _getCurrentPlayback() async {
+    final response = await client.get(APIPath.player);
+    if (response.statusCode == 200) {
+      return Playback.fromJson(json.decode(response.body));
+    } else {
+      throw Exception(
+          'Failed to get player state with status code ${response.statusCode}');
+    }
+  }
+
+  static Stream<Playback> getCurrentPlaybackStream() async* {
+    yield* Stream.periodic(Constants.playerStatePollDuration, (_) async {
+      try {
+        final currentPlayback = await _getCurrentPlayback();
+        return currentPlayback;
+      } catch (_) {
+        return null;
+      }
+    }).asyncMap((event) async => await event);
   }
 
   static Future _expandNestedParam(

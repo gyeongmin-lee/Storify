@@ -3,7 +3,8 @@ class APIPath {
     'user-read-private',
     'user-read-email',
     'playlist-read-private',
-    'user-modify-playback-state'
+    'user-modify-playback-state',
+    'user-read-playback-state'
   ];
 
   static String requestAuthorization(
@@ -17,8 +18,10 @@ class APIPath {
   static String getListOfPlaylists(int offset, int limit) =>
       'https://api.spotify.com/v1/me/playlists?limit=$limit&offset=$offset';
   static String getTracks(String playlistId) =>
-      'https://api.spotify.com/v1/playlists/$playlistId/tracks?fields=items(track(id,name,artists,album(images)))';
+      'https://api.spotify.com/v1/playlists/$playlistId/tracks?fields=items(track(id,name,artists,duration_ms,album(images)))';
   static String story(String playlistId, String trackId) =>
       'playlists/$playlistId/tracks/$trackId';
   static String play = 'https://api.spotify.com/v1/me/player/play';
+  static String pause = 'https://api.spotify.com/v1/me/player/pause';
+  static String player = 'https://api.spotify.com/v1/me/player';
 }
