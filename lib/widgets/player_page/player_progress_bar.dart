@@ -18,23 +18,25 @@ class PlayerProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SleekCircularSlider(
-      min: 0,
-      max: totalValue,
-      initialValue: initialValue,
-      appearance: CircularSliderAppearance(
-          customColors: CustomSliderColors(
-            dotColor: Colors.white,
-            progressBarColor: Colors.green,
-            trackColor: Colors.white38,
-          ),
-          size: size,
-          angleRange: 360.0,
-          startAngle: 0,
-          customWidths:
-              CustomSliderWidths(trackWidth: 3.0, progressBarWidth: 6.0)),
-      onChangeEnd: onChangeEnd,
-      innerWidget: (_) => innerWidget,
+    return IgnorePointer(
+      child: SleekCircularSlider(
+        min: 0,
+        max: totalValue,
+        initialValue: initialValue,
+        appearance: CircularSliderAppearance(
+            customColors: CustomSliderColors(
+              dotColor: Colors.green,
+              progressBarColor: Colors.green,
+              trackColor: Colors.white38,
+            ),
+            size: size,
+            angleRange: 360.0,
+            startAngle: 0,
+            customWidths:
+                CustomSliderWidths(trackWidth: 3.0, progressBarWidth: 6.0)),
+        onChangeEnd: onChangeEnd,
+        innerWidget: (_) => innerWidget,
+      ),
     );
   }
 }

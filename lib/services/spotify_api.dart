@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:http_interceptor/http_client_with_interceptor.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:storify/constants/values.dart' as Constants;
-import 'package:storify/models/current_playback.dart';
+import 'package:storify/models/playback.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/models/user.dart';
@@ -121,19 +121,24 @@ class SpotifyApi {
     if (response.statusCode == 404) throw NoActiveDeviceFoundException();
   }
 
-  static Future<CurrentPlayback> _getCurrentPlayback() async {
+  static Future<Playback> _getCurrentPlayback() async {
     final response = await client.get(APIPath.player);
     if (response.statusCode == 200) {
-      return CurrentPlayback.fromJson(json.decode(response.body));
+      return Playback.fromJson(json.decode(response.body));
     } else {
       throw Exception(
           'Failed to get player state with status code ${response.statusCode}');
     }
   }
 
-  static Stream<CurrentPlayback> getCurrentPlaybackStream() async* {
-    yield* Stream.periodic(Constants.playerStatePollDuration, (_) {
-      return _getCurrentPlayback();
+  static Stream<Playback> getCurrentPlaybackStream() async* {
+    yield* Stream.periodic(Constants.playerStatePollDuration, (_) async {
+      try {
+        final currentPlayback = await _getCurrentPlayback();
+        return currentPlayback;
+      } catch (_) {
+        return null;
+      }
     }).asyncMap((event) async => await event);
   }
 

@@ -25,7 +25,10 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
         final currentTrack = tracks[0];
 
         yield PlayerTracksSuccess(
-            playlist: playlist, currentTrack: currentTrack, tracks: tracks);
+            playlist: playlist,
+            currentTrack: currentTrack,
+            tracks: tracks,
+            isAllDataLoaded: false);
         add(PlayerTrackStoryTextAndArtistImageUrlLoaded());
       } catch (_) {
         yield PlayerTracksFailure(playlist);
@@ -45,7 +48,8 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
             currentTrackArtistImageUrl: isArtistImageLoaded
                 ? currentState.currentTrackArtistImageUrl
                 : '',
-            storyText: '');
+            storyText: '',
+            isAllDataLoaded: false);
 
         add(PlayerTrackStoryTextAndArtistImageUrlLoaded());
       } catch (_) {
@@ -58,6 +62,7 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
       if (currentState.currentTrackArtistImageUrl.isEmpty)
         yield* _loadArtistImageUrl();
       yield* _loadStoryText();
+      yield* _completeLoad();
     }
 
     if (event is PlayerTrackStoryTextUpdated &&
@@ -99,6 +104,11 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
             playlistId: currentState.playlist.id,
             trackId: currentState.currentTrack.id)
         .listen((storyText) => add(PlayerTrackStoryTextUpdated(storyText)));
+  }
+
+  Stream<PlayerTracksState> _completeLoad() async* {
+    final PlayerTracksSuccess currentState = state;
+    yield currentState.copyWith(isAllDataLoaded: true);
   }
 
   @override

@@ -6,9 +6,7 @@ import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
-import 'package:storify/services/spotify_api.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
-import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_page_app_bar.dart';
@@ -25,6 +23,7 @@ class PlayerPage extends StatefulWidget {
 
 class _PlayerState extends State<PlayerPage> {
   PlayerTracksBloc _playerTracksBloc;
+  CurrentPlaybackBloc _currentPlaybackBloc;
   ScrollController _controller;
 
   @override
@@ -32,6 +31,7 @@ class _PlayerState extends State<PlayerPage> {
     super.initState();
     _controller = ScrollController();
     _playerTracksBloc = BlocProvider.of<PlayerTracksBloc>(context);
+    _currentPlaybackBloc = BlocProvider.of<CurrentPlaybackBloc>(context);
   }
 
   void _handleTrackChanged(int index) {
@@ -48,19 +48,8 @@ class _PlayerState extends State<PlayerPage> {
         onStoryTextEdited: _handleEditStoryText);
   }
 
-  Future<void> _onPlayButtonTapped(String playlistId, String trackId) async {
-    try {
-      await SpotifyApi.play(playlistId: playlistId, trackId: trackId);
-    } on NoActiveDeviceFoundException catch (_) {
-      // TODO show a dismissible popup instead of toast
-      CustomToast.showTextToast(
-          text: 'Play any track in Spotify app \nto activate this feature',
-          toastType: ToastType.warning);
-    } on PremiumRequiredException catch (_) {
-      CustomToast.showTextToast(
-          text: 'You must be a Spotify premium user',
-          toastType: ToastType.error);
-    }
+  Future<void> _onPlayButtonTapped() async {
+    _currentPlaybackBloc.add(CurrentPlaybackPlayed());
   }
 
   Future<void> _handleEditStoryText(String newStoryText) async {
@@ -69,46 +58,61 @@ class _PlayerState extends State<PlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlayerTracksBloc, PlayerTracksState>(
-        builder: (context, state) {
-      if (state is PlayerTracksInitial) {
-        return PlayerPageLoading(
-          playlist: state.playlist,
-        );
-      }
-      if (state is PlayerTracksFailure) {
-        return PlayerPageError(
-          playlist: state.playlist,
-        );
-      }
+    return BlocListener<PlayerTracksBloc, PlayerTracksState>(
+      listenWhen: (previous, current) {
+        if (previous is PlayerTracksSuccess && current is PlayerTracksSuccess) {
+          bool isPlayable =
+              !previous.isAllDataLoaded && current.isAllDataLoaded;
+          return isPlayable;
+        }
+        return false;
+      },
+      listener: (context, state) {
+        if (state is PlayerTracksSuccess && state.isAllDataLoaded) {
+          _currentPlaybackBloc.add(CurrentPlaybackTrackChanged());
+        }
+      },
+      child: BlocBuilder<PlayerTracksBloc, PlayerTracksState>(
+          builder: (context, state) {
+        if (state is PlayerTracksInitial) {
+          return PlayerPageLoading(
+            playlist: state.playlist,
+          );
+        }
+        if (state is PlayerTracksFailure) {
+          return PlayerPageError(
+            playlist: state.playlist,
+          );
+        }
 
-      if (state is PlayerTracksSuccess) {
-        return Stack(
-          children: [
-            Image.network(
-              state.currentTrack.albumImageUrl,
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            ),
-            Container(
-              decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
-            ),
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 35.0, sigmaY: 35.0),
-              child: Scaffold(
-                extendBodyBehindAppBar: true,
-                backgroundColor: Colors.transparent,
-                appBar: PlayerPageAppBar(playlist: state.playlist),
-                body: _buildContent(state),
+        if (state is PlayerTracksSuccess) {
+          return Stack(
+            children: [
+              Image.network(
+                state.currentTrack.albumImageUrl,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.cover,
               ),
-            )
-          ],
-        );
-      }
+              Container(
+                decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
+              ),
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 35.0, sigmaY: 35.0),
+                child: Scaffold(
+                  extendBodyBehindAppBar: true,
+                  backgroundColor: Colors.transparent,
+                  appBar: PlayerPageAppBar(playlist: state.playlist),
+                  body: _buildContent(state),
+                ),
+              )
+            ],
+          );
+        }
 
-      return Container();
-    });
+        return Container();
+      }),
+    );
   }
 
   Widget _buildContent(PlayerTracksSuccess state) {
@@ -147,25 +151,53 @@ class _PlayerState extends State<PlayerPage> {
               alignment: AlignmentDirectional.center,
               children: <Widget>[
                 PlayerCarousel(
-                  tracks: tracks,
-                  onPageChanged: _handleTrackChanged,
-                  onPlayButtonTap: () =>
-                      _onPlayButtonTapped(playlist.id, currentTrack.id),
-                ),
-                IgnorePointer(
-                  child: PlayerProgressBar(
-                    totalValue: 360,
-                    initialValue: 270,
-                    size: 72.0,
-                    innerWidget: PlayerPlayButton(
-                      isPlaying: false,
-                    ),
-                  ),
+                    tracks: tracks,
+                    onPageChanged: _handleTrackChanged,
+                    onPlayButtonTap: _onPlayButtonTapped),
+                BlocBuilder<CurrentPlaybackBloc, CurrentPlaybackState>(
+                  builder: (context, state) {
+                    if (state is CurrentPlaybackSuccess &&
+                        state.playback != null &&
+                        state.playback.trackId == currentTrack.id) {
+                      final currentPosition =
+                          state.playback.progressMs.toDouble();
+                      final totalDuration = currentTrack.durationMs.toDouble();
+                      if (currentPosition > totalDuration)
+                        return PlaceHolderPlayerProgressBar();
+                      return PlayerProgressBar(
+                        totalValue: totalDuration,
+                        initialValue: currentPosition,
+                        size: 72.0,
+                        innerWidget: PlayerPlayButton(
+                          isPlaying: state.playback.isPlaying,
+                        ),
+                      );
+                    }
+                    return PlaceHolderPlayerProgressBar();
+                  },
                 ),
               ],
             )
           ]),
         ],
+      ),
+    );
+  }
+}
+
+class PlaceHolderPlayerProgressBar extends StatelessWidget {
+  const PlaceHolderPlayerProgressBar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PlayerProgressBar(
+      totalValue: 360,
+      initialValue: 0,
+      size: 72.0,
+      innerWidget: PlayerPlayButton(
+        isPlaying: false,
       ),
     );
   }

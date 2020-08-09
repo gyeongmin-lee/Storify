@@ -18,7 +18,7 @@ class APIPath {
   static String getListOfPlaylists(int offset, int limit) =>
       'https://api.spotify.com/v1/me/playlists?limit=$limit&offset=$offset';
   static String getTracks(String playlistId) =>
-      'https://api.spotify.com/v1/playlists/$playlistId/tracks?fields=items(track(id,name,artists,album(images)))';
+      'https://api.spotify.com/v1/playlists/$playlistId/tracks?fields=items(track(id,name,artists,duration_ms,album(images)))';
   static String story(String playlistId, String trackId) =>
       'playlists/$playlistId/tracks/$trackId';
   static String play = 'https://api.spotify.com/v1/me/player/play';
