@@ -32,15 +32,21 @@ class CurrentPlaybackBloc
 
     if (event is CurrentPlaybackUpdated &&
         playerTrackState is PlayerTracksSuccess) {
-      yield CurrentPlaybackSuccess(event.playback);
+      if (event.playback == null) {
+        yield CurrentPlaybackEmpty();
+      } else {
+        yield CurrentPlaybackSuccess(event.playback);
+      }
     }
 
     if (event is CurrentPlaybackPlayed) {
       try {
-        if (playerTrackState is PlayerTracksSuccess)
+        if (playerTrackState is PlayerTracksSuccess) {
           await SpotifyApi.play(
               playlistId: playerTrackState.playlist.id,
-              trackId: playerTrackState.currentTrack.id);
+              trackId: playerTrackState.currentTrack.id,
+              positionMs: event.positionMs);
+        }
       } on NoActiveDeviceFoundException catch (_) {
         // TODO show a dismissible popup instead of toast
         CustomToast.showTextToast(
@@ -53,11 +59,26 @@ class CurrentPlaybackBloc
       }
     }
 
-    if (event is CurrentPlaybackTrackChanged) {
-      if (currentState is CurrentPlaybackSuccess &&
-          currentState.playback != null) {
-        if (currentState.playback.isPlaying) add(CurrentPlaybackPlayed());
+    if (event is CurrentPlaybackPaused) {
+      try {
+        if (playerTrackState is PlayerTracksSuccess) await SpotifyApi.pause();
+      } on PremiumRequiredException catch (_) {
+        CustomToast.showTextToast(
+            text: 'You must be a Spotify premium user',
+            toastType: ToastType.error);
+      } catch (_) {
+        CustomToast.showTextToast(
+            text: 'Failed to pause', toastType: ToastType.error);
       }
+    }
+
+    if (event is CurrentPlaybackTrackChanged &&
+        playerTrackState is PlayerTracksSuccess &&
+        currentState is CurrentPlaybackSuccess) {
+      final changedTrackNotBeingPlayed =
+          currentState.playback.trackId != playerTrackState.currentTrack.id;
+      if (currentState.playback.isPlaying && changedTrackNotBeingPlayed)
+        add(CurrentPlaybackPlayed());
     }
   }
 
@@ -67,10 +88,11 @@ class CurrentPlaybackBloc
     Stream<CurrentPlaybackEvent> events,
     TransitionFunction<CurrentPlaybackEvent, CurrentPlaybackState> transitionFn,
   ) {
-    final nonDebounceStream =
-        events.where((event) => event is! CurrentPlaybackPlayed);
+    final nonDebounceStream = events.where((event) =>
+        (event is! CurrentPlaybackPlayed && event is! CurrentPlaybackPaused));
     final debounceStream = events
-        .where((event) => event is CurrentPlaybackPlayed)
+        .where((event) =>
+            (event is CurrentPlaybackPlayed || event is CurrentPlaybackPaused))
         .debounceTime(Duration(milliseconds: Constants.debounceMillisecond));
     return super.transformEvents(
         MergeStream([nonDebounceStream, debounceStream]), transitionFn);

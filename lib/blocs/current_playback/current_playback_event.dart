@@ -8,7 +8,14 @@ abstract class CurrentPlaybackEvent extends Equatable {
 
 class CurrentPlaybackLoaded extends CurrentPlaybackEvent {}
 
-class CurrentPlaybackPlayed extends CurrentPlaybackEvent {}
+class CurrentPlaybackPlayed extends CurrentPlaybackEvent {
+  final int positionMs;
+
+  CurrentPlaybackPlayed({this.positionMs = 0});
+
+  @override
+  List<Object> get props => [positionMs];
+}
 
 class CurrentPlaybackUpdated extends CurrentPlaybackEvent {
   final Playback playback;
@@ -20,3 +27,5 @@ class CurrentPlaybackUpdated extends CurrentPlaybackEvent {
 }
 
 class CurrentPlaybackTrackChanged extends CurrentPlaybackEvent {}
+
+class CurrentPlaybackPaused extends CurrentPlaybackEvent {}

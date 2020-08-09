@@ -49,7 +49,26 @@ class _PlayerState extends State<PlayerPage> {
   }
 
   Future<void> _onPlayButtonTapped() async {
-    _currentPlaybackBloc.add(CurrentPlaybackPlayed());
+    final playbackState = _currentPlaybackBloc.state;
+    final playerTracksState = _playerTracksBloc.state;
+
+    if (playbackState is CurrentPlaybackEmpty) {
+      _currentPlaybackBloc.add(CurrentPlaybackPlayed());
+    } else if (playbackState is CurrentPlaybackSuccess) {
+      if (playerTracksState is PlayerTracksSuccess) {
+        final isCurrentlyPlayingTrackSelected =
+            playerTracksState.currentTrack.id == playbackState.playback.trackId;
+        if (playbackState.playback.isPlaying &&
+            isCurrentlyPlayingTrackSelected) {
+          _currentPlaybackBloc.add(CurrentPlaybackPaused());
+        } else {
+          _currentPlaybackBloc.add(CurrentPlaybackPlayed(
+              positionMs: isCurrentlyPlayingTrackSelected
+                  ? playbackState.playback.progressMs
+                  : 0));
+        }
+      }
+    }
   }
 
   Future<void> _handleEditStoryText(String newStoryText) async {
@@ -157,7 +176,6 @@ class _PlayerState extends State<PlayerPage> {
                 BlocBuilder<CurrentPlaybackBloc, CurrentPlaybackState>(
                   builder: (context, state) {
                     if (state is CurrentPlaybackSuccess &&
-                        state.playback != null &&
                         state.playback.trackId == currentTrack.id) {
                       final currentPosition =
                           state.playback.progressMs.toDouble();

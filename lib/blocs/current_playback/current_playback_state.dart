@@ -8,7 +8,7 @@ abstract class CurrentPlaybackState extends Equatable {
 
 class CurrentPlaybackInitial extends CurrentPlaybackState {}
 
-class CurrentPlaybackFailure extends CurrentPlaybackState {}
+class CurrentPlaybackEmpty extends CurrentPlaybackState {}
 
 class CurrentPlaybackSuccess extends CurrentPlaybackState {
   final Playback playback;

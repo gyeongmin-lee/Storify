@@ -106,14 +106,36 @@ class SpotifyApi {
   static Future<void> play({
     @required String playlistId,
     @required String trackId,
+    int positionMs = 0,
   }) async {
     final response = await client.put(APIPath.play,
         body: json.encode({
           'context_uri': 'spotify:playlist:$playlistId',
           'offset': {'uri': 'spotify:track:$trackId'},
+          'position_ms': positionMs,
         }));
 
     if (response.statusCode == 204) return;
+    if (response.statusCode == 403) {
+      final reason = json.decode(response.body)['error']['reason'];
+      if (reason == 'PREMIUM_REQUIRED ') throw PremiumRequiredException();
+    }
+    if (response.statusCode == 404) throw NoActiveDeviceFoundException();
+  }
+
+  static Future<void> pause() async {
+    final response = await client.put(APIPath.pause);
+    if (response.statusCode == 204)
+      try {
+        final playback = await _getCurrentPlayback();
+        if (!playback.isPlaying)
+          return;
+        else
+          throw Exception();
+      } catch (_) {
+        throw Exception('Failed to pause');
+      }
+
     if (response.statusCode == 403) {
       final reason = json.decode(response.body)['error']['reason'];
       if (reason == 'PREMIUM_REQUIRED ') throw PremiumRequiredException();

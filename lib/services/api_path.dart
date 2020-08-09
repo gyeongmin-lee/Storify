@@ -22,5 +22,6 @@ class APIPath {
   static String story(String playlistId, String trackId) =>
       'playlists/$playlistId/tracks/$trackId';
   static String play = 'https://api.spotify.com/v1/me/player/play';
+  static String pause = 'https://api.spotify.com/v1/me/player/pause';
   static String player = 'https://api.spotify.com/v1/me/player';
 }
