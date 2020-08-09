@@ -8,6 +8,8 @@ import 'package:storify/models/playback.dart';
 import 'package:storify/services/spotify_api.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/constants/values.dart' as Constants;
+import 'package:storify/widgets/_common/overlay_modal.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CurrentPlaybackBloc
     extends Bloc<CurrentPlaybackEvent, CurrentPlaybackState> {
@@ -48,10 +50,16 @@ class CurrentPlaybackBloc
               positionMs: event.positionMs);
         }
       } on NoActiveDeviceFoundException catch (_) {
-        // TODO show a dismissible popup instead of toast
-        CustomToast.showTextToast(
-            text: 'Play any track in Spotify app \nto activate this feature',
-            toastType: ToastType.warning);
+        OverlayModal.show(onConfirm: () async {
+          final url = playerTrackState.playlist.externalUrl;
+          if (await canLaunch(url)) {
+            await launch(url);
+          } else {
+            CustomToast.showTextToast(
+                text: 'Failed to open spotify link',
+                toastType: ToastType.error);
+          }
+        });
       } on PremiumRequiredException catch (_) {
         CustomToast.showTextToast(
             text: 'You must be a Spotify premium user',
