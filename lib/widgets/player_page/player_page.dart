@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:storify/blocs/blocs.dart';
@@ -25,11 +26,13 @@ class _PlayerState extends State<PlayerPage> {
   PlayerTracksBloc _playerTracksBloc;
   CurrentPlaybackBloc _currentPlaybackBloc;
   ScrollController _controller;
+  CarouselController _carouselController;
 
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
+    _carouselController = CarouselController();
     _playerTracksBloc = BlocProvider.of<PlayerTracksBloc>(context);
     _currentPlaybackBloc = BlocProvider.of<CurrentPlaybackBloc>(context);
   }
@@ -77,20 +80,41 @@ class _PlayerState extends State<PlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PlayerTracksBloc, PlayerTracksState>(
-      listenWhen: (previous, current) {
-        if (previous is PlayerTracksSuccess && current is PlayerTracksSuccess) {
-          bool isPlayable =
-              !previous.isAllDataLoaded && current.isAllDataLoaded;
-          return isPlayable;
-        }
-        return false;
-      },
-      listener: (context, state) {
-        if (state is PlayerTracksSuccess && state.isAllDataLoaded) {
-          _currentPlaybackBloc.add(CurrentPlaybackTrackChanged());
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PlayerTracksBloc, PlayerTracksState>(
+            listenWhen: (previous, current) {
+          if (previous is PlayerTracksSuccess &&
+              current is PlayerTracksSuccess) {
+            bool isPlayable =
+                !previous.isAllDataLoaded && current.isAllDataLoaded;
+            return isPlayable;
+          }
+          return false;
+        }, listener: (context, state) {
+          if (state is PlayerTracksSuccess && state.isAllDataLoaded) {
+            _currentPlaybackBloc.add(CurrentPlaybackTrackChanged());
+          }
+        }),
+        BlocListener<CurrentPlaybackBloc, CurrentPlaybackState>(
+          listenWhen: (previous, current) {
+            if (previous is CurrentPlaybackSuccess &&
+                current is CurrentPlaybackSuccess) {
+              return previous.playback.trackId != current.playback.trackId;
+            }
+            return false;
+          },
+          listener: (context, state) {
+            final playerTracksState = _playerTracksBloc.state;
+            if (state is CurrentPlaybackSuccess &&
+                playerTracksState is PlayerTracksSuccess) {
+              final index = playerTracksState.tracks
+                  .indexWhere((track) => track.id == state.playback.trackId);
+              if (index > -1) _carouselController.jumpToPage(index);
+            }
+          },
+        )
+      ],
       child: BlocBuilder<PlayerTracksBloc, PlayerTracksState>(
           builder: (context, state) {
         if (state is PlayerTracksInitial) {
@@ -172,6 +196,7 @@ class _PlayerState extends State<PlayerPage> {
                 PlayerCarousel(
                     tracks: tracks,
                     onPageChanged: _handleTrackChanged,
+                    carouselController: _carouselController,
                     onPlayButtonTap: _onPlayButtonTapped),
                 BlocBuilder<CurrentPlaybackBloc, CurrentPlaybackState>(
                   builder: (context, state) {

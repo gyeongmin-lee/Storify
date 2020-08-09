@@ -77,8 +77,11 @@ class CurrentPlaybackBloc
         currentState is CurrentPlaybackSuccess) {
       final changedTrackNotBeingPlayed =
           currentState.playback.trackId != playerTrackState.currentTrack.id;
-      if (currentState.playback.isPlaying && changedTrackNotBeingPlayed)
-        add(CurrentPlaybackPlayed());
+      final isWithinPlaylistContext =
+          currentState.playback.playlistId == playerTrackState.playlist.id;
+      if (currentState.playback.isPlaying &&
+          isWithinPlaylistContext &&
+          changedTrackNotBeingPlayed) add(CurrentPlaybackPlayed());
     }
   }
 
