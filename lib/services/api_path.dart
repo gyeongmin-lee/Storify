@@ -3,7 +3,8 @@ class APIPath {
     'user-read-private',
     'user-read-email',
     'playlist-read-private',
-    'user-modify-playback-state'
+    'user-modify-playback-state',
+    'user-read-playback-state'
   ];
 
   static String requestAuthorization(
@@ -21,4 +22,5 @@ class APIPath {
   static String story(String playlistId, String trackId) =>
       'playlists/$playlistId/tracks/$trackId';
   static String play = 'https://api.spotify.com/v1/me/player/play';
+  static String player = 'https://api.spotify.com/v1/me/player';
 }

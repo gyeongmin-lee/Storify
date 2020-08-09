@@ -52,6 +52,7 @@ class _PlayerState extends State<PlayerPage> {
     try {
       await SpotifyApi.play(playlistId: playlistId, trackId: trackId);
     } on NoActiveDeviceFoundException catch (_) {
+      // TODO show a dismissible popup instead of toast
       CustomToast.showTextToast(
           text: 'Play any track in Spotify app \nto activate this feature',
           toastType: ToastType.warning);

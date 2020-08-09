@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:http_interceptor/http_client_with_interceptor.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:storify/constants/values.dart' as Constants;
+import 'package:storify/models/current_playback.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/models/user.dart';
@@ -102,15 +103,14 @@ class SpotifyApi {
     }
   }
 
-  static Future<void> play(
-      {@required String playlistId,
-      @required String trackId,
-      int positionMs = 0}) async {
+  static Future<void> play({
+    @required String playlistId,
+    @required String trackId,
+  }) async {
     final response = await client.put(APIPath.play,
         body: json.encode({
           'context_uri': 'spotify:playlist:$playlistId',
           'offset': {'uri': 'spotify:track:$trackId'},
-          'position_ms': positionMs
         }));
 
     if (response.statusCode == 204) return;
@@ -119,6 +119,22 @@ class SpotifyApi {
       if (reason == 'PREMIUM_REQUIRED ') throw PremiumRequiredException();
     }
     if (response.statusCode == 404) throw NoActiveDeviceFoundException();
+  }
+
+  static Future<CurrentPlayback> _getCurrentPlayback() async {
+    final response = await client.get(APIPath.player);
+    if (response.statusCode == 200) {
+      return CurrentPlayback.fromJson(json.decode(response.body));
+    } else {
+      throw Exception(
+          'Failed to get player state with status code ${response.statusCode}');
+    }
+  }
+
+  static Stream<CurrentPlayback> getCurrentPlaybackStream() async* {
+    yield* Stream.periodic(Constants.playerStatePollDuration, (_) {
+      return _getCurrentPlayback();
+    }).asyncMap((event) async => await event);
   }
 
   static Future _expandNestedParam(
