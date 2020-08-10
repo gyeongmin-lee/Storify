@@ -34,7 +34,7 @@ class CustomRoundedButton extends StatelessWidget {
         color: backgroundColor,
         disabledColor: backgroundColor.withOpacity(0.5),
         padding: size == ButtonSize.regular
-            ? const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0)
+            ? const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0)
             : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32.0),

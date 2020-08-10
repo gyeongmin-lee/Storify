@@ -36,46 +36,44 @@ class OverlayModal {
                 )
               ],
             ),
-        toastBuilder: (cancelFunc) => Expanded(
-              child: AlertDialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  insetPadding: EdgeInsets.all(24.0),
-                  contentPadding: EdgeInsets.only(
-                      top: 16.0, right: 16.0, bottom: 24.0, left: 16.0),
-                  backgroundColor: Colors.black87,
-                  content: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.info,
-                        color: CustomColors.primaryTextColor,
-                        size: 72.0,
-                      ),
-                      SizedBox(height: 12.0),
-                      Text(
-                          'In order to use the playback feature, an active Spotify player is needed'
-                          '\n\nOpen Spotify app and play your playlist to enable playback',
-                          style: TextStyles.primary.copyWith(
-                              height: 1.3,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 18.0)),
-                      SizedBox(height: 24.0),
-                      CustomRoundedButton(
-                        borderColor: Colors.green,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                        regularLetterSpacing: 0.8,
-                        onPressed: () {
-                          cancelFunc();
-                          onConfirm?.call();
-                        },
-                        buttonText: 'Open Spotify',
-                      ),
-                    ],
-                  )),
-            ),
+        toastBuilder: (cancelFunc) => AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            insetPadding: EdgeInsets.all(24.0),
+            contentPadding: EdgeInsets.only(
+                top: 16.0, right: 16.0, bottom: 24.0, left: 16.0),
+            backgroundColor: Colors.black87,
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(
+                  Icons.info,
+                  color: CustomColors.primaryTextColor,
+                  size: 72.0,
+                ),
+                SizedBox(height: 12.0),
+                Text(
+                    'In order to use the playback feature, an active Spotify player is needed'
+                    '\n\nOpen Spotify app and play the playlist to enable playback',
+                    style: TextStyles.primary.copyWith(
+                        height: 1.3,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 18.0)),
+                SizedBox(height: 16.0),
+                CustomRoundedButton(
+                  borderColor: Colors.green,
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                  regularLetterSpacing: 0.8,
+                  onPressed: () {
+                    cancelFunc();
+                    onConfirm?.call();
+                  },
+                  buttonText: 'Open Spotify',
+                ),
+              ],
+            )),
         animationDuration: Constants.dialogAnimationDuration);
   }
 }

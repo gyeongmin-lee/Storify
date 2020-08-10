@@ -79,6 +79,8 @@ class _SignInPageState extends State<SignInPage> {
                 : Consumer<SpotifyAuth>(
                     builder: (_, auth, __) => CustomRoundedButton(
                       onPressed: () => _handleSignIn(auth, context),
+                      borderColor: Colors.green,
+                      textColor: Colors.green,
                       buttonText: 'SIGN IN WITH SPOTIFY',
                     ),
                   )
