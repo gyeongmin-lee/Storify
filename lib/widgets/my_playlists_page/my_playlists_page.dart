@@ -129,21 +129,8 @@ class _MyPlaylistsPageState extends State<MyPlaylistsPage> {
                             onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => BlocProvider(
-                                            create: (_) => PlayerTracksBloc(
-                                              playlist: playlist,
-                                            )..add(PlayerTracksFetched()),
-                                            child: Builder(builder: (context) {
-                                              return BlocProvider(
-                                                  create: (_) => CurrentPlaybackBloc(
-                                                      playerTracksBloc: BlocProvider
-                                                          .of<PlayerTracksBloc>(
-                                                              context))
-                                                    ..add(
-                                                        CurrentPlaybackLoaded()),
-                                                  child: PlayerPage());
-                                            }),
-                                          )),
+                                      builder: (context) => PlayerPage.create(
+                                          playlist: playlist)),
                                 ));
                       },
                       itemCount: playlists.length,

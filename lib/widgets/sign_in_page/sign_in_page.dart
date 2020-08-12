@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
+import 'package:storify/services/spotfy_uri_manager.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/my_playlists_page/my_playlists_page.dart';
+import 'package:uni_links/uni_links.dart';
 
 class SignInPage extends StatefulWidget {
   static const routeName = '/sign_in';
@@ -22,7 +24,25 @@ class _SignInPageState extends State<SignInPage> {
   @override
   void initState() {
     super.initState();
-    _signInFromSavedTokens();
+    _initialSignIn();
+  }
+
+  Future<void> _initialSignIn() async {
+    final auth = context.read<SpotifyAuth>();
+    final uriManager = SpotifyUriManager(auth);
+    setState(() => _isLoading = true);
+    try {
+      final initialUri = await getInitialUri();
+      if (initialUri == null) {
+        _signInFromSavedTokens();
+        return;
+      }
+      await uriManager.handleLoadFromUri(initialUri);
+    } catch (e) {
+      if (!mounted) return;
+      uriManager.handleFail();
+      setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _signInFromSavedTokens() async {

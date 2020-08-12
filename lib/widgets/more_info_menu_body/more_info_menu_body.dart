@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
@@ -18,6 +19,11 @@ class MoreInfoMenuBody extends StatelessWidget {
       CustomToast.showTextToast(
           text: 'Failed to open spotify link', toastType: ToastType.error);
     }
+  }
+
+  void _onShareAsLink() {
+    final url = playlist.deepLinkUri;
+    Share.share(url);
   }
 
   @override
@@ -41,7 +47,7 @@ class MoreInfoMenuBody extends StatelessWidget {
               ),
               CustomFlatTextButton(
                 text: 'SHARE AS LINK',
-                onPressed: () {},
+                onPressed: _onShareAsLink,
               ),
               SizedBox(
                 height: 16.0,

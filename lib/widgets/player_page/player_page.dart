@@ -20,6 +20,21 @@ import 'package:storify/widgets/player_page/player_track_info.dart';
 class PlayerPage extends StatefulWidget {
   @override
   _PlayerState createState() => _PlayerState();
+
+  static Widget create({@required Playlist playlist}) {
+    return BlocProvider(
+      create: (_) => PlayerTracksBloc(
+        playlist: playlist,
+      )..add(PlayerTracksFetched()),
+      child: Builder(builder: (context) {
+        return BlocProvider(
+            create: (_) => CurrentPlaybackBloc(
+                playerTracksBloc: BlocProvider.of<PlayerTracksBloc>(context))
+              ..add(CurrentPlaybackLoaded()),
+            child: PlayerPage());
+      }),
+    );
+  }
 }
 
 class _PlayerState extends State<PlayerPage> {
@@ -101,6 +116,10 @@ class _PlayerState extends State<PlayerPage> {
             if (previous is CurrentPlaybackSuccess &&
                 current is CurrentPlaybackSuccess) {
               return previous.playback.trackId != current.playback.trackId;
+            }
+            if (previous is CurrentPlaybackEmpty &&
+                current is CurrentPlaybackSuccess) {
+              return true;
             }
             return false;
           },
