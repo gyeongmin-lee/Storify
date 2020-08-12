@@ -80,7 +80,8 @@ class _SignInPageState extends State<SignInPage> {
                     builder: (_, auth, __) => CustomRoundedButton(
                       onPressed: () => _handleSignIn(auth, context),
                       borderColor: Colors.green,
-                      textColor: Colors.green,
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
                       buttonText: 'SIGN IN WITH SPOTIFY',
                     ),
                   )

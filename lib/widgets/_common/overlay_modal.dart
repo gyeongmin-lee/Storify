@@ -70,7 +70,7 @@ class OverlayModal {
                     cancelFunc();
                     onConfirm?.call();
                   },
-                  buttonText: 'Open Spotify',
+                  buttonText: 'OPEN SPOTIFY',
                 ),
               ],
             )),

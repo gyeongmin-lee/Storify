@@ -13,7 +13,7 @@ class CustomRoundedButton extends StatelessWidget {
     this.backgroundColor = Colors.transparent,
     this.textColor = CustomColors.secondaryTextColor,
     this.disabled = false,
-    this.regularLetterSpacing = 2.5,
+    this.regularLetterSpacing = 1.5,
   }) : super(key: key);
   final VoidCallback onPressed;
   final String buttonText;
@@ -34,7 +34,7 @@ class CustomRoundedButton extends StatelessWidget {
         color: backgroundColor,
         disabledColor: backgroundColor.withOpacity(0.5),
         padding: size == ButtonSize.regular
-            ? const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0)
+            ? const EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0)
             : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32.0),
@@ -44,7 +44,8 @@ class CustomRoundedButton extends StatelessWidget {
         child: Text(buttonText,
             style: size == ButtonSize.regular
                 ? TextStyles.secondary.copyWith(
-                    fontSize: 18.0,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
                     letterSpacing: regularLetterSpacing,
                     color: textColor)
                 : TextStyles.smallButtonText.copyWith(color: textColor)),
