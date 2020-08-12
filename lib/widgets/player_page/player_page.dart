@@ -129,7 +129,9 @@ class _PlayerState extends State<PlayerPage> {
                 playerTracksState is PlayerTracksSuccess) {
               final index = playerTracksState.tracks
                   .indexWhere((track) => track.id == state.playback.trackId);
-              if (index > -1) _carouselController.jumpToPage(index);
+              if (index > -1)
+                _carouselController.animateToPage(index,
+                    duration: Constants.carouselAnimationDuration);
             }
           },
         )
