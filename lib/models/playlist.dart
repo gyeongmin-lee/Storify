@@ -39,7 +39,7 @@ class Playlist extends Equatable {
         owner: owner);
   }
 
-  String get deepLinkUri => 'storifyapp://host/?playlist_id=$id';
+  String get deepLinkUri => 'https://storify-cd21c.web.app/?playlist_id=$id';
 
   @override
   List<Object> get props => [

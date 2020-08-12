@@ -23,7 +23,7 @@ class MoreInfoMenuBody extends StatelessWidget {
 
   void _onShareAsLink() {
     final url = playlist.deepLinkUri;
-    Share.share(url);
+    Share.share(url, subject: 'Open "${playlist.name}" in Storify');
   }
 
   @override

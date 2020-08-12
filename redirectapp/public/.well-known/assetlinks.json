@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.storify",
+      "sha256_cert_fingerprints": [
+        "C6:CA:87:AD:9B:52:0E:38:9A:A5:D2:3E:6B:D4:15:6D:96:77:D4:5B:88:6C:40:0B:10:85:31:C2:D9:DB:D1:E2"
+      ]
+    }
+  }
+]
