@@ -7,6 +7,7 @@ import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
+import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
@@ -16,6 +17,7 @@ import 'package:storify/widgets/player_page/player_page_loading.dart';
 import 'package:storify/widgets/player_page/player_play_button.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
 import 'package:storify/widgets/player_page/player_track_info.dart';
+import 'package:provider/provider.dart';
 
 class PlayerPage extends StatefulWidget {
   @override
@@ -185,6 +187,9 @@ class _PlayerState extends State<PlayerPage> {
     final artistImageUrl = state.currentTrackArtistImageUrl;
     final tracks = state.tracks;
     final storyText = state.storyText ?? '';
+
+    final auth = context.read<SpotifyAuth>();
+    bool isOwned = playlist.owner.id == auth.user.id;
     return Padding(
       padding: const EdgeInsets.only(top: 80.0, bottom: 36.0),
       child: Column(
@@ -201,12 +206,14 @@ class _PlayerState extends State<PlayerPage> {
               SizedBox(
                 height: 8.0,
               ),
-              CustomRoundedButton(
-                size: ButtonSize.small,
-                buttonText: storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
-                onPressed: () =>
-                    _onEditOrAddPressed(storyText, currentTrack, playlist),
-              ),
+              if (isOwned)
+                CustomRoundedButton(
+                  size: ButtonSize.small,
+                  buttonText:
+                      storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
+                  onPressed: () =>
+                      _onEditOrAddPressed(storyText, currentTrack, playlist),
+                ),
               SizedBox(
                 height: 16.0,
               )

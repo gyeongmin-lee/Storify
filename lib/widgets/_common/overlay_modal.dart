@@ -5,7 +5,12 @@ import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 
 class OverlayModal {
-  static void show({VoidCallback onConfirm, VoidCallback onCancel}) {
+  static void show(
+      {Icon icon,
+      @required String message,
+      String actionText,
+      VoidCallback onConfirm,
+      VoidCallback onCancel}) {
     BotToast.showAnimationWidget(
         clickClose: false,
         allowClick: false,
@@ -47,31 +52,26 @@ class OverlayModal {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Icon(
-                  Icons.info,
-                  color: CustomColors.primaryTextColor,
-                  size: 72.0,
-                ),
+                icon,
                 SizedBox(height: 12.0),
-                Text(
-                    'In order to use the playback feature, an active Spotify player is needed'
-                    '\n\nOpen Spotify app and play the playlist to enable playback',
+                Text(message,
                     style: TextStyles.primary.copyWith(
                         height: 1.3,
                         fontWeight: FontWeight.w300,
                         fontSize: 18.0)),
                 SizedBox(height: 16.0),
-                CustomRoundedButton(
-                  borderColor: Colors.green,
-                  backgroundColor: Colors.green,
-                  textColor: Colors.white,
-                  regularLetterSpacing: 0.8,
-                  onPressed: () {
-                    cancelFunc();
-                    onConfirm?.call();
-                  },
-                  buttonText: 'OPEN SPOTIFY',
-                ),
+                if (actionText != null)
+                  CustomRoundedButton(
+                    borderColor: Colors.green,
+                    backgroundColor: Colors.green,
+                    textColor: Colors.white,
+                    regularLetterSpacing: 0.8,
+                    onPressed: () {
+                      cancelFunc();
+                      onConfirm?.call();
+                    },
+                    buttonText: actionText,
+                  ),
               ],
             )),
         animationDuration: Constants.dialogAnimationDuration);

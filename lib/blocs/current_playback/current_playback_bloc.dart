@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:storify/blocs/blocs.dart';
+import 'package:storify/constants/style.dart';
 import 'package:storify/models/playback.dart';
 import 'package:storify/services/spotify_api.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
@@ -50,16 +52,26 @@ class CurrentPlaybackBloc
               positionMs: event.positionMs);
         }
       } on NoActiveDeviceFoundException catch (_) {
-        OverlayModal.show(onConfirm: () async {
-          final url = playerTrackState.playlist.externalUrl;
-          if (await canLaunch(url)) {
-            await launch(url);
-          } else {
-            CustomToast.showTextToast(
-                text: 'Failed to open spotify link',
-                toastType: ToastType.error);
-          }
-        });
+        OverlayModal.show(
+            icon: Icon(
+              Icons.info,
+              color: CustomColors.primaryTextColor,
+              size: 72.0,
+            ),
+            message:
+                'In order to use the playback feature, an active Spotify player is needed'
+                '\n\nOpen Spotify app and play the playlist to enable playback',
+            actionText: 'OPEN SPOTIFY',
+            onConfirm: () async {
+              final url = playerTrackState.playlist.externalUrl;
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                CustomToast.showTextToast(
+                    text: 'Failed to open spotify link',
+                    toastType: ToastType.error);
+              }
+            });
       } on PremiumRequiredException catch (_) {
         CustomToast.showTextToast(
             text: 'You must be a Spotify premium user',

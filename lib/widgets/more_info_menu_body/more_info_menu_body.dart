@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
+import 'package:storify/services/spotify_api.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
 import 'package:storify/widgets/_common/custom_image_provider.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
+import 'package:storify/widgets/_common/overlay_modal.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MoreInfoMenuBody extends StatelessWidget {
@@ -21,9 +23,34 @@ class MoreInfoMenuBody extends StatelessWidget {
     }
   }
 
-  void _onShareAsLink() {
-    final url = playlist.deepLinkUri;
-    Share.share(url, subject: 'Open "${playlist.name}" in Storify');
+  void _onShareAsLink() async {
+    final isPublic = await SpotifyApi.getPlaylist(playlist.id)
+        .then((playlist) => playlist.isPublic);
+    if (isPublic) {
+      final url = playlist.deepLinkUri;
+      Share.share(url, subject: 'Open "${playlist.name}" in Storify');
+    } else {
+      OverlayModal.show(
+          icon: Icon(
+            Icons.warning,
+            color: Colors.orange,
+            size: 72.0,
+          ),
+          message:
+              'You can only share a public playlist. Open spotify and make your playlist "Public"',
+          actionText: 'OPEN SPOTIFY',
+          onConfirm: () async {
+            final url = playlist.externalUrl;
+            if (await canLaunch(url)) {
+              await launch(url);
+            } else {
+              CustomToast.showTextToast(
+                text: 'Failed to open spotify link',
+                toastType: ToastType.error,
+              );
+            }
+          });
+    }
   }
 
   @override
