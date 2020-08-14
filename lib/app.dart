@@ -2,15 +2,13 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotfy_uri_manager.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
-import 'package:storify/widgets/my_playlists_page/my_playlists_page.dart';
+import 'package:storify/widgets/home_page/home_page.dart';
 import 'package:storify/widgets/sign_in_page/sign_in_page.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -93,9 +91,7 @@ class _AppState extends State<App> {
         ],
         routes: {
           SignInPage.routeName: (context) => SignInPage(),
-          MyPlaylistsPage.routeName: (context) => BlocProvider(
-              create: (_) => MyPlaylistsBloc()..add(MyPlaylistsFetched()),
-              child: MyPlaylistsPage()),
+          HomePage.routeName: (context) => HomePage(),
         });
   }
 }

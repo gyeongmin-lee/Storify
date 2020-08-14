@@ -6,7 +6,7 @@ import 'package:storify/services/spotfy_uri_manager.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
-import 'package:storify/widgets/my_playlists_page/my_playlists_page.dart';
+import 'package:storify/widgets/home_page/home_page.dart';
 import 'package:uni_links/uni_links.dart';
 
 class SignInPage extends StatefulWidget {
@@ -50,7 +50,7 @@ class _SignInPageState extends State<SignInPage> {
     setState(() => _isLoading = true);
     try {
       await auth.signInFromSavedTokens();
-      Navigator.popAndPushNamed(context, MyPlaylistsPage.routeName);
+      Navigator.popAndPushNamed(context, HomePage.routeName);
     } catch (_) {} finally {
       setState(() => _isLoading = false);
     }
@@ -60,7 +60,7 @@ class _SignInPageState extends State<SignInPage> {
     try {
       setState(() => _isLoading = true);
       await auth.authenticate();
-      Navigator.popAndPushNamed(context, MyPlaylistsPage.routeName);
+      Navigator.popAndPushNamed(context, HomePage.routeName);
     } catch (e) {
       CustomToast.showTextToast(
           text: "Failed to sign in", toastType: ToastType.error);

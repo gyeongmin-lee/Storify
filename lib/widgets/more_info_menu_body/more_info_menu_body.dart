@@ -79,10 +79,6 @@ class MoreInfoMenuBody extends StatelessWidget {
               SizedBox(
                 height: 16.0,
               ),
-              CustomFlatTextButton(
-                text: 'SHARE AS IG STORY',
-                onPressed: () {},
-              ),
             ],
           ),
         ],

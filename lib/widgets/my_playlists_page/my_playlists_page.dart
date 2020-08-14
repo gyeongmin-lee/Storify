@@ -2,20 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/style.dart';
-import 'package:storify/services/spotify_auth.dart';
-import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
-import 'package:storify/widgets/_common/overlay_menu.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
-import 'package:storify/widgets/main_menu_body/main_menu_body.dart';
 import 'package:storify/widgets/my_playlists_page/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
 
 class MyPlaylistsPage extends StatefulWidget {
-  static const routeName = '/my_playlists_bloc_based';
+  static Widget create() {
+    return BlocProvider(
+      create: (_) => MyPlaylistsBloc()..add(MyPlaylistsFetched()),
+      child: MyPlaylistsPage(),
+    );
+  }
 
   @override
   _MyPlaylistsPageState createState() => _MyPlaylistsPageState();
@@ -46,38 +46,6 @@ class _MyPlaylistsPageState extends State<MyPlaylistsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: false,
-      appBar: AppBar(
-        title: Text(
-          'MY PLAYLISTS',
-          style: TextStyles.appBarTitle,
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Divider(
-            color: Colors.white10,
-            thickness: 1.0,
-            height: 1.0,
-          ),
-        ),
-        leading: CustomFlatIconButton(
-          icon: Icon(
-            Icons.menu,
-            color: TextStyles.appBarTitle.color,
-          ),
-          onPressed: () => OverlayMenu.show(context,
-              menuBody: MainMenuBody(auth: context.read<SpotifyAuth>())),
-        ),
-      ),
-      body: _buildContent(),
-    );
-  }
-
-  Widget _buildContent() {
     return BlocBuilder<MyPlaylistsBloc, MyPlaylistsState>(
       builder: (context, state) {
         if (state is MyPlaylistsInitial) {
