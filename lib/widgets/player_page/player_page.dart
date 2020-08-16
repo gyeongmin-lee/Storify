@@ -9,6 +9,7 @@ import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
+import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_page_app_bar.dart';
@@ -66,6 +67,12 @@ class _PlayerState extends State<PlayerPage> {
         track: currentTrack,
         originalStoryText: storyText,
         onStoryTextEdited: _handleEditStoryText);
+  }
+
+  void _onPlaylistNotOwned() {
+    CustomToast.showTextToast(
+        text: 'You can only add story to \nplaylists you\'ve created.',
+        toastType: ToastType.warning);
   }
 
   Future<void> _onPlayButtonTapped() async {
@@ -206,14 +213,14 @@ class _PlayerState extends State<PlayerPage> {
               SizedBox(
                 height: 8.0,
               ),
-              if (isOwned)
-                CustomRoundedButton(
-                  size: ButtonSize.small,
-                  buttonText:
-                      storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
-                  onPressed: () =>
-                      _onEditOrAddPressed(storyText, currentTrack, playlist),
-                ),
+              CustomRoundedButton(
+                size: ButtonSize.small,
+                buttonText: storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
+                onPressed: isOwned
+                    ? () =>
+                        _onEditOrAddPressed(storyText, currentTrack, playlist)
+                    : _onPlaylistNotOwned,
+              ),
               SizedBox(
                 height: 16.0,
               )
