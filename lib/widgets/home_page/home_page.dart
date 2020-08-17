@@ -3,6 +3,7 @@ import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/_common/base_scaffold.dart';
 import 'package:storify/widgets/my_playlists_page/my_playlists_page.dart';
 import 'package:storify/widgets/profile_page/profile_page.dart';
+import 'package:storify/widgets/saved_playlists_page/saved_playlists_page.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     {
       'hideAppBar': false,
       'titleText': 'SAVED PLAYLISTS',
-      'widget': Container(),
+      'widget': SavedPlaylistsPage(),
     },
     {
       'hideAppBar': true,

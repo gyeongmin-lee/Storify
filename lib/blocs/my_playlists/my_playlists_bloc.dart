@@ -25,7 +25,8 @@ class MyPlaylistsBloc extends Bloc<MyPlaylistsEvent, MyPlaylistsState> {
                   playlists: currentState.playlists + playlists,
                   hasReachedMax: false);
         }
-      } catch (_) {
+      } catch (e) {
+        print(e);
         yield MyPlaylistsFailure();
       }
     }
@@ -37,7 +38,8 @@ class MyPlaylistsBloc extends Bloc<MyPlaylistsEvent, MyPlaylistsState> {
         final playlists = await SpotifyApi.getListOfPlaylists(
             offset: 0, limit: Constants.playlistsLimit);
         yield MyPlaylistsSuccess(playlists: playlists, hasReachedMax: false);
-      } catch (_) {
+      } catch (e) {
+        print(e);
         yield MyPlaylistsFailure();
       }
     }

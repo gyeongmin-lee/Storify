@@ -106,6 +106,12 @@ class CurrentPlaybackBloc
   }
 
   @override
+  Future<void> close() {
+    _currentPlaybackSubscription?.cancel();
+    return super.close();
+  }
+
+  @override
   Stream<Transition<CurrentPlaybackEvent, CurrentPlaybackState>>
       transformEvents(
     Stream<CurrentPlaybackEvent> events,

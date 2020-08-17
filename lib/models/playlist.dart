@@ -39,6 +39,26 @@ class Playlist extends Equatable {
         owner: owner);
   }
 
+  factory Playlist.fromFirebaseSnapshot(Map<String, dynamic> json) => Playlist(
+        id: json['id'],
+        name: json['name'],
+        externalUrl: json['external_url'],
+        isPublic: json['is_public'],
+        playlistImageUrl: json['playlist_image_url'],
+        numOfTracks: json['num_of_tracks'],
+        owner: User.fromJson(json['owner']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'id': id,
+        'external_url': externalUrl,
+        'is_public': isPublic,
+        'playlist_image_url': playlistImageUrl,
+        'num_of_tracks': numOfTracks,
+        'owner': owner.toJson(),
+      };
+
   String get deepLinkUri => 'https://storify-cd21c.web.app/?playlist_id=$id';
 
   @override

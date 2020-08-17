@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
+import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/spotify_api.dart';
+import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
 import 'package:storify/widgets/_common/custom_image_provider.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
@@ -13,7 +16,7 @@ class MoreInfoMenuBody extends StatelessWidget {
   const MoreInfoMenuBody({Key key, @required this.playlist}) : super(key: key);
   final Playlist playlist;
 
-  void _onOpenInSpotify() async {
+  Future<void> _onOpenInSpotify() async {
     final url = playlist.externalUrl;
     if (await canLaunch(url)) {
       await launch(url);
@@ -23,7 +26,7 @@ class MoreInfoMenuBody extends StatelessWidget {
     }
   }
 
-  void _onShareAsLink() async {
+  Future<void> _onShareAsLink() async {
     final isPublic = await SpotifyApi.getPlaylist(playlist.id)
         .then((playlist) => playlist.isPublic);
     if (isPublic) {
@@ -53,8 +56,28 @@ class MoreInfoMenuBody extends StatelessWidget {
     }
   }
 
+  Future<void> _onSavePlaylist(BuildContext context) async {
+    final spotifyAuth = context.read<SpotifyAuth>();
+    await FirebaseDB()
+        .savePlaylist(userId: spotifyAuth.user.id, playlist: playlist);
+    CustomToast.showTextToast(
+        text: 'Playlist added to "SAVED PLAYLISTS"',
+        toastType: ToastType.success);
+  }
+
+  Future<void> _onUnsavePlaylist(BuildContext context) async {
+    final spotifyAuth = context.read<SpotifyAuth>();
+    await FirebaseDB()
+        .unsavePlaylist(userId: spotifyAuth.user.id, playlistId: playlist.id);
+    CustomToast.showTextToast(
+        text: 'Playlist removed from "SAVED PLAYLISTS"',
+        toastType: ToastType.success);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final _firebaseDB = FirebaseDB();
+    final userId = context.watch<SpotifyAuth>().user.id;
     return Center(
         child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 96.0),
@@ -78,6 +101,30 @@ class MoreInfoMenuBody extends StatelessWidget {
               ),
               SizedBox(
                 height: 16.0,
+              ),
+              StreamBuilder<bool>(
+                stream: _firebaseDB.isPlaylistSavedStream(
+                    userId: userId, playlistId: playlist.id),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    print(snapshot.error);
+                  }
+                  if (snapshot.hasData) {
+                    final isPlaylistSaved = snapshot.data;
+                    return CustomFlatTextButton(
+                      text: isPlaylistSaved
+                          ? 'REMOVE FROM SAVED'
+                          : 'SAVE PLAYLIST',
+                      onPressed: isPlaylistSaved
+                          ? () => _onUnsavePlaylist(context)
+                          : () => _onSavePlaylist(context),
+                    );
+                  } else {
+                    return Container(
+                      height: 48.0,
+                    );
+                  }
+                },
               ),
             ],
           ),

@@ -14,6 +14,42 @@ class FirestoreService {
     await reference.setData(data);
   }
 
+  Future<void> addDataToArray(
+      {@required String path,
+      @required String key,
+      @required dynamic data}) async {
+    final reference = Firestore.instance.document(path);
+    reference.get().then((docSnapshot) async {
+      if (docSnapshot.exists) {
+        await reference.updateData({
+          key: FieldValue.arrayUnion([data]),
+        });
+      } else {
+        await reference.setData({
+          key: [data],
+        });
+      }
+    });
+  }
+
+  Future<void> removeDataFromArray(
+      {@required String path,
+      @required String key,
+      @required dynamic data}) async {
+    final reference = Firestore.instance.document(path);
+    reference.get().then((docSnapshot) async {
+      if (docSnapshot.exists) {
+        await reference.updateData({
+          key: FieldValue.arrayRemove([data]),
+        });
+      } else {
+        await reference.setData({
+          key: [data],
+        });
+      }
+    });
+  }
+
   Future<void> deleteData({@required String path}) async {
     final reference = Firestore.instance.document(path);
     print('delete: $path');

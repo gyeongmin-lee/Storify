@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class APIPath {
   static List<String> _scopes = [
     'user-read-private',
@@ -23,6 +25,11 @@ class APIPath {
       'https://api.spotify.com/v1/playlists/$playlistId/tracks?fields=items(track(id,name,artists,duration_ms,album(images)))';
   static String story(String playlistId, String trackId) =>
       'playlists/$playlistId/tracks/$trackId';
+  static String savedPlaylist(
+          {@required String userId, @required String playlistId}) =>
+      'users/$userId/saved_playlists/$playlistId';
+  static String savedPlaylists({@required String userId}) =>
+      'users/$userId/saved_playlists';
   static String play = 'https://api.spotify.com/v1/me/player/play';
   static String pause = 'https://api.spotify.com/v1/me/player/pause';
   static String player = 'https://api.spotify.com/v1/me/player';
