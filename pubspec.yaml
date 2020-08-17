@@ -51,6 +51,7 @@ dependencies:
   uni_links: ^0.4.0
   get: ^3.4.4
   share: ^0.6.4+3
+  flutter_slidable: ^0.5.5
 
 dev_dependencies:
   flutter_test:

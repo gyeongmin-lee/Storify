@@ -39,9 +39,7 @@ class _SavedPlaylistsPageState extends State<SavedPlaylistsPage> {
                 itemBuilder: (context, index) {
                   final playlist = playlists[index];
                   return PlayListItem(
-                      title: playlist.name,
-                      subtitle: '${playlist.numOfTracks} TRACKS',
-                      imageUrl: playlist.playlistImageUrl,
+                      playlist: playlist,
                       onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(

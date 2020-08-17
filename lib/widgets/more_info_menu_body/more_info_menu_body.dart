@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/services/firebase_db.dart';
-import 'package:storify/services/spotify_api.dart';
+import 'package:storify/services/playlist_actions.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_flat_text_button.dart';
 import 'package:storify/widgets/_common/custom_image_provider.dart';
-import 'package:storify/widgets/_common/custom_toast.dart';
-import 'package:storify/widgets/_common/overlay_modal.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MoreInfoMenuBody extends StatelessWidget {
   const MoreInfoMenuBody({Key key, @required this.playlist}) : super(key: key);
@@ -18,60 +14,21 @@ class MoreInfoMenuBody extends StatelessWidget {
 
   Future<void> _onOpenInSpotify() async {
     final url = playlist.externalUrl;
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      CustomToast.showTextToast(
-          text: 'Failed to open spotify link', toastType: ToastType.error);
-    }
+    await PlaylistActions.openInSpotify(url);
   }
 
   Future<void> _onShareAsLink() async {
-    final isPublic = await SpotifyApi.getPlaylist(playlist.id)
-        .then((playlist) => playlist.isPublic);
-    if (isPublic) {
-      final url = playlist.deepLinkUri;
-      Share.share(url, subject: 'Open "${playlist.name}" in Storify');
-    } else {
-      OverlayModal.show(
-          icon: Icon(
-            Icons.warning,
-            color: Colors.orange,
-            size: 72.0,
-          ),
-          message:
-              'You can only share a public playlist. Open spotify and make your playlist "Public"',
-          actionText: 'OPEN SPOTIFY',
-          onConfirm: () async {
-            final url = playlist.externalUrl;
-            if (await canLaunch(url)) {
-              await launch(url);
-            } else {
-              CustomToast.showTextToast(
-                text: 'Failed to open spotify link',
-                toastType: ToastType.error,
-              );
-            }
-          });
-    }
+    await PlaylistActions.shareAsLink(playlist);
   }
 
   Future<void> _onSavePlaylist(BuildContext context) async {
     final spotifyAuth = context.read<SpotifyAuth>();
-    await FirebaseDB()
-        .savePlaylist(userId: spotifyAuth.user.id, playlist: playlist);
-    CustomToast.showTextToast(
-        text: 'Playlist added to "SAVED PLAYLISTS"',
-        toastType: ToastType.success);
+    await PlaylistActions.savePlaylist(spotifyAuth.user.id, playlist);
   }
 
   Future<void> _onUnsavePlaylist(BuildContext context) async {
     final spotifyAuth = context.read<SpotifyAuth>();
-    await FirebaseDB()
-        .unsavePlaylist(userId: spotifyAuth.user.id, playlistId: playlist.id);
-    CustomToast.showTextToast(
-        text: 'Playlist removed from "SAVED PLAYLISTS"',
-        toastType: ToastType.success);
+    await PlaylistActions.unsavePlaylist(spotifyAuth.user.id, playlist.id);
   }
 
   @override
@@ -106,9 +63,6 @@ class MoreInfoMenuBody extends StatelessWidget {
                 stream: _firebaseDB.isPlaylistSavedStream(
                     userId: userId, playlistId: playlist.id),
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    print(snapshot.error);
-                  }
                   if (snapshot.hasData) {
                     final isPlaylistSaved = snapshot.data;
                     return CustomFlatTextButton(
