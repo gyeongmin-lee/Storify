@@ -40,7 +40,7 @@ class PlayerPage extends StatefulWidget {
   }
 }
 
-class _PlayerState extends State<PlayerPage> {
+class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
   PlayerTracksBloc _playerTracksBloc;
   CurrentPlaybackBloc _currentPlaybackBloc;
   ScrollController _controller;
@@ -53,6 +53,14 @@ class _PlayerState extends State<PlayerPage> {
     _carouselController = CarouselController();
     _playerTracksBloc = BlocProvider.of<PlayerTracksBloc>(context);
     _currentPlaybackBloc = BlocProvider.of<CurrentPlaybackBloc>(context);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _controller.dispose();
+    super.dispose();
   }
 
   void _handleTrackChanged(int index) {
@@ -100,6 +108,15 @@ class _PlayerState extends State<PlayerPage> {
 
   Future<void> _handleEditStoryText(String newStoryText) async {
     _playerTracksBloc.add(PlayerTrackStoryTextEdited(newStoryText));
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _currentPlaybackBloc.add(CurrentPlaybackAppPaused());
+    } else if (state == AppLifecycleState.resumed) {
+      _currentPlaybackBloc.add(CurrentPlaybackAppResumed());
+    }
   }
 
   @override

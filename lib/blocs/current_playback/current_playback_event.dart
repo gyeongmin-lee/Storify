@@ -29,3 +29,7 @@ class CurrentPlaybackUpdated extends CurrentPlaybackEvent {
 class CurrentPlaybackTrackChanged extends CurrentPlaybackEvent {}
 
 class CurrentPlaybackPaused extends CurrentPlaybackEvent {}
+
+class CurrentPlaybackAppPaused extends CurrentPlaybackEvent {}
+
+class CurrentPlaybackAppResumed extends CurrentPlaybackEvent {}

@@ -103,6 +103,14 @@ class CurrentPlaybackBloc
           isWithinPlaylistContext &&
           changedTrackNotBeingPlayed) add(CurrentPlaybackPlayed());
     }
+
+    if (event is CurrentPlaybackAppPaused) {
+      _currentPlaybackSubscription?.pause();
+    }
+
+    if (event is CurrentPlaybackAppResumed) {
+      _currentPlaybackSubscription?.resume();
+    }
   }
 
   @override
