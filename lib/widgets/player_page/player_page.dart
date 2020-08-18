@@ -79,7 +79,8 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
 
   void _onPlaylistNotOwned() {
     CustomToast.showTextToast(
-        text: 'You can only add story to \nplaylists you\'ve created.',
+        text:
+            'You can only add story to \nplaylists you\'ve created.', // TODO Change to visible / not visible
         toastType: ToastType.warning);
   }
 
@@ -143,7 +144,8 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
                 current is CurrentPlaybackSuccess) {
               return previous.playback.trackId != current.playback.trackId;
             }
-            if (previous is CurrentPlaybackEmpty &&
+            if ((previous is CurrentPlaybackEmpty ||
+                    previous is CurrentPlaybackInitial) &&
                 current is CurrentPlaybackSuccess) {
               return true;
             }

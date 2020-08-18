@@ -9,11 +9,20 @@ import 'package:storify/widgets/_common/custom_image_provider.dart';
 import 'package:provider/provider.dart';
 
 class PlayListItem extends StatefulWidget {
-  const PlayListItem({Key key, @required this.playlist, this.onPressed})
+  const PlayListItem(
+      {Key key,
+      @required this.playlist,
+      this.onPressed,
+      this.titleText,
+      this.subtitleText,
+      this.trailing})
       : super(key: key);
 
   final Playlist playlist;
   final VoidCallback onPressed;
+  final String titleText;
+  final String subtitleText;
+  final Widget trailing;
 
   @override
   _PlayListItemState createState() => _PlayListItemState();
@@ -136,12 +145,13 @@ class _PlayListItemState extends State<PlayListItem> {
                 widget.playlist.playlistImageUrl),
             backgroundColor: Colors.transparent,
           ),
-          title: Text(widget.playlist.name,
+          title: Text(widget.titleText ?? widget.playlist.name,
               style: TextStyles.primary.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,
               )),
-          subtitle: Text('${widget.playlist.numOfTracks} TRACKS',
+          subtitle: Text(
+              widget.subtitleText ?? '${widget.playlist.numOfTracks} TRACKS',
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w300,
@@ -149,6 +159,7 @@ class _PlayListItemState extends State<PlayListItem> {
               )),
           onTap: widget.onPressed,
           onLongPress: () => _onLongPress(context),
+          trailing: widget.trailing,
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/_common/base_scaffold.dart';
+import 'package:storify/widgets/browse_page/browse_page.dart';
 import 'package:storify/widgets/my_playlists_page/my_playlists_page.dart';
 import 'package:storify/widgets/profile_page/profile_page.dart';
 import 'package:storify/widgets/saved_playlists_page/saved_playlists_page.dart';
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     {
       'titleText': '',
       'hideAppBar': true,
-      'widget': Container(),
+      'widget': BrowsePage(),
     },
     {
       'hideAppBar': false,

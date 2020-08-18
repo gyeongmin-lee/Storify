@@ -25,6 +25,8 @@ class APIPath {
       'https://api.spotify.com/v1/playlists/$playlistId/tracks?fields=items(track(id,name,artists,duration_ms,album(images)))';
   static String story(String playlistId, String trackId) =>
       'playlists/$playlistId/tracks/$trackId';
+  static String playlists = 'playlists';
+  static String playlist(String playlistId) => 'playlists/$playlistId';
   static String savedPlaylist(
           {@required String userId, @required String playlistId}) =>
       'users/$userId/saved_playlists/$playlistId';

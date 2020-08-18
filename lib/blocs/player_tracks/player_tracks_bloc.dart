@@ -74,7 +74,7 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
         currentState is PlayerTracksSuccess) {
       try {
         await _firebaseDB.setStory(event.updatedStoryText,
-            currentState.playlist.id, currentState.currentTrack.id);
+            currentState.playlist, currentState.currentTrack.id);
         CustomToast.showTextToast(
             text: 'Updated', toastType: ToastType.success);
       } catch (e) {

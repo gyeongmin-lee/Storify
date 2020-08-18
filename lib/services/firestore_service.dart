@@ -8,10 +8,11 @@ class FirestoreService {
   Future<void> setData({
     @required String path,
     @required Map<String, dynamic> data,
+    bool merge = false,
   }) async {
     final reference = Firestore.instance.document(path);
     print('$path: $data');
-    await reference.setData(data);
+    await reference.setData(data, merge: merge);
   }
 
   Future<void> addDataToArray(

@@ -6,7 +6,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
-import 'package:storify/widgets/my_playlists_page/playlist_item.dart';
+import 'package:storify/widgets/playlist_item/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
 
 class MyPlaylistsPage extends StatefulWidget {

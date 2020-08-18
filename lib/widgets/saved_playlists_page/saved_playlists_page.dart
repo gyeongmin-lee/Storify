@@ -4,7 +4,7 @@ import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
-import 'package:storify/widgets/my_playlists_page/playlist_item.dart';
+import 'package:storify/widgets/playlist_item/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
 
 class SavedPlaylistsPage extends StatefulWidget {
