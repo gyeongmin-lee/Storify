@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
-import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_page_app_bar.dart';
@@ -18,7 +18,6 @@ import 'package:storify/widgets/player_page/player_page_loading.dart';
 import 'package:storify/widgets/player_page/player_play_button.dart';
 import 'package:storify/widgets/player_page/player_progress_bar.dart';
 import 'package:storify/widgets/player_page/player_track_info.dart';
-import 'package:provider/provider.dart';
 
 class PlayerPage extends StatefulWidget {
   @override
@@ -75,13 +74,6 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
         track: currentTrack,
         originalStoryText: storyText,
         onStoryTextEdited: _handleEditStoryText);
-  }
-
-  void _onPlaylistNotOwned() {
-    CustomToast.showTextToast(
-        text:
-            'You can only add story to \nplaylists you\'ve created.', // TODO Change to visible / not visible
-        toastType: ToastType.warning);
   }
 
   Future<void> _onPlayButtonTapped() async {
@@ -232,14 +224,14 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
               SizedBox(
                 height: 8.0,
               ),
-              CustomRoundedButton(
-                size: ButtonSize.small,
-                buttonText: storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
-                onPressed: isOwned
-                    ? () =>
-                        _onEditOrAddPressed(storyText, currentTrack, playlist)
-                    : _onPlaylistNotOwned,
-              ),
+              if (isOwned)
+                CustomRoundedButton(
+                  size: ButtonSize.small,
+                  buttonText:
+                      storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
+                  onPressed: () =>
+                      _onEditOrAddPressed(storyText, currentTrack, playlist),
+                ),
               SizedBox(
                 height: 16.0,
               )
