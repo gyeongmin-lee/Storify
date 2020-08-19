@@ -7,7 +7,6 @@ import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playlist.dart';
 import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/spotify_api.dart';
-import 'package:storify/widgets/_common/custom_toast.dart';
 
 class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
   final Playlist playlist;
@@ -68,20 +67,6 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
     if (event is PlayerTrackStoryTextUpdated &&
         currentState is PlayerTracksSuccess) {
       yield currentState.copyWith(storyText: event.storyText);
-    }
-
-    if (event is PlayerTrackStoryTextEdited &&
-        currentState is PlayerTracksSuccess) {
-      try {
-        await _firebaseDB.setStory(event.updatedStoryText,
-            currentState.playlist, currentState.currentTrack.id);
-        CustomToast.showTextToast(
-            text: 'Updated', toastType: ToastType.success);
-      } catch (e) {
-        print(e);
-        CustomToast.showTextToast(
-            text: 'Failed to update story', toastType: ToastType.error);
-      }
     }
   }
 

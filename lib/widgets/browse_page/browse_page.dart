@@ -57,7 +57,7 @@ class BrowsePage extends StatelessWidget {
                     return ListView.separated(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.symmetric(vertical: 0.0),
+                        padding: EdgeInsets.only(top: 0.0),
                         itemBuilder: (context, index) {
                           final playlist = playlists[index];
                           return PlayListItem(

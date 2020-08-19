@@ -8,8 +8,10 @@ import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playlist.dart';
 import 'package:storify/models/track.dart';
+import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_rounded_button.dart';
+import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/edit_story_page/edit_story_page.dart';
 import 'package:storify/widgets/player_page/player_carousel.dart';
 import 'package:storify/widgets/player_page/player_page_app_bar.dart';
@@ -44,6 +46,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
   CurrentPlaybackBloc _currentPlaybackBloc;
   ScrollController _controller;
   CarouselController _carouselController;
+  FirebaseDB _firebaseDB;
 
   @override
   void initState() {
@@ -52,6 +55,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
     _carouselController = CarouselController();
     _playerTracksBloc = BlocProvider.of<PlayerTracksBloc>(context);
     _currentPlaybackBloc = BlocProvider.of<CurrentPlaybackBloc>(context);
+    _firebaseDB = FirebaseDB();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -73,7 +77,8 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
     EditStoryPage.show(context,
         track: currentTrack,
         originalStoryText: storyText,
-        onStoryTextEdited: _handleEditStoryText);
+        onStoryTextEdited: (String newText) =>
+            _handleEditStoryText(newText, playlist, currentTrack.id));
   }
 
   Future<void> _onPlayButtonTapped() async {
@@ -99,8 +104,16 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _handleEditStoryText(String newStoryText) async {
-    _playerTracksBloc.add(PlayerTrackStoryTextEdited(newStoryText));
+  Future<void> _handleEditStoryText(
+      String newStoryText, Playlist playlist, String currentTrackId) async {
+    try {
+      await _firebaseDB.setStory(newStoryText, playlist, currentTrackId);
+      CustomToast.showTextToast(text: 'Updated', toastType: ToastType.success);
+    } catch (e) {
+      print(e);
+      CustomToast.showTextToast(
+          text: 'Failed to update story', toastType: ToastType.error);
+    }
   }
 
   @override

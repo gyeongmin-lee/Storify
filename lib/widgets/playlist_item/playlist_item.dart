@@ -59,7 +59,6 @@ class _PlayListItemState extends State<PlayListItem> {
   }
 
   void _onLongPress(BuildContext context) {
-    print(_slidableController?.activeState);
     if (_slidableController?.activeState == null)
       Slidable.of(context)?.open(actionType: SlideActionType.secondary);
     else

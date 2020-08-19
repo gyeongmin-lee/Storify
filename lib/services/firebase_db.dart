@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:storify/models/playlist.dart';
+import 'package:storify/services/algolia_service.dart';
 import 'package:storify/services/api_path.dart';
 import 'package:storify/services/firestore_service.dart';
 import 'package:storify/constants/values.dart' as Constants;
 
 class FirebaseDB {
   final _service = FirestoreService.instance;
+  final _angoliaService = AlgoliaService();
 
   Future<void> setStory(
       String storyText, Playlist playlist, String trackId) async {
@@ -19,6 +21,7 @@ class FirebaseDB {
         'timestamp': FieldValue.serverTimestamp()
       },
     );
+    await _angoliaService.updateIndexWithPlaylist(playlist.toJson());
   }
 
   Stream<String> storyStream(

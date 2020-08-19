@@ -26,12 +26,3 @@ class PlayerTrackStoryTextUpdated extends PlayerTracksEvent {
   @override
   List<Object> get props => [storyText];
 }
-
-class PlayerTrackStoryTextEdited extends PlayerTracksEvent {
-  final String updatedStoryText;
-
-  PlayerTrackStoryTextEdited(this.updatedStoryText);
-
-  @override
-  List<Object> get props => [updatedStoryText];
-}
