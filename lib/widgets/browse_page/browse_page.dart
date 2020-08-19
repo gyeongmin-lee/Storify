@@ -5,6 +5,7 @@ import 'package:storify/services/firebase_db.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
 import 'package:storify/widgets/playlist_item/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
+import 'package:storify/widgets/search_playlists_page.dart/search_playlists_page.dart';
 
 class BrowsePage extends StatelessWidget {
   @override
@@ -22,7 +23,7 @@ class BrowsePage extends StatelessWidget {
             SizedBox(
               height: 16.0,
             ),
-            _buildSearchBox(),
+            _buildSearchBox(context),
             SizedBox(
               height: 24.0,
             ),
@@ -93,38 +94,43 @@ class BrowsePage extends StatelessWidget {
     );
   }
 
-  Container _buildSearchBox() {
-    return Container(
-      alignment: Alignment.center,
-      height: 48.0,
-      margin: EdgeInsets.symmetric(horizontal: 16.0),
-      width: double.infinity,
-      decoration: BoxDecoration(
-          color: Colors.white12,
-          border: Border.all(
-            color: Colors.transparent,
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.search,
-            color: Colors.white38,
-            size: 22.0,
-          ),
-          SizedBox(
-            width: 6.0,
-          ),
-          Text(
-            "Search for playlists",
-            style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.white38,
-                fontWeight: FontWeight.w300,
-                letterSpacing: 0.5),
-          ),
-        ],
+  Widget _buildSearchBox(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => SearchPlaylistsPage(),
+      )),
+      child: Container(
+        alignment: Alignment.center,
+        height: 48.0,
+        margin: EdgeInsets.symmetric(horizontal: 16.0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Colors.white12,
+            border: Border.all(
+              color: Colors.transparent,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search,
+              color: Colors.white38,
+              size: 22.0,
+            ),
+            SizedBox(
+              width: 6.0,
+            ),
+            Text(
+              "Search for playlists",
+              style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white38,
+                  fontWeight: FontWeight.w300,
+                  letterSpacing: 0.5),
+            ),
+          ],
+        ),
       ),
     );
   }

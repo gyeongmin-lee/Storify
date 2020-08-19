@@ -12,3 +12,4 @@ const Duration playerStatePollDuration = Duration(milliseconds: 1000);
 const Duration dialogAnimationDuration = Duration(milliseconds: 300);
 const int searchMaxLength = 50;
 const int recentlyUpdatedPlaylistsLimit = 50;
+const int searchDebounceMillisecond = 300;
