@@ -9,7 +9,9 @@ import 'package:storify/services/spotfy_uri_manager.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/home_page/home_page.dart';
+import 'package:storify/widgets/onboarding_page/onboarding_page.dart';
 import 'package:storify/widgets/sign_in_page/sign_in_page.dart';
+import 'package:storify/widgets/splash_page/splash_page.dart';
 import 'package:uni_links/uni_links.dart';
 
 class App extends StatefulWidget {
@@ -67,7 +69,7 @@ class _AppState extends State<App> {
     return GetMaterialApp(
         title: 'Storify',
         themeMode: ThemeMode.dark,
-        initialRoute: SignInPage.routeName,
+        initialRoute: SplashPage.routeName,
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: Color(0xFF191414),
           cursorColor: Colors.green[700],
@@ -92,6 +94,8 @@ class _AppState extends State<App> {
         routes: {
           SignInPage.routeName: (context) => SignInPage(),
           HomePage.routeName: (context) => HomePage(),
+          OnboardingPage.routeName: (context) => OnboardingPage(),
+          SplashPage.routeName: (context) => SplashPage(),
         });
   }
 }

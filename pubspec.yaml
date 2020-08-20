@@ -53,6 +53,10 @@ dependencies:
   share: ^0.6.4+3
   flutter_slidable: ^0.5.5
   algolia: ^0.1.7
+  introduction_screen: ^1.0.9
+  after_layout: ^1.0.7+2
+  shared_preferences: ^0.5.8
+  flutter_svg: ^0.18.0
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +68,7 @@ dev_dependencies:
 flutter:
   assets:
     - .env
+    - images/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
