@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
               icon: Padding(
                 padding: _bottomNavigationSpacing,
-                child: Icon(Icons.collections_bookmark),
+                child: Icon(Icons.bookmark),
               ),
               title: Text('SAVED PLAYLISTS'),
             ),

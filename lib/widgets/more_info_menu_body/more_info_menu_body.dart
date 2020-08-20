@@ -48,6 +48,10 @@ class MoreInfoMenuBody extends StatelessWidget {
               CustomFlatTextButton(
                 text: 'OPEN IN SPOTIFY',
                 onPressed: _onOpenInSpotify,
+                leadingWidget: Image.asset(
+                  'images/spotify.png',
+                  width: 32.0,
+                ),
               ),
               SizedBox(
                 height: 16.0,
@@ -55,6 +59,11 @@ class MoreInfoMenuBody extends StatelessWidget {
               CustomFlatTextButton(
                 text: 'SHARE AS LINK',
                 onPressed: _onShareAsLink,
+                leadingWidget: Icon(
+                  Icons.link,
+                  color: CustomColors.primaryTextColor,
+                  size: 32.0,
+                ),
               ),
               SizedBox(
                 height: 16.0,
@@ -72,6 +81,13 @@ class MoreInfoMenuBody extends StatelessWidget {
                       onPressed: isPlaylistSaved
                           ? () => _onUnsavePlaylist(context)
                           : () => _onSavePlaylist(context),
+                      leadingWidget: Icon(
+                        isPlaylistSaved
+                            ? Icons.bookmark
+                            : Icons.bookmark_border,
+                        color: CustomColors.primaryTextColor,
+                        size: 32.0,
+                      ),
                     );
                   } else {
                     return Container(

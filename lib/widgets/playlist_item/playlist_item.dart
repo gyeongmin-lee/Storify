@@ -78,7 +78,12 @@ class _PlayListItemState extends State<PlayListItem> {
           caption: 'OPEN IN\nSPOTIFY',
           color: Colors.white.withOpacity(0.05),
           foregroundColor: CustomColors.primaryTextColor,
-          icon: Icons.open_in_new,
+          iconWidget: Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Opacity(
+                opacity: 0.75,
+                child: Image.asset('images/spotify_white.png', width: 24.0)),
+          ),
           onTap: _onOpenInSpotify,
         ),
         IconSlideAction(
@@ -107,7 +112,7 @@ class _PlayListItemState extends State<PlayListItem> {
                 iconWidget: Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: Icon(
-                    Icons.collections_bookmark,
+                    isPlaylistSaved ? Icons.bookmark : Icons.bookmark_border,
                     color: CustomColors.primaryTextColor,
                   ),
                 ),
@@ -123,7 +128,7 @@ class _PlayListItemState extends State<PlayListItem> {
                 iconWidget: Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: Icon(
-                    Icons.collections_bookmark,
+                    Icons.bookmark_border,
                     color: Colors.white24,
                   ),
                 ),
