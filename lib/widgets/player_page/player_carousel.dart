@@ -53,29 +53,20 @@ class _PlayerCarouselState extends State<PlayerCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: CarouselSlider(
-        carouselController: widget.carouselController,
-        options: CarouselOptions(
-          height: 54.0,
-          viewportFraction: 0.20,
-          enableInfiniteScroll: false,
-          enlargeCenterPage: true,
-          enlargeStrategy: CenterPageEnlargeStrategy.height,
-          onPageChanged: _handlePageChange,
-        ),
-        items: widget.tracks.map((track) {
-          return GestureDetector(
-            onTap: () => _onTrackTapped(track),
-            child: CircleAvatar(
-              radius: 32.0,
-              backgroundColor: Colors.transparent,
-              child: ClipOval(child: Image.network(track.albumImageUrl)),
-            ),
-          );
-        }).toList(),
+    return CarouselSlider(
+      carouselController: widget.carouselController,
+      options: CarouselOptions(
+        aspectRatio: 5 / 1,
+        viewportFraction: 0.20,
+        enableInfiniteScroll: false,
+        onPageChanged: _handlePageChange,
       ),
+      items: widget.tracks.map((track) {
+        return GestureDetector(
+          onTap: () => _onTrackTapped(track),
+          child: Image.network(track.albumImageUrl, fit: BoxFit.fill),
+        );
+      }).toList(),
     );
   }
 }

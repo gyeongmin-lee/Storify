@@ -9,13 +9,12 @@ class PlayerPlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(9.0),
       child: Icon(
         isPlaying ? Icons.pause : Icons.play_arrow,
-        size: 36.0,
+        size: 40.0,
         color: CustomColors.primaryTextColor,
       ),
-      decoration: BoxDecoration(color: Colors.black26, shape: BoxShape.circle),
+      decoration: BoxDecoration(shape: BoxShape.circle),
     );
   }
 }

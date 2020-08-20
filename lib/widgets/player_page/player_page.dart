@@ -222,7 +222,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
     final auth = context.read<SpotifyAuth>();
     bool isOwned = playlist.owner.id == auth.user.id;
     return Padding(
-      padding: const EdgeInsets.only(top: 80.0, bottom: 36.0),
+      padding: const EdgeInsets.only(top: 80.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -232,58 +232,79 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
             currentTrack: currentTrack,
             controller: _controller,
           ),
-          Column(children: [
-            Column(children: [
-              SizedBox(
-                height: 8.0,
-              ),
-              if (isOwned)
-                CustomRoundedButton(
-                  size: ButtonSize.small,
-                  buttonText:
-                      storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
-                  onPressed: () =>
-                      _onEditOrAddPressed(storyText, currentTrack, playlist),
+          BlocBuilder<CurrentPlaybackBloc, CurrentPlaybackState>(
+              builder: (context, state) {
+            var _isPlaying = false;
+            if (state is CurrentPlaybackSuccess)
+              _isPlaying = state.playback.isPlaying;
+
+            return Column(children: [
+              Column(children: [
+                SizedBox(
+                  height: 8.0,
                 ),
-              SizedBox(
-                height: 16.0,
+                if (isOwned)
+                  CustomRoundedButton(
+                    size: ButtonSize.small,
+                    buttonText:
+                        storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
+                    onPressed: () =>
+                        _onEditOrAddPressed(storyText, currentTrack, playlist),
+                  ),
+                SizedBox(
+                  height: 16.0,
+                )
+              ]),
+              _buildProgressBar(state, currentTrack),
+              Stack(
+                alignment: AlignmentDirectional.center,
+                children: <Widget>[
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.white10,
+                    ),
+                  ),
+                  PlayerCarousel(
+                      tracks: tracks,
+                      onPageChanged: _handleTrackChanged,
+                      carouselController: _carouselController,
+                      onPlayButtonTap: _onPlayButtonTapped),
+                  IgnorePointer(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 5,
+                      height: MediaQuery.of(context).size.width / 5,
+                      padding: EdgeInsets.all(6.0),
+                      decoration: new BoxDecoration(
+                        color: Colors.black54,
+                      ),
+                      child: PlayerPlayButton(
+                        isPlaying: _isPlaying,
+                      ),
+                    ),
+                  )
+                ],
               )
-            ]),
-            Stack(
-              alignment: AlignmentDirectional.center,
-              children: <Widget>[
-                PlayerCarousel(
-                    tracks: tracks,
-                    onPageChanged: _handleTrackChanged,
-                    carouselController: _carouselController,
-                    onPlayButtonTap: _onPlayButtonTapped),
-                BlocBuilder<CurrentPlaybackBloc, CurrentPlaybackState>(
-                  builder: (context, state) {
-                    if (state is CurrentPlaybackSuccess &&
-                        state.playback.trackId == currentTrack.id) {
-                      final currentPosition =
-                          state.playback.progressMs.toDouble();
-                      final totalDuration = currentTrack.durationMs.toDouble();
-                      if (currentPosition > totalDuration)
-                        return PlaceHolderPlayerProgressBar();
-                      return PlayerProgressBar(
-                        totalValue: totalDuration,
-                        initialValue: currentPosition,
-                        size: 72.0,
-                        innerWidget: PlayerPlayButton(
-                          isPlaying: state.playback.isPlaying,
-                        ),
-                      );
-                    }
-                    return PlaceHolderPlayerProgressBar();
-                  },
-                ),
-              ],
-            )
-          ]),
+            ]);
+          }),
         ],
       ),
     );
+  }
+
+  _buildProgressBar(CurrentPlaybackState state, Track currentTrack) {
+    if (state is CurrentPlaybackSuccess &&
+        state.playback.trackId == currentTrack.id) {
+      final currentPosition = state.playback.progressMs.toDouble();
+      final totalDuration = currentTrack.durationMs.toDouble();
+      if (currentPosition > totalDuration)
+        return PlaceHolderPlayerProgressBar();
+      return LinearProgressIndicator(
+        value: currentPosition / totalDuration,
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+        backgroundColor: Colors.white38,
+      );
+    }
+    return PlaceHolderPlayerProgressBar();
   }
 }
 
@@ -294,13 +315,10 @@ class PlaceHolderPlayerProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlayerProgressBar(
-      totalValue: 360,
-      initialValue: 0,
-      size: 72.0,
-      innerWidget: PlayerPlayButton(
-        isPlaying: false,
-      ),
+    return LinearProgressIndicator(
+      value: 0.0,
+      valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+      backgroundColor: Colors.white38,
     );
   }
 }
