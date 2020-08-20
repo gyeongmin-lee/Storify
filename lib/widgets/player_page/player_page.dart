@@ -236,7 +236,8 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
               builder: (context, state) {
             var _isPlaying = false;
             if (state is CurrentPlaybackSuccess)
-              _isPlaying = state.playback.isPlaying;
+              _isPlaying = state.playback.isPlaying &&
+                  state.playback.playlistId == playlist.id;
 
             return Column(children: [
               Column(children: [

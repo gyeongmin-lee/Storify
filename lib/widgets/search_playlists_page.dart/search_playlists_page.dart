@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playlist.dart';
@@ -160,7 +161,13 @@ class _SearchPlaylistsPageState extends State<SearchPlaylistsPage> {
         child: ListView.separated(
             padding: EdgeInsets.symmetric(vertical: 0.0),
             itemBuilder: (context, index) {
-              final playlist = _playlists[index];
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SvgPicture.asset('images/search_by_algolia.svg'),
+                );
+              }
+              final playlist = _playlists[index - 1];
               return PlayListItem(
                   subtitleText: 'BY ${playlist.owner.name}',
                   playlist: playlist,
@@ -171,7 +178,7 @@ class _SearchPlaylistsPageState extends State<SearchPlaylistsPage> {
                                 PlayerPage.create(playlist: playlist)),
                       ));
             },
-            itemCount: _playlists.length,
+            itemCount: _playlists.length + 1,
             separatorBuilder: (context, index) => Divider(
                   color: Colors.white10,
                   thickness: 1.0,
