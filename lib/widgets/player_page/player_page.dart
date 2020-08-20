@@ -18,14 +18,18 @@ import 'package:storify/widgets/player_page/player_page_app_bar.dart';
 import 'package:storify/widgets/player_page/player_page_error.dart';
 import 'package:storify/widgets/player_page/player_page_loading.dart';
 import 'package:storify/widgets/player_page/player_play_button.dart';
-import 'package:storify/widgets/player_page/player_progress_bar.dart';
 import 'package:storify/widgets/player_page/player_track_info.dart';
 
 class PlayerPage extends StatefulWidget {
+  const PlayerPage({Key key, this.isOpenedFromDeepLink = false})
+      : super(key: key);
+  final bool isOpenedFromDeepLink;
+
   @override
   _PlayerState createState() => _PlayerState();
 
-  static Widget create({@required Playlist playlist}) {
+  static Widget create(
+      {@required Playlist playlist, bool isOpenedFromDeepLink = false}) {
     return BlocProvider(
       create: (_) => PlayerTracksBloc(
         playlist: playlist,
@@ -35,7 +39,9 @@ class PlayerPage extends StatefulWidget {
             create: (_) => CurrentPlaybackBloc(
                 playerTracksBloc: BlocProvider.of<PlayerTracksBloc>(context))
               ..add(CurrentPlaybackLoaded()),
-            child: PlayerPage());
+            child: PlayerPage(
+              isOpenedFromDeepLink: isOpenedFromDeepLink,
+            ));
       }),
     );
   }
@@ -199,7 +205,9 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
                 child: Scaffold(
                   extendBodyBehindAppBar: true,
                   backgroundColor: Colors.transparent,
-                  appBar: PlayerPageAppBar(playlist: state.playlist),
+                  appBar: PlayerPageAppBar(
+                      playlist: state.playlist,
+                      isOpenedFromDeepLink: widget.isOpenedFromDeepLink),
                   body: _buildContent(state),
                 ),
               )

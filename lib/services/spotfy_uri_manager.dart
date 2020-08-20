@@ -15,7 +15,7 @@ class SpotifyUriManager {
     }
 
     final playlist = await SpotifyApi.getPlaylist(playlistId);
-    Get.off(PlayerPage.create(playlist: playlist));
+    Get.off(PlayerPage.create(playlist: playlist, isOpenedFromDeepLink: true));
   }
 
   void handleFail() {
