@@ -87,7 +87,7 @@ class _SignInPageState extends State<SignInPage> {
                 SizedBox(
                   height: 4.0,
                 ),
-                Text('Add a story to your Spotify Playlists',
+                Text('Add captions to your Spotify Playlists',
                     style: TextStyles.light.copyWith(
                       fontSize: 18.0,
                     ))
