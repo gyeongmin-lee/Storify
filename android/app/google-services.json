@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:431594792101:android:1b2fb143dc3fc8268e194c",
+        "mobilesdk_app_id": "1:431594792101:android:41973882250b63808e194c",
         "android_client_info": {
-          "package_name": "com.example.storify"
+          "package_name": "com.minlee.storify"
         }
       },
       "oauth_client": [

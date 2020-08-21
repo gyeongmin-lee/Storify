@@ -3,7 +3,7 @@
         "apps": [],
         "details": [
             {
-                "appID": "com.example.storify",
+                "appID": "com.minlee.storify",
                 "paths": [ "*" ]
             }
         ]

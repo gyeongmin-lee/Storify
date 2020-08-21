@@ -1,4 +1,4 @@
-package com.example.storify
+package com.minlee.storify
 
 import io.flutter.embedding.android.FlutterActivity
 

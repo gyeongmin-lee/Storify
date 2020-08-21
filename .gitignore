@@ -10,6 +10,7 @@
 .svn/
 .env*
 key.properties
+*.jar
 
 # IntelliJ related
 *.iml
