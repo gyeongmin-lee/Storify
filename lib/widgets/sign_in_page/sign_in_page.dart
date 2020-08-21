@@ -80,12 +80,9 @@ class _SignInPageState extends State<SignInPage> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                Text(
-                  'STORIFY',
-                  style: TextStyles.bannerText,
-                ),
-                SizedBox(
-                  height: 4.0,
+                Image.asset(
+                  'images/text_logo.png',
+                  width: 280.0,
                 ),
                 Text('Add captions to your Spotify Playlists',
                     style: TextStyles.light.copyWith(
