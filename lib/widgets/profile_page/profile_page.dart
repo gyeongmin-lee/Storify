@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
-import 'package:provider/provider.dart';
 import 'package:storify/widgets/_common/custom_image_provider.dart';
-import 'package:storify/widgets/_common/custom_rounded_button.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
+import 'package:storify/widgets/about_page/about_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -18,43 +18,81 @@ class ProfilePage extends StatelessWidget {
     }
   }
 
+  void _openFeedback() async {
+    final url = 'https://forms.gle/xj5uPgKtkEawxwPu5';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      CustomToast.showTextToast(
+          text: 'Failed to open feedback link', toastType: ToastType.error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<SpotifyAuth>();
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(
-            top: 160.0, bottom: 120.0, left: 24.0, right: 24.0),
+    return SafeArea(
+      child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              children: <Widget>[
-                CircleAvatar(
+            ListTile(
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              leading: Container(
+                height: 48.0,
+                width: 48.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: CircleAvatar(
                     radius: 54.0,
                     backgroundColor: Colors.transparent,
                     backgroundImage: CustomImageProvider.cachedImage(
                         auth.user.avatarImageUrl)),
-                SizedBox(
-                  height: 8.0,
-                ),
-                Text('Signed in as',
-                    style: TextStyles.light.copyWith(fontSize: 14.0)),
-                Text(auth.user.name,
-                    style: TextStyles.primary.copyWith(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: -0.5)),
-              ],
+              ),
+              title: Text(auth.user.name,
+                  style: TextStyles.primary.copyWith(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: -0.5)),
             ),
-            CustomRoundedButton(
-              borderColor: Colors.green,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              regularLetterSpacing: 0.8,
-              onPressed: _openSpotify,
-              buttonText: 'OPEN SPOTIFY',
+            Divider(
+              color: Colors.white10,
+              thickness: 1.0,
+              height: 1.0,
+            ),
+            ListTile(
+              leading: Image.asset(
+                'images/spotify.png',
+                width: 24.0,
+              ),
+              title: Text('Open Spotify',
+                  style:
+                      TextStyles.primary.copyWith(fontWeight: FontWeight.bold)),
+              onTap: _openSpotify,
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.send,
+                color: CustomColors.primaryTextColor,
+              ),
+              title: Text('Send Feedback',
+                  style:
+                      TextStyles.primary.copyWith(fontWeight: FontWeight.bold)),
+              onTap: _openFeedback,
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.info,
+                color: CustomColors.primaryTextColor,
+              ),
+              title: Text('About',
+                  style:
+                      TextStyles.primary.copyWith(fontWeight: FontWeight.bold)),
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AboutPage(),
+              )),
             ),
           ],
         ),

@@ -34,7 +34,6 @@ class _HomePageState extends State<HomePage> {
     },
     {
       'hideAppBar': true,
-      'titleText': 'PROFILE',
       'widget': ProfilePage(),
     },
   ];
