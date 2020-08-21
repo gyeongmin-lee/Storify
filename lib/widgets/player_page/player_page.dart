@@ -256,7 +256,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
                   CustomRoundedButton(
                     size: ButtonSize.small,
                     buttonText:
-                        storyText == '' ? 'ADD A STORY' : 'EDIT YOUR STORY',
+                        storyText == '' ? 'ADD A CAPTION' : 'EDIT CAPTION',
                     onPressed: () =>
                         _onEditOrAddPressed(storyText, currentTrack, playlist),
                   ),
