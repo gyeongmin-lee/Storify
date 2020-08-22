@@ -16,10 +16,7 @@ class FirebaseDB {
         path: APIPath.story(playlist.id, trackId), data: {'text': storyText});
     await _service.setData(
       path: APIPath.playlist(playlist.id),
-      data: {
-        'playlist_data': playlist.toJson(),
-        'timestamp': FieldValue.serverTimestamp()
-      },
+      data: {...playlist.toJson(), 'timestamp': FieldValue.serverTimestamp()},
     );
     await _angoliaService.updateIndexWithPlaylist(playlist.toJson());
   }
@@ -32,10 +29,10 @@ class FirebaseDB {
 
   Stream<List<Playlist>> playlistsStream() => _service.collectionStream(
         path: APIPath.playlists,
-        builder: (data, documentID) =>
-            Playlist.fromFirebaseSnapshot(data['playlist_data']),
+        builder: (data, documentID) => Playlist.fromFirebaseSnapshot(data),
         queryBuilder: (query) => query
             .orderBy('timestamp', descending: true)
+            .where('is_public', isEqualTo: true)
             .limit(Constants.recentlyUpdatedPlaylistsLimit),
       );
 
@@ -49,8 +46,7 @@ class FirebaseDB {
   Stream<List<Playlist>> savedPlaylistsStream({@required String userId}) =>
       _service.collectionStream(
         path: APIPath.savedPlaylists(userId: userId),
-        builder: (data, documentID) =>
-            Playlist.fromFirebaseSnapshot(data['playlist_data']),
+        builder: (data, documentID) => Playlist.fromFirebaseSnapshot(data),
       );
 
   Future<void> savePlaylist(
@@ -58,7 +54,7 @@ class FirebaseDB {
     await _service.setData(
         path: APIPath.savedPlaylist(userId: userId, playlistId: playlist.id),
         data: {
-          'playlist_data': playlist.toJson(),
+          ...playlist.toJson(),
           'timestamp': FieldValue.serverTimestamp()
         });
   }
