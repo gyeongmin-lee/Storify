@@ -1,4 +1,4 @@
-<img align="left" width="120" height="120" src="https://github.com/gyeongmin-lee/Storify/blob/master/images/logo.png" alt="App Icon">
+<img align="left" width="100" height="100" src="https://github.com/gyeongmin-lee/Storify/blob/master/images/logo.png" alt="App Icon">
 
 # Storify
 
@@ -9,6 +9,13 @@ Add captions to songs in your Spotify playlists
 
 ## Screenshots
 
+<p align="center">
+  <img alt='Screenshot 1' src='https://github.com/gyeongmin-lee/Storify/blob/master/screenshots/Screenshot_20200822-201717.jpg' width="300"/>
+  <img alt='Screenshot 2' src='https://github.com/gyeongmin-lee/Storify/blob/master/screenshots/Screenshot_20200822-201734.jpg' width="300"/>
+  <img alt='Screenshot 3' src='https://github.com/gyeongmin-lee/Storify/blob/master/screenshots/Screenshot_20200822-201803.jpg' width="300"/>
+  <img alt='Screenshot 4' src='https://github.com/gyeongmin-lee/Storify/blob/master/screenshots/Screenshot_20200822-201811.jpg' width="300"/>
+  <img alt='Screenshot 5' src='https://github.com/gyeongmin-lee/Storify/blob/master/screenshots/Screenshot_20200822-201833.jpg' width="300"/>
+ </p>
 
 ## Features
 - Sign in using Spotify 
