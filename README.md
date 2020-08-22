@@ -1,4 +1,4 @@
-<img align="left" width="100" height="100" src="https://github.com/gyeongmin-lee/Storify/blob/master/images/logo.png" alt="App Icon">
+<img align="left" width="80" height="80" src="https://github.com/gyeongmin-lee/Storify/blob/master/images/logo.png" alt="App Icon">
 
 # Storify
 
