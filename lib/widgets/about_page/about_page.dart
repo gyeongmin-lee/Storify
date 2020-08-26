@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
@@ -6,6 +8,18 @@ import 'package:url_launcher/url_launcher.dart';
 class AboutPage extends StatelessWidget {
   void _showProfile() async {
     final url = 'https://github.com/gyeongmin-lee';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      CustomToast.showTextToast(
+          text: 'Failed to open link', toastType: ToastType.error);
+    }
+  }
+
+  void _showRatingPage() async {
+    var url = Platform.isAndroid
+        ? 'https://play.google.com/store/apps/details?id=com.minlee.storify'
+        : 'https://play.google.com/store/apps/details?id=com.minlee.storify';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -48,7 +62,7 @@ class AboutPage extends StatelessWidget {
               title: Text('Rate our app',
                   style: TextStyles.primary
                       .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0)),
-              onTap: () {},
+              onTap: _showRatingPage,
             ),
             ListTile(
               leading: Icon(
