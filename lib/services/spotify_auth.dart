@@ -11,7 +11,7 @@ import 'package:storify/services/spotify_api.dart';
 import 'package:storify/services/spotify_auth_api.dart';
 
 class SpotifyAuth extends ChangeNotifier {
-  User user;
+  User? user;
 
   /// Authenticate user and and get token and user information
   ///
@@ -25,7 +25,7 @@ class SpotifyAuth extends ChangeNotifier {
     try {
       final result = await FlutterWebAuth.authenticate(
         url: APIPath.requestAuthorization(clientId, redirectUri, state),
-        callbackUrlScheme: DotEnv().env['CALLBACK_URL_SCHEME'],
+        callbackUrlScheme: DotEnv().env['CALLBACK_URL_SCHEME']!,
       );
 
       // Validate state from response

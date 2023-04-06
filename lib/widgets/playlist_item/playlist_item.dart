@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 
 class PlayListItem extends StatefulWidget {
   const PlayListItem(
-      {Key key,
-      @required this.playlist,
+      {Key? key,
+      required this.playlist,
       this.onPressed,
       this.titleText,
       this.subtitleText,
@@ -19,18 +19,18 @@ class PlayListItem extends StatefulWidget {
       : super(key: key);
 
   final Playlist playlist;
-  final VoidCallback onPressed;
-  final String titleText;
-  final String subtitleText;
-  final Widget trailing;
+  final VoidCallback? onPressed;
+  final String? titleText;
+  final String? subtitleText;
+  final Widget? trailing;
 
   @override
   _PlayListItemState createState() => _PlayListItemState();
 }
 
 class _PlayListItemState extends State<PlayListItem> {
-  FirebaseDB _firebaseDB;
-  SlidableController _slidableController;
+  late FirebaseDB _firebaseDB;
+  SlidableController? _slidableController;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _PlayListItemState extends State<PlayListItem> {
   }
 
   Future<void> _onOpenInSpotify() async {
-    await PlaylistActions.openInSpotify(widget.playlist.externalUrl);
+    await PlaylistActions.openInSpotify(widget.playlist.externalUrl!);
   }
 
   Future<void> _onShareLink() async {
@@ -49,22 +49,22 @@ class _PlayListItemState extends State<PlayListItem> {
 
   Future<void> _onSavePlaylist(BuildContext context) async {
     final spotifyAuth = context.read<SpotifyAuth>();
-    await PlaylistActions.savePlaylist(spotifyAuth.user.id, widget.playlist);
+    await PlaylistActions.savePlaylist(spotifyAuth.user!.id, widget.playlist);
   }
 
   Future<void> _onUnsavePlaylist(BuildContext context) async {
     final spotifyAuth = context.read<SpotifyAuth>();
     await PlaylistActions.unsavePlaylist(
-        spotifyAuth.user.id, widget.playlist.id);
+        spotifyAuth.user!.id, widget.playlist.id);
   }
 
   void _onLongPress(BuildContext context) {
-    _slidableController.openEndActionPane();
+    _slidableController!.openEndActionPane();
   }
 
   @override
   Widget build(BuildContext context) {
-    final userId = context.watch<SpotifyAuth>().user.id;
+    final userId = context.watch<SpotifyAuth>().user!.id;
     return Slidable(
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
@@ -97,7 +97,7 @@ class _PlayListItemState extends State<PlayListItem> {
                 print(snapshot.error);
               }
               if (snapshot.hasData) {
-                final isPlaylistSaved = snapshot.data;
+                final isPlaylistSaved = snapshot.data!;
                 return SlidableAction(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   icon:
@@ -133,7 +133,7 @@ class _PlayListItemState extends State<PlayListItem> {
                 widget.playlist.playlistImageUrl),
             backgroundColor: Colors.transparent,
           ),
-          title: Text(widget.titleText ?? widget.playlist.name,
+          title: Text(widget.titleText ?? widget.playlist.name!,
               style: TextStyles.primary.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,

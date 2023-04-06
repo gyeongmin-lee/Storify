@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:storify/constants/values.dart' as Constants;
@@ -64,7 +63,7 @@ class SpotifyApi {
     }
   }
 
-  static Future<Playlist> getPlaylist(String playlistId) async {
+  static Future<Playlist> getPlaylist(String? playlistId) async {
     final response =
         await client.get(Uri.parse(APIPath.getPlaylist(playlistId)));
 
@@ -80,7 +79,7 @@ class SpotifyApi {
     }
   }
 
-  static Future<List<Track>> getTracks(String playlistId) async {
+  static Future<List<Track>> getTracks(String? playlistId) async {
     final response = await client.get(Uri.parse(APIPath.getTracks(playlistId)));
 
     if (response.statusCode == 200) {
@@ -92,7 +91,7 @@ class SpotifyApi {
     }
   }
 
-  static Future<String> getArtistImageUrl(String href) async {
+  static Future<String?> getArtistImageUrl(String href) async {
     final response = await client.get(Uri.parse(href));
 
     if (response.statusCode == 200) {
@@ -115,9 +114,9 @@ class SpotifyApi {
   }
 
   static Future<void> play({
-    @required String playlistId,
-    @required String trackId,
-    int positionMs = 0,
+    required String? playlistId,
+    required String? trackId,
+    int? positionMs = 0,
   }) async {
     final response = await client.put(Uri.parse(APIPath.play),
         body: json.encode({
@@ -139,7 +138,7 @@ class SpotifyApi {
     if (response.statusCode == 204)
       try {
         final playback = await _getCurrentPlayback();
-        if (!playback.isPlaying)
+        if (!playback.isPlaying!)
           return;
         else
           throw Exception();
@@ -172,13 +171,13 @@ class SpotifyApi {
       } catch (_) {
         return null;
       }
-    }).asyncMap((event) async => await event);
+    }).asyncMap(((event) async => (await event)!));
   }
 
   static Future _expandNestedParam(
-      {@required List originalList,
-      @required NestedApiPathBuilder nestedApiPathBuilder,
-      @required String paramToExpand}) async {
+      {required List originalList,
+      required NestedApiPathBuilder nestedApiPathBuilder,
+      required String paramToExpand}) async {
     return Future.wait(originalList.map((item) =>
         client.get(Uri.parse(nestedApiPathBuilder(item))).then((response) {
           item[paramToExpand] = json.decode(response.body);

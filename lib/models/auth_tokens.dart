@@ -3,8 +3,8 @@ import 'package:storify/services/spotify_auth_api.dart';
 
 class AuthTokens {
   AuthTokens(this.accessToken, this.refreshToken);
-  String accessToken;
-  String refreshToken;
+  String? accessToken;
+  String? refreshToken;
 
   static String accessTokenKey = 'storify-access-token';
   static String refreshTokenKey = 'storify-refresh-token';
@@ -28,9 +28,9 @@ class AuthTokens {
     }
   }
 
-  static Future<AuthTokens> readFromStorage() async {
-    String accessKey;
-    String refreshKey;
+  static Future<AuthTokens?> readFromStorage() async {
+    String? accessKey;
+    String? refreshKey;
 
     final storage = new FlutterSecureStorage();
     accessKey = await storage.read(key: accessTokenKey);

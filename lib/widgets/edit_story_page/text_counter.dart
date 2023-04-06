@@ -3,7 +3,7 @@ import 'package:storify/constants/style.dart';
 
 class TextCounter extends StatelessWidget {
   const TextCounter(
-      {Key key, @required this.textLength, @required this.maxLength})
+      {Key? key, required this.textLength, required this.maxLength})
       : super(key: key);
   final int textLength;
   final int maxLength;

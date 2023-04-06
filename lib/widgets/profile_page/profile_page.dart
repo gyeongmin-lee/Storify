@@ -49,9 +49,9 @@ class ProfilePage extends StatelessWidget {
                     radius: 54.0,
                     backgroundColor: Colors.transparent,
                     backgroundImage: CustomImageProvider.cachedImage(
-                        auth.user.avatarImageUrl)),
+                        auth.user!.avatarImageUrl)),
               ),
-              title: Text(auth.user.name,
+              title: Text(auth.user!.name!,
                   style: TextStyles.primary.copyWith(
                       fontSize: 30.0,
                       fontWeight: FontWeight.bold,

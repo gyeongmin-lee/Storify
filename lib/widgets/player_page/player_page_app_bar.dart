@@ -8,16 +8,16 @@ import 'package:storify/widgets/more_info_menu_body/more_info_menu_body.dart';
 
 class PlayerPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   const PlayerPageAppBar(
-      {Key key, @required this.playlist, this.isOpenedFromDeepLink = false})
+      {Key? key, required this.playlist, this.isOpenedFromDeepLink = false})
       : super(key: key);
-  final Playlist playlist;
+  final Playlist? playlist;
   final bool isOpenedFromDeepLink;
 
   @override
   AppBar build(BuildContext context) {
     return AppBar(
       title: Text(
-        playlist.name,
+        playlist!.name!,
         style: TextStyles.appBarTitle.copyWith(letterSpacing: 0),
       ),
       leading: isOpenedFromDeepLink

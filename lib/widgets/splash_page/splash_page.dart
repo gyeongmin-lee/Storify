@@ -27,7 +27,7 @@ class SplashPageState extends State<SplashPage>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) => checkFirstSeen();
+  void afterFirstLayout(BuildContext context) => {checkFirstSeen()};
 
   @override
   Widget build(BuildContext context) {

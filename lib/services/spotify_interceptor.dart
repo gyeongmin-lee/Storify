@@ -6,7 +6,7 @@ import 'package:storify/models/auth_tokens.dart';
 
 class SpotifyInterceptor implements InterceptorContract {
   @override
-  Future<RequestData> interceptRequest({RequestData data}) async {
+  Future<RequestData> interceptRequest({required RequestData data}) async {
     final storage = new FlutterSecureStorage();
     final accessToken = await storage.read(key: AuthTokens.accessTokenKey);
     data.headers
@@ -15,7 +15,7 @@ class SpotifyInterceptor implements InterceptorContract {
   }
 
   @override
-  Future<ResponseData> interceptResponse({ResponseData data}) async {
+  Future<ResponseData> interceptResponse({required ResponseData data}) async {
     return data;
   }
 }

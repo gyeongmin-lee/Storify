@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
 
 class OverlayLoader {
-  static void show({@required String loadingText}) {
+  static void show({required String loadingText}) {
     BotToast.showCustomLoading(
       crossPage: false,
       backgroundColor: Colors.black38,

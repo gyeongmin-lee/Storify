@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 
 class BaseScaffold extends StatelessWidget {
-  final String titleText;
+  final String? titleText;
   final Widget bottomNavigationBar;
-  final Widget body;
-  final bool hideAppBar;
+  final Widget? body;
+  final bool? hideAppBar;
 
   const BaseScaffold(
-      {Key key,
-      @required this.titleText,
-      @required this.bottomNavigationBar,
-      @required this.body,
+      {Key? key,
+      required this.titleText,
+      required this.bottomNavigationBar,
+      required this.body,
       this.hideAppBar = false})
       : super(key: key);
 
@@ -19,10 +19,10 @@ class BaseScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: false,
-      appBar: !hideAppBar
+      appBar: !hideAppBar!
           ? AppBar(
               title: Text(
-                titleText,
+                titleText!,
                 style: TextStyles.appBarTitle,
               ),
               centerTitle: true,

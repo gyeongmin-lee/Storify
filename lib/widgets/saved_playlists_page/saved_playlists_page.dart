@@ -13,7 +13,7 @@ class SavedPlaylistsPage extends StatefulWidget {
 }
 
 class _SavedPlaylistsPageState extends State<SavedPlaylistsPage> {
-  FirebaseDB _firebaseDB;
+  late FirebaseDB _firebaseDB;
 
   @override
   void initState() {
@@ -23,12 +23,12 @@ class _SavedPlaylistsPageState extends State<SavedPlaylistsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final userId = context.watch<SpotifyAuth>().user.id;
+    final userId = context.watch<SpotifyAuth>().user!.id;
     return StreamBuilder<List<Playlist>>(
       stream: _firebaseDB.savedPlaylistsStream(userId: userId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          final playlists = snapshot.data;
+          final playlists = snapshot.data!;
           if (playlists.isEmpty) {
             return StatusIndicator(
                 status: Status.warning,

@@ -3,14 +3,14 @@ import 'package:storify/constants/style.dart';
 
 class CustomFlatTextButton extends StatelessWidget {
   const CustomFlatTextButton({
-    Key key,
+    Key? key,
     this.onPressed,
     this.text,
     this.leadingWidget,
   }) : super(key: key);
-  final VoidCallback onPressed;
-  final String text;
-  final Widget leadingWidget;
+  final VoidCallback? onPressed;
+  final String? text;
+  final Widget? leadingWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,12 @@ class CustomFlatTextButton extends StatelessWidget {
       child:
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
         if (leadingWidget != null) ...[
-          leadingWidget,
+          leadingWidget!,
           SizedBox(
             width: 12.0,
           ),
         ],
-        Text(text,
+        Text(text!,
             style: TextStyles.buttonText.copyWith(
               fontSize: 22.0,
             )),

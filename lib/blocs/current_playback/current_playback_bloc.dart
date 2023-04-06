@@ -14,10 +14,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CurrentPlaybackBloc
     extends Bloc<CurrentPlaybackEvent, CurrentPlaybackState> {
-  StreamSubscription _currentPlaybackSubscription;
+  StreamSubscription? _currentPlaybackSubscription;
   final PlayerTracksBloc playerTracksBloc;
 
-  CurrentPlaybackBloc({@required this.playerTracksBloc})
+  CurrentPlaybackBloc({required this.playerTracksBloc})
       : super(CurrentPlaybackInitial()) {
     on<CurrentPlaybackLoaded>(_currentPlaybackLoaded);
     on<CurrentPlaybackUpdated>(_currentPlaybackUpdated);
@@ -43,23 +43,23 @@ class CurrentPlaybackBloc
 
   Future _currentPlaybackUpdated(
       CurrentPlaybackUpdated event, Emitter<CurrentPlaybackState> emit) async {
-    final playerTrackState = playerTracksBloc.state;
+    final PlayerTracksState playerTrackState = playerTracksBloc.state;
     if (playerTrackState is PlayerTracksSuccess) {
       if (event.playback == null) {
         emit(CurrentPlaybackEmpty());
       } else {
-        emit(CurrentPlaybackSuccess(event.playback));
+        emit(CurrentPlaybackSuccess(event.playback!));
       }
     }
   }
 
   Future _currentPlaybackPlayed(
       CurrentPlaybackPlayed event, Emitter<CurrentPlaybackState> emit) async {
-    final playerTrackState = playerTracksBloc.state;
+    final PlayerTracksState playerTrackState = playerTracksBloc.state;
     try {
       if (playerTrackState is PlayerTracksSuccess) {
         await SpotifyApi.play(
-            playlistId: playerTrackState.playlist.id,
+            playlistId: playerTrackState.playlist!.id,
             trackId: playerTrackState.currentTrack.id,
             positionMs: event.positionMs);
       }
@@ -75,7 +75,7 @@ class CurrentPlaybackBloc
               '\n\nOpen Spotify app and play the playlist to enable playback',
           actionText: 'OPEN SPOTIFY',
           onConfirm: () async {
-            final url = playerTrackState.playlist.externalUrl;
+            final url = playerTrackState.playlist!.externalUrl!;
             Uri uri = Uri.parse(url);
             if (await canLaunchUrl(uri)) {
               await launchUrl(uri);
@@ -94,7 +94,7 @@ class CurrentPlaybackBloc
 
   Future _currentPlaybackPaused(
       CurrentPlaybackPaused event, Emitter<CurrentPlaybackState> emit) async {
-    final playerTrackState = playerTracksBloc.state;
+    final PlayerTracksState playerTrackState = playerTracksBloc.state;
     if (playerTrackState is PlayerTracksSuccess) {
       try {
         await SpotifyApi.pause();
@@ -111,17 +111,17 @@ class CurrentPlaybackBloc
 
   Future _currentPlaybackTrackChanged(CurrentPlaybackTrackChanged event,
       Emitter<CurrentPlaybackState> emit) async {
-    final playerTrackState = playerTracksBloc.state;
-    final currentState = state;
+    final PlayerTracksState playerTrackState = playerTracksBloc.state;
+    final CurrentPlaybackState currentState = state;
 
     if (playerTrackState is PlayerTracksSuccess &&
         currentState is CurrentPlaybackSuccess) {
       final changedTrackNotBeingPlayed =
           currentState.playback.trackId != playerTrackState.currentTrack.id;
       final isWithinPlaylistContext =
-          currentState.playback.playlistId == playerTrackState.playlist.id;
+          currentState.playback.playlistId == playerTrackState.playlist!.id;
 
-      if (currentState.playback.isPlaying &&
+      if (currentState.playback.isPlaying! &&
           isWithinPlaylistContext &&
           changedTrackNotBeingPlayed) add(CurrentPlaybackPlayed());
     }

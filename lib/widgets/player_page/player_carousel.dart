@@ -6,16 +6,16 @@ import 'package:storify/constants/values.dart' as Constants;
 
 class PlayerCarousel extends StatefulWidget {
   const PlayerCarousel(
-      {Key key,
-      @required this.tracks,
-      @required this.onPageChanged,
+      {Key? key,
+      required this.tracks,
+      required this.onPageChanged,
       this.onPlayButtonTap,
-      @required this.carouselController})
+      required this.carouselController})
       : super(key: key);
   final List<Track> tracks;
   final Function(int index) onPageChanged;
-  final Function() onPlayButtonTap;
-  final CarouselController carouselController;
+  final Function()? onPlayButtonTap;
+  final CarouselController? carouselController;
 
   @override
   _PlayerCarouselState createState() => _PlayerCarouselState();
@@ -36,9 +36,9 @@ class _PlayerCarouselState extends State<PlayerCarousel> {
 
     await Repeater.repeat(
         callback: trackOffset > 0
-            ? () => widget.carouselController
+            ? () => widget.carouselController!
                 .nextPage(duration: Constants.carouselAnimationDuration)
-            : () => widget.carouselController
+            : () => widget.carouselController!
                 .previousPage(duration: Constants.carouselAnimationDuration),
         repeatNumber: (trackOffset).abs(),
         repeatDuration: Constants.carouselAnimationDuration);
@@ -64,7 +64,7 @@ class _PlayerCarouselState extends State<PlayerCarousel> {
       items: widget.tracks.map((track) {
         return GestureDetector(
           onTap: () => _onTrackTapped(track),
-          child: Image.network(track.albumImageUrl, fit: BoxFit.fill),
+          child: Image.network(track.albumImageUrl!, fit: BoxFit.fill),
         );
       }).toList(),
     );

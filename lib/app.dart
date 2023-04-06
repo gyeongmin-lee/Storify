@@ -20,7 +20,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  StreamSubscription _sub;
+  late StreamSubscription _sub;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _AppState extends State<App> {
   Future<void> initLoadFromUri() async {
     final auth = context.read<SpotifyAuth>();
     final uriManager = SpotifyUriManager(auth);
-    _sub = uriLinkStream.listen((Uri uri) async {
+    _sub = uriLinkStream.listen((Uri? uri) async {
       if (!mounted) return;
       if (uri == null) return;
       try {
@@ -57,7 +57,7 @@ class _AppState extends State<App> {
       if (initialUri == null) return;
       await uriManager.handleLoadFromUri(initialUri);
     } catch (e) {
-      CustomToast.showTextToast(text: e, toastType: ToastType.error);
+      CustomToast.showTextToast(text: e.toString(), toastType: ToastType.error);
       if (!mounted) return;
       uriManager.handleFail();
     }
@@ -74,7 +74,7 @@ class _AppState extends State<App> {
           scaffoldBackgroundColor: Color(0xFF191414),
           textSelectionTheme: TextSelectionThemeData(
             cursorColor: Colors.green[700],
-            selectionColor: Colors.green[100].withOpacity(0.1),
+            selectionColor: Colors.green[100]!.withOpacity(0.1),
             selectionHandleColor: Colors.green[700],
           ),
           textTheme: Theme.of(context).textTheme.apply(

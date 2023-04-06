@@ -5,9 +5,9 @@ import 'package:storify/constants/style.dart';
 
 class CustomPageViewModel {
   static PageViewModel create(
-      {@required String titleText,
-      @required String bodyText,
-      @required String imagePath}) {
+      {required String titleText,
+      required String bodyText,
+      required String imagePath}) {
     return PageViewModel(
       image: Padding(
         padding: EdgeInsets.only(top: 128),

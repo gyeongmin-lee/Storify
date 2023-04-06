@@ -14,11 +14,6 @@ final sampleUser =
 
 void main() {
   group('fromJson', () {
-    test('null', () {
-      final user = User.fromJson(null);
-      expect(user, null);
-    });
-
     test('with all properties', () {
       final user = User.fromJson(sampleUserData);
       expect(user, sampleUser);

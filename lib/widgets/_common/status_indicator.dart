@@ -6,9 +6,9 @@ enum Status { loading, error, warning }
 
 class StatusIndicator extends StatelessWidget {
   const StatusIndicator({
-    Key key,
-    @required this.status,
-    @required this.message,
+    Key? key,
+    required this.status,
+    required this.message,
   }) : super(key: key);
   final Status status;
   final String message;
@@ -46,14 +46,14 @@ class StatusIndicator extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          statusItems[status]['icon'],
+          statusItems[status]!['icon'],
           SizedBox(
-            height: statusItems[status]['spacing'],
+            height: statusItems[status]!['spacing'],
           ),
           Text(message,
               textAlign: TextAlign.center,
               style: TextStyles.loadingButtonText.copyWith(
-                  color: statusItems[status]['text_color'], height: 1.3))
+                  color: statusItems[status]!['text_color'], height: 1.3))
         ],
       ),
     );

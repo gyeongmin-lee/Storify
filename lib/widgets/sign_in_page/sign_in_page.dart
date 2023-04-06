@@ -12,7 +12,7 @@ import 'package:uni_links/uni_links.dart';
 class SignInPage extends StatefulWidget {
   static const routeName = '/sign_in';
 
-  const SignInPage({Key key}) : super(key: key);
+  const SignInPage({Key? key}) : super(key: key);
 
   @override
   _SignInPageState createState() => _SignInPageState();

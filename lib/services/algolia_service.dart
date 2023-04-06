@@ -3,12 +3,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:storify/models/playlist.dart';
 
 class AlgoliaService {
-  Algolia algolia;
+  late Algolia algolia;
 
   AlgoliaService._() {
     this.algolia = Algolia.init(
       applicationId: 'AM3NYQWJOW',
-      apiKey: DotEnv().env['API_KEY'],
+      apiKey: DotEnv().env['API_KEY']!,
     );
   }
 

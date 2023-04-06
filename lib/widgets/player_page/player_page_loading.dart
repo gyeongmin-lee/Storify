@@ -4,9 +4,9 @@ import 'package:storify/widgets/_common/status_indicator.dart';
 import 'package:storify/widgets/player_page/player_page_app_bar.dart';
 
 class PlayerPageLoading extends StatelessWidget {
-  final Playlist playlist;
+  final Playlist? playlist;
 
-  const PlayerPageLoading({Key key, @required this.playlist}) : super(key: key);
+  const PlayerPageLoading({Key? key, required this.playlist}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

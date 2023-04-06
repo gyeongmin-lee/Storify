@@ -20,7 +20,7 @@ import 'package:storify/widgets/player_page/player_play_button.dart';
 import 'package:storify/widgets/player_page/player_track_info.dart';
 
 class PlayerPage extends StatefulWidget {
-  const PlayerPage({Key key, this.isOpenedFromDeepLink = false})
+  const PlayerPage({Key? key, this.isOpenedFromDeepLink = false})
       : super(key: key);
   final bool isOpenedFromDeepLink;
 
@@ -28,7 +28,7 @@ class PlayerPage extends StatefulWidget {
   _PlayerState createState() => _PlayerState();
 
   static Widget create(
-      {@required Playlist playlist, bool isOpenedFromDeepLink = false}) {
+      {required Playlist playlist, bool isOpenedFromDeepLink = false}) {
     return BlocProvider(
       create: (_) => PlayerTracksBloc(
         playlist: playlist,
@@ -47,11 +47,11 @@ class PlayerPage extends StatefulWidget {
 }
 
 class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
-  PlayerTracksBloc _playerTracksBloc;
-  CurrentPlaybackBloc _currentPlaybackBloc;
-  ScrollController _controller;
-  CarouselController _carouselController;
-  FirebaseDB _firebaseDB;
+  late PlayerTracksBloc _playerTracksBloc;
+  late CurrentPlaybackBloc _currentPlaybackBloc;
+  ScrollController? _controller;
+  CarouselController? _carouselController;
+  late FirebaseDB _firebaseDB;
 
   @override
   void initState() {
@@ -67,12 +67,12 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _controller.dispose();
+    _controller!.dispose();
     super.dispose();
   }
 
   void _handleTrackChanged(int index) {
-    _controller.animateTo(0,
+    _controller!.animateTo(0,
         duration: Constants.scrollResetDuration, curve: Curves.ease);
     _playerTracksBloc.add(PlayerTracksTrackSelected(selectedTrackIndex: index));
   }
@@ -87,8 +87,8 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
   }
 
   Future<void> _onPlayButtonTapped() async {
-    final playbackState = _currentPlaybackBloc.state;
-    final playerTracksState = _playerTracksBloc.state;
+    final CurrentPlaybackState playbackState = _currentPlaybackBloc.state;
+    final PlayerTracksState playerTracksState = _playerTracksBloc.state;
 
     if (playbackState is CurrentPlaybackEmpty) {
       _currentPlaybackBloc.add(CurrentPlaybackPlayed());
@@ -96,7 +96,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
       if (playerTracksState is PlayerTracksSuccess) {
         final isCurrentlyPlayingTrackSelected =
             playerTracksState.currentTrack.id == playbackState.playback.trackId;
-        if (playbackState.playback.isPlaying &&
+        if (playbackState.playback.isPlaying! &&
             isCurrentlyPlayingTrackSelected) {
           _currentPlaybackBloc.add(CurrentPlaybackPaused());
         } else {
@@ -110,7 +110,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
   }
 
   Future<void> _handleEditStoryText(
-      String newStoryText, Playlist playlist, String currentTrackId) async {
+      String newStoryText, Playlist playlist, String? currentTrackId) async {
     try {
       await _firebaseDB.setStory(newStoryText, playlist, currentTrackId);
       CustomToast.showTextToast(text: 'Updated', toastType: ToastType.success);
@@ -162,13 +162,13 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
             return false;
           },
           listener: (context, state) {
-            final playerTracksState = _playerTracksBloc.state;
+            final PlayerTracksState playerTracksState = _playerTracksBloc.state;
             if (state is CurrentPlaybackSuccess &&
                 playerTracksState is PlayerTracksSuccess) {
               final index = playerTracksState.tracks
                   .indexWhere((track) => track.id == state.playback.trackId);
               if (index > -1)
-                _carouselController.animateToPage(index,
+                _carouselController!.animateToPage(index,
                     duration: Constants.carouselAnimationDuration);
             }
           },
@@ -191,7 +191,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
           return Stack(
             children: [
               Image.network(
-                state.currentTrack.albumImageUrl,
+                state.currentTrack.albumImageUrl!,
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 fit: BoxFit.cover,
@@ -220,14 +220,14 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
   }
 
   Widget _buildContent(PlayerTracksSuccess state) {
-    final playlist = state.playlist;
+    final playlist = state.playlist!;
     final currentTrack = state.currentTrack;
     final artistImageUrl = state.currentTrackArtistImageUrl;
     final tracks = state.tracks;
     final storyText = state.storyText ?? '';
 
     final auth = context.read<SpotifyAuth>();
-    bool isOwned = playlist.owner.id == auth.user.id;
+    bool isOwned = playlist.owner.id == auth.user!.id;
     return Padding(
       padding: const EdgeInsets.only(top: 80.0),
       child: Column(
@@ -243,7 +243,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
               builder: (context, state) {
             var _isPlaying = false;
             if (state is CurrentPlaybackSuccess)
-              _isPlaying = state.playback.isPlaying &&
+              _isPlaying = state.playback.isPlaying! &&
                   state.playback.playlistId == playlist.id;
 
             return Column(children: [
@@ -302,8 +302,8 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
   _buildProgressBar(CurrentPlaybackState state, Track currentTrack) {
     if (state is CurrentPlaybackSuccess &&
         state.playback.trackId == currentTrack.id) {
-      final currentPosition = state.playback.progressMs.toDouble();
-      final totalDuration = currentTrack.durationMs.toDouble();
+      final currentPosition = state.playback.progressMs!.toDouble();
+      final totalDuration = currentTrack.durationMs!.toDouble();
       if (currentPosition > totalDuration)
         return PlaceHolderPlayerProgressBar();
       return LinearProgressIndicator(
@@ -318,7 +318,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
 
 class PlaceHolderPlayerProgressBar extends StatelessWidget {
   const PlaceHolderPlayerProgressBar({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

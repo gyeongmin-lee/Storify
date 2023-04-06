@@ -1,24 +1,23 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:storify/utils/index_walker.dart';
 
 class Playback extends Equatable {
   Playback({
-    @required this.progressMs,
-    @required this.isPlaying,
-    @required this.trackId,
+    required this.progressMs,
+    required this.isPlaying,
+    required this.trackId,
     this.playlistId,
   });
-  final int progressMs;
-  final bool isPlaying;
-  final String trackId;
-  final String playlistId;
+  final int? progressMs;
+  final bool? isPlaying;
+  final String? trackId;
+  final String? playlistId;
 
   factory Playback.fromJson(Map<String, dynamic> json) {
     final progressMs = json['progress_ms'];
     final isPlaying = json['is_playing'];
     final trackId = json['item']['id'];
-    String playlistId = IndexWalker(json)['context']['uri'].value;
+    String? playlistId = IndexWalker(json)['context']['uri'].value;
     if (playlistId == null || !playlistId.contains('spotify:playlist:')) {
       playlistId = null;
     } else {
@@ -32,5 +31,5 @@ class Playback extends Equatable {
   }
 
   @override
-  List<Object> get props => [progressMs, isPlaying, trackId, playlistId];
+  List<Object?> get props => [progressMs, isPlaying, trackId, playlistId];
 }

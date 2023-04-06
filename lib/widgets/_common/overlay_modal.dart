@@ -6,11 +6,11 @@ import 'package:storify/widgets/_common/custom_rounded_button.dart';
 
 class OverlayModal {
   static void show(
-      {Icon icon,
-      @required String message,
-      String actionText,
-      VoidCallback onConfirm,
-      VoidCallback onCancel}) {
+      {Icon? icon,
+      required String message,
+      String? actionText,
+      VoidCallback? onConfirm,
+      VoidCallback? onCancel}) {
     BotToast.showAnimationWidget(
         clickClose: false,
         allowClick: false,
@@ -52,7 +52,7 @@ class OverlayModal {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                icon,
+                icon!,
                 SizedBox(height: 12.0),
                 Text(message,
                     style: TextStyles.primary.copyWith(
@@ -79,10 +79,10 @@ class OverlayModal {
 }
 
 class CustomOffsetAnimation extends StatefulWidget {
-  final AnimationController controller;
-  final Widget child;
+  final AnimationController? controller;
+  final Widget? child;
 
-  const CustomOffsetAnimation({Key key, this.controller, this.child})
+  const CustomOffsetAnimation({Key? key, this.controller, this.child})
       : super(key: key);
 
   @override
@@ -90,10 +90,10 @@ class CustomOffsetAnimation extends StatefulWidget {
 }
 
 class _CustomOffsetAnimationState extends State<CustomOffsetAnimation> {
-  Tween<Offset> tweenOffset;
-  Tween<double> tweenScale;
+  late Tween<Offset> tweenOffset;
+  late Tween<double> tweenScale;
 
-  Animation<double> animation;
+  late Animation<double> animation;
 
   @override
   void initState() {
@@ -103,7 +103,7 @@ class _CustomOffsetAnimationState extends State<CustomOffsetAnimation> {
     );
     tweenScale = Tween<double>(begin: 1.0, end: 1.0);
     animation =
-        CurvedAnimation(parent: widget.controller, curve: Curves.decelerate);
+        CurvedAnimation(parent: widget.controller!, curve: Curves.decelerate);
     super.initState();
   }
 
@@ -111,8 +111,8 @@ class _CustomOffsetAnimationState extends State<CustomOffsetAnimation> {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       child: widget.child,
-      animation: widget.controller,
-      builder: (BuildContext context, Widget child) {
+      animation: widget.controller!,
+      builder: (BuildContext context, Widget? child) {
         return FractionalTranslation(
             translation: tweenOffset.evaluate(animation),
             child: ClipRect(

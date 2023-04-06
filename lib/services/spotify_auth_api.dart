@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:storify/models/auth_tokens.dart';
@@ -14,7 +13,7 @@ class SpotifyAuthApi {
       utf8.fuse(base64).encode('$clientId:$clientSecret');
 
   static Future<AuthTokens> getAuthTokens(
-      String code, String redirectUri) async {
+      String? code, String? redirectUri) async {
     final response = await http.post(
       Uri.parse(APIPath.requestToken),
       body: {
@@ -34,7 +33,7 @@ class SpotifyAuthApi {
   }
 
   static Future<AuthTokens> getNewTokens(
-      {@required AuthTokens originalTokens}) async {
+      {required AuthTokens originalTokens}) async {
     final response = await http.post(
       Uri.parse(APIPath.requestToken),
       body: {

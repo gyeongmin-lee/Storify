@@ -10,10 +10,10 @@ import 'package:storify/widgets/edit_story_page/text_counter.dart';
 
 class EditStoryPage extends StatefulWidget {
   const EditStoryPage(
-      {Key key,
-      @required this.track,
-      @required this.originalStoryText,
-      @required this.onStoryTextEdited})
+      {Key? key,
+      required this.track,
+      required this.originalStoryText,
+      required this.onStoryTextEdited})
       : super(key: key);
   final Track track;
   final String originalStoryText;
@@ -21,9 +21,9 @@ class EditStoryPage extends StatefulWidget {
 
   static void show(
     BuildContext context, {
-    @required Track track,
-    @required String originalStoryText,
-    @required Function(String) onStoryTextEdited,
+    required Track track,
+    required String originalStoryText,
+    required Function(String) onStoryTextEdited,
   }) {
     Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
@@ -54,22 +54,22 @@ class EditStoryPage extends StatefulWidget {
 }
 
 class _EditStoryPageState extends State<EditStoryPage> {
-  TextEditingController _controller;
+  TextEditingController? _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.originalStoryText ?? '');
+    _controller = TextEditingController(text: widget.originalStoryText);
   }
 
   Future<void> _onSubmitted(BuildContext context) async {
     OverlayLoader.show(loadingText: 'UPDATING');
-    await widget.onStoryTextEdited(_controller.text);
+    await widget.onStoryTextEdited(_controller!.text);
     Navigator.of(context).pop();
   }
 
   bool get _shouldDisplayCounter =>
-      _controller.text.length > Constants.displayCounterWhenLength;
+      _controller!.text.length > Constants.displayCounterWhenLength;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class _EditStoryPageState extends State<EditStoryPage> {
                         border: InputBorder.none,
                         counter: _shouldDisplayCounter
                             ? TextCounter(
-                                textLength: _controller.text.length,
+                                textLength: _controller!.text.length,
                                 maxLength: Constants.storyTextMaxLength,
                               )
                             : null,
@@ -127,7 +127,7 @@ class _EditStoryPageState extends State<EditStoryPage> {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text(
-        widget.track.name,
+        widget.track.name!,
         style: TextStyles.primary.copyWith(fontSize: 20.0),
       ),
       centerTitle: true,

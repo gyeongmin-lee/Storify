@@ -5,9 +5,9 @@ enum ButtonSize { regular, small }
 
 class CustomRoundedButton extends StatelessWidget {
   const CustomRoundedButton({
-    Key key,
-    @required this.onPressed,
-    @required this.buttonText,
+    Key? key,
+    required this.onPressed,
+    required this.buttonText,
     this.size = ButtonSize.regular,
     this.borderColor = CustomColors.secondaryTextColor,
     this.backgroundColor = Colors.transparent,

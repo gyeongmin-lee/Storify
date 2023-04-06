@@ -5,11 +5,6 @@ import 'user_test.dart';
 
 void main() {
   group('fromJson', () {
-    test('null', () {
-      final playlist = Playlist.fromJson(null);
-      expect(playlist, null);
-    });
-
     test('with all properties', () {
       final playlist = Playlist.fromJson({
         'name': 'Playlist1',

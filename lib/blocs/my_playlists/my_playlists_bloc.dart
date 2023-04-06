@@ -11,7 +11,7 @@ class MyPlaylistsBloc extends Bloc<MyPlaylistsEvent, MyPlaylistsState> {
 
   Future _onPlaylistsFetched(
       MyPlaylistsFetched event, Emitter<MyPlaylistsState> emit) async {
-    final currentState = state;
+    final MyPlaylistsState currentState = state;
     if (!_hasReachedMax(currentState)) {
       try {
         if (currentState is MyPlaylistsInitial) {
@@ -20,13 +20,13 @@ class MyPlaylistsBloc extends Bloc<MyPlaylistsEvent, MyPlaylistsState> {
           emit(MyPlaylistsSuccess(playlists: playlists, hasReachedMax: false));
         } else if (currentState is MyPlaylistsSuccess) {
           final playlists = await SpotifyApi.getListOfPlaylists(
-              offset: currentState.playlists.length,
+              offset: currentState.playlists!.length,
               limit: Constants.playlistsLimit);
 
           emit(playlists.isEmpty
               ? currentState.copyWith(hasReachedMax: true)
               : MyPlaylistsSuccess(
-                  playlists: currentState.playlists + playlists,
+                  playlists: currentState.playlists! + playlists,
                   hasReachedMax: false));
         }
       } catch (e) {
@@ -38,7 +38,7 @@ class MyPlaylistsBloc extends Bloc<MyPlaylistsEvent, MyPlaylistsState> {
 
   Future _onPlaylistsRefreshed(
       MyPlaylistsRefreshed event, Emitter<MyPlaylistsState> emit) async {
-    final currentState = state;
+    final MyPlaylistsState currentState = state;
     try {
       if (currentState is MyPlaylistsSuccess)
         emit(MyPlaylistsRefreshing(currentState.playlists));
@@ -52,5 +52,5 @@ class MyPlaylistsBloc extends Bloc<MyPlaylistsEvent, MyPlaylistsState> {
   }
 
   bool _hasReachedMax(MyPlaylistsState state) =>
-      state is MyPlaylistsSuccess && state.hasReachedMax;
+      state is MyPlaylistsSuccess && state.hasReachedMax!;
 }

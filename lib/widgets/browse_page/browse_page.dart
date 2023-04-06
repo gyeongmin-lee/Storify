@@ -50,7 +50,7 @@ class BrowsePage extends StatelessWidget {
               stream: FirebaseDB().playlistsStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
-                  final playlists = snapshot.data;
+                  final playlists = snapshot.data!;
                   if (playlists.isEmpty) {
                     return Container();
                   } else {

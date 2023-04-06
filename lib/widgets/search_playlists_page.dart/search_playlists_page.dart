@@ -16,7 +16,7 @@ class SearchPlaylistsPage extends StatefulWidget {
 
 class _SearchPlaylistsPageState extends State<SearchPlaylistsPage> {
   TextEditingController _controller = TextEditingController();
-  Debouncer _debouncer;
+  late Debouncer _debouncer;
   AlgoliaService _algoliaService = AlgoliaService();
 
   List<Playlist> _playlists = [];

@@ -7,16 +7,16 @@ import 'package:storify/widgets/_common/custom_image_provider.dart';
 
 class PlayerTrackInfo extends StatelessWidget {
   const PlayerTrackInfo(
-      {Key key,
-      @required this.storyText,
-      @required this.currentTrack,
-      @required this.artistImageUrl,
-      @required this.controller})
+      {Key? key,
+      required this.storyText,
+      required this.currentTrack,
+      required this.artistImageUrl,
+      required this.controller})
       : super(key: key);
   final String storyText;
   final Track currentTrack;
   final String artistImageUrl;
-  final ScrollController controller;
+  final ScrollController? controller;
 
   String _artistNames(List<Artist> artists) =>
       artists.map((artist) => artist.name).join(', ');

@@ -18,7 +18,7 @@ class CustomToast {
   };
 
   static void showTextToast(
-      {@required String text, @required ToastType toastType}) {
+      {required String text, required ToastType toastType}) {
     BotToast.showCustomText(
       toastBuilder: (_) => Card(
         shape: RoundedRectangleBorder(
@@ -32,7 +32,7 @@ class CustomToast {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              toastIcon[toastType],
+              toastIcon[toastType]!,
               SizedBox(
                 width: 4.0,
               ),

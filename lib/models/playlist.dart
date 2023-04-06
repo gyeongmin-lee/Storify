@@ -1,26 +1,24 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:storify/models/user.dart';
 
 class Playlist extends Equatable {
   Playlist(
-      {@required this.name,
-      @required this.id,
-      @required this.isPublic,
-      @required this.playlistImageUrl,
-      @required this.numOfTracks,
-      @required this.externalUrl,
-      @required this.owner});
-  final String name;
-  final String id;
-  final String externalUrl;
+      {required this.name,
+      required this.id,
+      required this.isPublic,
+      required this.playlistImageUrl,
+      required this.numOfTracks,
+      required this.externalUrl,
+      required this.owner});
+  final String? name;
+  final String? id;
+  final String? externalUrl;
   final User owner;
-  final bool isPublic;
-  final int numOfTracks;
-  final String playlistImageUrl;
+  final bool? isPublic;
+  final int? numOfTracks;
+  final String? playlistImageUrl;
 
   factory Playlist.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
     final name = json['name'];
     final id = json['id'];
     final externalUrl = json['external_urls']['spotify'];
@@ -62,7 +60,7 @@ class Playlist extends Equatable {
   String get deepLinkUri => 'https://storify-cd21c.web.app/?playlist_id=$id';
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         name,
         id,
         externalUrl,

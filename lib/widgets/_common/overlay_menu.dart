@@ -5,10 +5,10 @@ import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/_common/custom_flat_icon_button.dart';
 
 class OverlayMenu extends StatelessWidget {
-  const OverlayMenu({Key key, @required this.menuBody}) : super(key: key);
+  const OverlayMenu({Key? key, required this.menuBody}) : super(key: key);
   final Widget menuBody;
 
-  static void show(BuildContext context, {@required Widget menuBody}) {
+  static void show(BuildContext context, {required Widget menuBody}) {
     Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
       pageBuilder: (BuildContext context, _, __) =>

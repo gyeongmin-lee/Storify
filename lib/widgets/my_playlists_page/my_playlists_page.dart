@@ -25,7 +25,7 @@ class _MyPlaylistsPageState extends State<MyPlaylistsPage> {
       ScrollController(initialScrollOffset: 0.0, keepScrollOffset: true);
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  MyPlaylistsBloc _myPlaylistsBloc;
+  late MyPlaylistsBloc _myPlaylistsBloc;
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _MyPlaylistsPageState extends State<MyPlaylistsPage> {
           );
         }
         if (state is MyPlaylistsWithData) {
-          final playlists = state.playlists;
+          final playlists = state.playlists!;
           final isEmpty = playlists.length == 0;
           return BlocListener<MyPlaylistsBloc, MyPlaylistsState>(
             listenWhen: (previous, current) =>

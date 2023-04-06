@@ -9,7 +9,7 @@ import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/spotify_api.dart';
 
 class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
-  final Playlist playlist;
+  final Playlist? playlist;
   PlayerTracksBloc({this.playlist}) : super(PlayerTracksInitial(playlist)) {
     on<PlayerTracksFetched>(_onPlayerTracksFetched);
     on<PlayerTracksTrackSelected>(_onPlayerTracksTrackSelected);
@@ -21,12 +21,12 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
   }
 
   final FirebaseDB _firebaseDB = FirebaseDB();
-  StreamSubscription _storyTextSubscription;
+  StreamSubscription? _storyTextSubscription;
 
   Future _onPlayerTracksFetched(
       PlayerTracksFetched event, Emitter<PlayerTracksState> emit) async {
     try {
-      final tracks = await SpotifyApi.getTracks(playlist.id);
+      final tracks = await SpotifyApi.getTracks(playlist!.id);
       final currentTrack = tracks[0];
 
       emit(PlayerTracksSuccess(
@@ -42,14 +42,14 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
 
   Future _onPlayerTracksTrackSelected(
       PlayerTracksTrackSelected event, Emitter<PlayerTracksState> emit) async {
-    final currentState = state;
+    final PlayerTracksState currentState = state;
     if (currentState is PlayerTracksSuccess) {
       try {
         final currentTrack = currentState.currentTrack;
-        final selectedTrack = currentState.tracks[event.selectedTrackIndex];
+        final selectedTrack = currentState.tracks[event.selectedTrackIndex!];
         final isArtistImageLoaded =
             currentTrack.artists[0] == selectedTrack.artists[0] &&
-                currentState.currentTrackArtistImageUrl != null;
+                currentState.currentTrackArtistImageUrl != '';
 
         emit(currentState.copyWith(
             currentTrack: selectedTrack,
@@ -68,7 +68,7 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
   Future _onPlayerTrackStoryTextAndArtistImageUrlLoaded(
       PlayerTrackStoryTextAndArtistImageUrlLoaded event,
       Emitter<PlayerTracksState> emit) async {
-    final currentState = state;
+    final PlayerTracksState currentState = state;
     if (currentState is PlayerTracksSuccess) {
       if (currentState.currentTrackArtistImageUrl.isEmpty) {
         await for (final result in _loadArtistImageUrl()) {
@@ -86,17 +86,17 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
 
   Future _onPlayerTrackStoryTextUpdated(PlayerTrackStoryTextUpdated event,
       Emitter<PlayerTracksState> emit) async {
-    final currentState = state;
+    final PlayerTracksState currentState = state;
     if (currentState is PlayerTracksSuccess) {
       emit(currentState.copyWith(storyText: event.storyText));
     }
   }
 
   Stream<PlayerTracksState> _loadArtistImageUrl() async* {
-    final PlayerTracksSuccess currentState = state;
+    final PlayerTracksSuccess currentState = state as PlayerTracksSuccess;
     try {
       final artistImageUrl = await SpotifyApi.getArtistImageUrl(
-          currentState.currentTrack.artists[0].href);
+          currentState.currentTrack.artists[0].href!);
       yield currentState.copyWith(currentTrackArtistImageUrl: artistImageUrl);
     } catch (_) {
       yield currentState;
@@ -104,11 +104,11 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
   }
 
   Stream<PlayerTracksState> _loadStoryText() async* {
-    final PlayerTracksSuccess currentState = state;
+    final PlayerTracksSuccess currentState = state as PlayerTracksSuccess;
     await _storyTextSubscription?.cancel();
     _storyTextSubscription = _firebaseDB
         .storyStream(
-            playlistId: currentState.playlist.id,
+            playlistId: currentState.playlist!.id,
             trackId: currentState.currentTrack.id)
         .listen((storyText) => add(PlayerTrackStoryTextUpdated(storyText)));
   }

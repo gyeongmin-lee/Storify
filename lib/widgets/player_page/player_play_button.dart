@@ -4,7 +4,7 @@ import 'package:storify/constants/style.dart';
 class PlayerPlayButton extends StatelessWidget {
   final bool isPlaying;
 
-  const PlayerPlayButton({Key key, @required this.isPlaying}) : super(key: key);
+  const PlayerPlayButton({Key? key, required this.isPlaying}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
