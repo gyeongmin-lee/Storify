@@ -16,7 +16,7 @@ class SpotifyAuthApi {
   static Future<AuthTokens> getAuthTokens(
       String code, String redirectUri) async {
     final response = await http.post(
-      APIPath.requestToken,
+      Uri.parse(APIPath.requestToken),
       body: {
         'grant_type': 'authorization_code',
         'code': code,
@@ -36,7 +36,7 @@ class SpotifyAuthApi {
   static Future<AuthTokens> getNewTokens(
       {@required AuthTokens originalTokens}) async {
     final response = await http.post(
-      APIPath.requestToken,
+      Uri.parse(APIPath.requestToken),
       body: {
         'grant_type': 'refresh_token',
         'refresh_token': originalTokens.refreshToken,

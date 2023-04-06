@@ -36,7 +36,7 @@ class _PlayListItemState extends State<PlayListItem> {
   void initState() {
     super.initState();
     _firebaseDB = FirebaseDB();
-    _slidableController = SlidableController();
+    _slidableController = Slidable.of(context);
   }
 
   Future<void> _onOpenInSpotify() async {
@@ -59,87 +59,71 @@ class _PlayListItemState extends State<PlayListItem> {
   }
 
   void _onLongPress(BuildContext context) {
-    if (_slidableController?.activeState == null)
-      Slidable.of(context)?.open(actionType: SlideActionType.secondary);
-    else
-      Slidable.of(context)?.close();
+    _slidableController.openEndActionPane();
   }
 
   @override
   Widget build(BuildContext context) {
     final userId = context.watch<SpotifyAuth>().user.id;
     return Slidable(
-      controller: _slidableController,
-      actionPane: SlidableScrollActionPane(),
-      showAllActionsThreshold: 0.25,
-      actionExtentRatio: 0.22,
-      secondaryActions: [
-        IconSlideAction(
-          caption: 'OPEN IN\nSPOTIFY',
-          color: Colors.white.withOpacity(0.05),
-          foregroundColor: CustomColors.primaryTextColor,
-          iconWidget: Padding(
+      endActionPane: ActionPane(
+        motion: const DrawerMotion(),
+        children: [
+          CustomSlidableAction(
+            child: Column(children: [
+              Opacity(
+                  opacity: 0.75,
+                  child: Image.asset('images/spotify_white.png', width: 24.0)),
+              Text('OPEN IN\nSPOTIFY'),
+            ]),
+            backgroundColor: Colors.white.withOpacity(0.05),
+            foregroundColor: CustomColors.primaryTextColor,
             padding: const EdgeInsets.only(bottom: 4.0),
-            child: Opacity(
-                opacity: 0.75,
-                child: Image.asset('images/spotify_white.png', width: 24.0)),
+            onPressed: (_) => _onOpenInSpotify(),
           ),
-          onTap: _onOpenInSpotify,
-        ),
-        IconSlideAction(
-          iconWidget: Padding(
+          SlidableAction(
             padding: const EdgeInsets.only(bottom: 4.0),
-            child: Icon(
-              Icons.link,
-              color: CustomColors.primaryTextColor,
-            ),
+            icon: Icons.link,
+            label: 'SHARE LINK',
+            backgroundColor: Colors.white.withOpacity(0.05),
+            foregroundColor: CustomColors.primaryTextColor,
+            onPressed: (_) => _onShareLink(),
           ),
-          caption: 'SHARE LINK',
-          color: Colors.white.withOpacity(0.05),
-          foregroundColor: CustomColors.primaryTextColor,
-          onTap: _onShareLink,
-        ),
-        StreamBuilder<bool>(
-          stream: _firebaseDB.isPlaylistSavedStream(
-              userId: userId, playlistId: widget.playlist.id),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              print(snapshot.error);
-            }
-            if (snapshot.hasData) {
-              final isPlaylistSaved = snapshot.data;
-              return IconSlideAction(
-                iconWidget: Padding(
+          StreamBuilder<bool>(
+            stream: _firebaseDB.isPlaylistSavedStream(
+                userId: userId, playlistId: widget.playlist.id),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                print(snapshot.error);
+              }
+              if (snapshot.hasData) {
+                final isPlaylistSaved = snapshot.data;
+                return SlidableAction(
                   padding: const EdgeInsets.only(bottom: 4.0),
-                  child: Icon(
-                    isPlaylistSaved ? Icons.bookmark : Icons.bookmark_border,
-                    color: CustomColors.primaryTextColor,
-                  ),
-                ),
-                caption: isPlaylistSaved ? 'UNSAVE' : 'SAVE',
-                color: Colors.white.withOpacity(0.05),
-                foregroundColor: CustomColors.primaryTextColor,
-                onTap: isPlaylistSaved
-                    ? () => _onUnsavePlaylist(context)
-                    : () => _onSavePlaylist(context),
-              );
-            } else {
-              return IconSlideAction(
-                iconWidget: Padding(
+                  icon:
+                      isPlaylistSaved ? Icons.bookmark : Icons.bookmark_border,
+                  label: isPlaylistSaved ? 'UNSAVE' : 'SAVE',
+                  backgroundColor: Colors.white.withOpacity(0.05),
+                  foregroundColor: CustomColors.primaryTextColor,
+                  onPressed: isPlaylistSaved
+                      ? (_) => _onUnsavePlaylist(context)
+                      : (_) => _onSavePlaylist(context),
+                );
+              } else {
+                return SlidableAction(
+                  onPressed: (BuildContext context) => null,
+                  icon: Icons.bookmark_border,
                   padding: const EdgeInsets.only(bottom: 4.0),
-                  child: Icon(
-                    Icons.bookmark_border,
-                    color: Colors.white24,
-                  ),
-                ),
-                caption: 'SAVE',
-                color: Colors.white.withOpacity(0.05),
-                foregroundColor: Colors.white24,
-              );
-            }
-          },
-        )
-      ],
+                  label: 'SAVE',
+                  backgroundColor: Colors.white.withOpacity(0.05),
+                  foregroundColor: Colors.white24,
+                );
+              }
+            },
+          )
+        ],
+        openThreshold: 0.25,
+      ),
       child: Builder(
         builder: (context) => ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),

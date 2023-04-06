@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -6,8 +5,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:storify/blocs/blocs.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/widgets/_common/status_indicator.dart';
-import 'package:storify/widgets/playlist_item/playlist_item.dart';
 import 'package:storify/widgets/player_page/player_page.dart';
+import 'package:storify/widgets/playlist_item/playlist_item.dart';
 
 class MyPlaylistsPage extends StatefulWidget {
   static Widget create() {

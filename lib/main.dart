@@ -7,9 +7,14 @@ import 'package:provider/provider.dart';
 import 'package:storify/app.dart';
 import 'package:storify/blocs/blocs.dart';
 import 'package:storify/services/spotify_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 Future main() async {
-  await DotEnv().load('.env');
+  await DotEnv().load(fileName: '.env');
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   Bloc.observer = LoggerBlocObserver();
   runApp(Storify());
 }

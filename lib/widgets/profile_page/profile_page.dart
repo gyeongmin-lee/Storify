@@ -10,8 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 class ProfilePage extends StatelessWidget {
   void _openSpotify() async {
     final url = 'http://open.spotify.com/user';
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       CustomToast.showTextToast(
           text: 'Failed to open spotify link', toastType: ToastType.error);
@@ -20,8 +20,8 @@ class ProfilePage extends StatelessWidget {
 
   void _openFeedback() async {
     final url = 'https://forms.gle/xj5uPgKtkEawxwPu5';
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       CustomToast.showTextToast(
           text: 'Failed to open feedback link', toastType: ToastType.error);

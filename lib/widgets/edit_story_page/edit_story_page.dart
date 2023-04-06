@@ -137,7 +137,7 @@ class _EditStoryPageState extends State<EditStoryPage> {
         maxWidth: 120,
         child: Padding(
           padding: const EdgeInsets.only(left: 24.0),
-          child: FlatButton(
+          child: TextButton(
               child: Text(
                 'CANCEL',
                 style: TextStyles.smallButtonText,

@@ -36,7 +36,7 @@ class PlayerPageAppBar extends StatelessWidget implements PreferredSizeWidget {
         color: CustomColors.secondaryTextColor,
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(
             'MORE',
             style: TextStyles.smallButtonText,

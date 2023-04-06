@@ -9,8 +9,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PlaylistActions {
   static Future<void> openInSpotify(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       CustomToast.showTextToast(
           text: 'Failed to open spotify link', toastType: ToastType.error);
@@ -49,8 +49,8 @@ class PlaylistActions {
           actionText: 'OPEN SPOTIFY',
           onConfirm: () async {
             final url = playlist.externalUrl;
-            if (await canLaunch(url)) {
-              await launch(url);
+            if (await canLaunchUrl(Uri.parse(url))) {
+              await launchUrl(Uri.parse(url));
             } else {
               CustomToast.showTextToast(
                 text: 'Failed to open spotify link',

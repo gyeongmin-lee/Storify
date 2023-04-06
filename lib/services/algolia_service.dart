@@ -23,8 +23,8 @@ class AlgoliaService {
   }
 
   Future<List<Playlist>> getSearchResult(String queryText) async {
-    AlgoliaQuery query = algolia.instance.index('playlists').search(queryText);
-    query = query.setFacetFilter('is_public:true');
+    AlgoliaQuery query = algolia.instance.index('playlists').query(queryText);
+    query = query.facetFilter('is_public:true');
     AlgoliaQuerySnapshot snapshot = await query.getObjects();
     return snapshot.hits
         .map((hitSnapshot) => Playlist.fromFirebaseSnapshot(hitSnapshot.data))

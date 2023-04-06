@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
-import 'package:http_interceptor/http_client_with_interceptor.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:storify/constants/values.dart' as Constants;
 import 'package:storify/models/playback.dart';
@@ -19,14 +18,12 @@ class PremiumRequiredException implements Exception {}
 class NoActiveDeviceFoundException implements Exception {}
 
 class SpotifyApi {
-  static Client client = HttpClientWithInterceptor.build(interceptors: [
+  static Client client = InterceptedClient.build(interceptors: [
     SpotifyInterceptor(),
   ], retryPolicy: ExpiredTokenRetryPolicy());
 
   static Future<User> getCurrentUser() async {
-    final response = await client.get(
-      APIPath.getCurrentUser,
-    );
+    final response = await client.get(Uri.parse(APIPath.getCurrentUser));
 
     if (response.statusCode == 200) {
       return User.fromJson(json.decode(response.body));
@@ -37,9 +34,7 @@ class SpotifyApi {
   }
 
   static Future<User> getUserById(String userId) async {
-    final response = await client.get(
-      APIPath.getUserById(userId),
-    );
+    final response = await client.get(Uri.parse(APIPath.getUserById(userId)));
 
     if (response.statusCode == 200) {
       return User.fromJson(json.decode(response.body));
@@ -52,7 +47,7 @@ class SpotifyApi {
   static Future<List<Playlist>> getListOfPlaylists(
       {int limit = 20, int offset = 0}) async {
     final response =
-        await client.get(APIPath.getListOfPlaylists(offset, limit));
+        await client.get(Uri.parse(APIPath.getListOfPlaylists(offset, limit)));
 
     if (response.statusCode == 200) {
       List items = json.decode(response.body)['items'];
@@ -70,12 +65,13 @@ class SpotifyApi {
   }
 
   static Future<Playlist> getPlaylist(String playlistId) async {
-    final response = await client.get(APIPath.getPlaylist(playlistId));
+    final response =
+        await client.get(Uri.parse(APIPath.getPlaylist(playlistId)));
 
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
-      final onwerResponse =
-          await client.get(APIPath.getUserById(responseBody['owner']['id']));
+      final onwerResponse = await client
+          .get(Uri.parse(APIPath.getUserById(responseBody['owner']['id'])));
       responseBody['owner'] = json.decode(onwerResponse.body);
       return Playlist.fromJson(responseBody);
     } else {
@@ -85,7 +81,7 @@ class SpotifyApi {
   }
 
   static Future<List<Track>> getTracks(String playlistId) async {
-    final response = await client.get(APIPath.getTracks(playlistId));
+    final response = await client.get(Uri.parse(APIPath.getTracks(playlistId)));
 
     if (response.statusCode == 200) {
       List items = json.decode(response.body)['items'];
@@ -97,7 +93,7 @@ class SpotifyApi {
   }
 
   static Future<String> getArtistImageUrl(String href) async {
-    final response = await client.get(href);
+    final response = await client.get(Uri.parse(href));
 
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
@@ -123,7 +119,7 @@ class SpotifyApi {
     @required String trackId,
     int positionMs = 0,
   }) async {
-    final response = await client.put(APIPath.play,
+    final response = await client.put(Uri.parse(APIPath.play),
         body: json.encode({
           'context_uri': 'spotify:playlist:$playlistId',
           'offset': {'uri': 'spotify:track:$trackId'},
@@ -139,7 +135,7 @@ class SpotifyApi {
   }
 
   static Future<void> pause() async {
-    final response = await client.put(APIPath.pause);
+    final response = await client.put(Uri.parse(APIPath.pause));
     if (response.statusCode == 204)
       try {
         final playback = await _getCurrentPlayback();
@@ -159,7 +155,7 @@ class SpotifyApi {
   }
 
   static Future<Playback> _getCurrentPlayback() async {
-    final response = await client.get(APIPath.player);
+    final response = await client.get(Uri.parse(APIPath.player));
     if (response.statusCode == 200) {
       return Playback.fromJson(json.decode(response.body));
     } else {
@@ -183,10 +179,10 @@ class SpotifyApi {
       {@required List originalList,
       @required NestedApiPathBuilder nestedApiPathBuilder,
       @required String paramToExpand}) async {
-    return Future.wait(originalList
-        .map((item) => client.get(nestedApiPathBuilder(item)).then((response) {
-              item[paramToExpand] = json.decode(response.body);
-              return item;
-            })));
+    return Future.wait(originalList.map((item) =>
+        client.get(Uri.parse(nestedApiPathBuilder(item))).then((response) {
+          item[paramToExpand] = json.decode(response.body);
+          return item;
+        })));
   }
 }

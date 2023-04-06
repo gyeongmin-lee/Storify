@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class CustomColors {
@@ -31,12 +29,4 @@ class TextStyles {
 
   static final loadingButtonText = secondary.copyWith(
       fontSize: 14.0, letterSpacing: 2.0, fontWeight: FontWeight.w300);
-}
-
-class DisableGlowScrollBehaviour extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
-  }
 }

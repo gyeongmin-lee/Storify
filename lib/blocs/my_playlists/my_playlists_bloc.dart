@@ -4,44 +4,50 @@ import 'package:storify/services/spotify_api.dart';
 import 'package:storify/constants/values.dart' as Constants;
 
 class MyPlaylistsBloc extends Bloc<MyPlaylistsEvent, MyPlaylistsState> {
-  MyPlaylistsBloc() : super(MyPlaylistsInitial());
+  MyPlaylistsBloc() : super(MyPlaylistsInitial()) {
+    on<MyPlaylistsFetched>(_onPlaylistsFetched);
+    on<MyPlaylistsRefreshed>(_onPlaylistsRefreshed);
+  }
 
-  @override
-  Stream<MyPlaylistsState> mapEventToState(MyPlaylistsEvent event) async* {
+  Future _onPlaylistsFetched(
+      MyPlaylistsFetched event, Emitter<MyPlaylistsState> emit) async {
     final currentState = state;
-    if (event is MyPlaylistsFetched && !_hasReachedMax(currentState)) {
+    if (!_hasReachedMax(currentState)) {
       try {
         if (currentState is MyPlaylistsInitial) {
           final playlists = await SpotifyApi.getListOfPlaylists(
               offset: 0, limit: Constants.playlistsLimit);
-          yield MyPlaylistsSuccess(playlists: playlists, hasReachedMax: false);
+          emit(MyPlaylistsSuccess(playlists: playlists, hasReachedMax: false));
         } else if (currentState is MyPlaylistsSuccess) {
           final playlists = await SpotifyApi.getListOfPlaylists(
               offset: currentState.playlists.length,
               limit: Constants.playlistsLimit);
-          yield playlists.isEmpty
+
+          emit(playlists.isEmpty
               ? currentState.copyWith(hasReachedMax: true)
               : MyPlaylistsSuccess(
                   playlists: currentState.playlists + playlists,
-                  hasReachedMax: false);
+                  hasReachedMax: false));
         }
       } catch (e) {
         print(e);
-        yield MyPlaylistsFailure();
+        emit(MyPlaylistsFailure());
       }
     }
-    if (event is MyPlaylistsRefreshed) {
-      final currentState = state;
-      try {
-        if (currentState is MyPlaylistsSuccess)
-          yield MyPlaylistsRefreshing(currentState.playlists);
-        final playlists = await SpotifyApi.getListOfPlaylists(
-            offset: 0, limit: Constants.playlistsLimit);
-        yield MyPlaylistsSuccess(playlists: playlists, hasReachedMax: false);
-      } catch (e) {
-        print(e);
-        yield MyPlaylistsFailure();
-      }
+  }
+
+  Future _onPlaylistsRefreshed(
+      MyPlaylistsRefreshed event, Emitter<MyPlaylistsState> emit) async {
+    final currentState = state;
+    try {
+      if (currentState is MyPlaylistsSuccess)
+        emit(MyPlaylistsRefreshing(currentState.playlists));
+      final playlists = await SpotifyApi.getListOfPlaylists(
+          offset: 0, limit: Constants.playlistsLimit);
+      emit(MyPlaylistsSuccess(playlists: playlists, hasReachedMax: false));
+    } catch (e) {
+      print(e);
+      emit(MyPlaylistsFailure());
     }
   }
 

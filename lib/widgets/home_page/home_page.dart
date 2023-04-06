@@ -56,28 +56,28 @@ class _HomePageState extends State<HomePage> {
                 padding: _bottomNavigationSpacing,
                 child: Icon(Icons.library_music),
               ),
-              title: Text('MY PLAYLISTS'),
+              label: 'MY PLAYLISTS',
             ),
             BottomNavigationBarItem(
               icon: Padding(
                 padding: _bottomNavigationSpacing,
                 child: Icon(Icons.search),
               ),
-              title: Text('BROWSE'),
+              label: 'BROWSE',
             ),
             BottomNavigationBarItem(
               icon: Padding(
                 padding: _bottomNavigationSpacing,
                 child: Icon(Icons.bookmark),
               ),
-              title: Text('SAVED PLAYLISTS'),
+              label: 'SAVED PLAYLISTS',
             ),
             BottomNavigationBarItem(
               icon: Padding(
                 padding: _bottomNavigationSpacing,
                 child: Icon(Icons.account_circle),
               ),
-              title: Text('PROFILE'),
+              label: 'PROFILE',
             ),
           ],
           currentIndex: _selectedIndex,

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,69 +18,86 @@ class CurrentPlaybackBloc
   final PlayerTracksBloc playerTracksBloc;
 
   CurrentPlaybackBloc({@required this.playerTracksBloc})
-      : super(CurrentPlaybackInitial());
+      : super(CurrentPlaybackInitial()) {
+    on<CurrentPlaybackLoaded>(_currentPlaybackLoaded);
+    on<CurrentPlaybackUpdated>(_currentPlaybackUpdated);
+    on<CurrentPlaybackPlayed>(_currentPlaybackPlayed,
+        transformer:
+            debounce(Duration(milliseconds: Constants.debounceMillisecond)));
+    on<CurrentPlaybackPaused>(_currentPlaybackPaused,
+        transformer:
+            debounce(Duration(milliseconds: Constants.debounceMillisecond)));
+    on<CurrentPlaybackTrackChanged>(_currentPlaybackTrackChanged);
+    on<CurrentPlaybackAppPaused>(_currentPlaybackAppPaused);
+    on<CurrentPlaybackAppResumed>(_currentPlaybackAppResumed);
+  }
 
-  @override
-  Stream<CurrentPlaybackState> mapEventToState(
-      CurrentPlaybackEvent event) async* {
-    final currentState = state;
+  Future _currentPlaybackLoaded(
+      CurrentPlaybackLoaded event, Emitter<CurrentPlaybackState> emit) async {
+    await _currentPlaybackSubscription?.cancel();
+    _currentPlaybackSubscription =
+        SpotifyApi.getCurrentPlaybackStream().listen((Playback playback) {
+      add(CurrentPlaybackUpdated(playback));
+    });
+  }
+
+  Future _currentPlaybackUpdated(
+      CurrentPlaybackUpdated event, Emitter<CurrentPlaybackState> emit) async {
     final playerTrackState = playerTracksBloc.state;
-    if (event is CurrentPlaybackLoaded) {
-      await _currentPlaybackSubscription?.cancel();
-      _currentPlaybackSubscription =
-          SpotifyApi.getCurrentPlaybackStream().listen((Playback playback) {
-        add(CurrentPlaybackUpdated(playback));
-      });
-    }
-
-    if (event is CurrentPlaybackUpdated &&
-        playerTrackState is PlayerTracksSuccess) {
+    if (playerTrackState is PlayerTracksSuccess) {
       if (event.playback == null) {
-        yield CurrentPlaybackEmpty();
+        emit(CurrentPlaybackEmpty());
       } else {
-        yield CurrentPlaybackSuccess(event.playback);
+        emit(CurrentPlaybackSuccess(event.playback));
       }
     }
+  }
 
-    if (event is CurrentPlaybackPlayed) {
-      try {
-        if (playerTrackState is PlayerTracksSuccess) {
-          await SpotifyApi.play(
-              playlistId: playerTrackState.playlist.id,
-              trackId: playerTrackState.currentTrack.id,
-              positionMs: event.positionMs);
-        }
-      } on NoActiveDeviceFoundException catch (_) {
-        OverlayModal.show(
-            icon: Icon(
-              Icons.info,
-              color: CustomColors.primaryTextColor,
-              size: 72.0,
-            ),
-            message:
-                'In order to use the playback feature, an active Spotify player is needed'
-                '\n\nOpen Spotify app and play the playlist to enable playback',
-            actionText: 'OPEN SPOTIFY',
-            onConfirm: () async {
-              final url = playerTrackState.playlist.externalUrl;
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
-                CustomToast.showTextToast(
-                    text: 'Failed to open spotify link',
-                    toastType: ToastType.error);
-              }
-            });
-      } on PremiumRequiredException catch (_) {
-        CustomToast.showTextToast(
-            text: 'You must be a Spotify premium user',
-            toastType: ToastType.error);
+  Future _currentPlaybackPlayed(
+      CurrentPlaybackPlayed event, Emitter<CurrentPlaybackState> emit) async {
+    final playerTrackState = playerTracksBloc.state;
+    try {
+      if (playerTrackState is PlayerTracksSuccess) {
+        await SpotifyApi.play(
+            playlistId: playerTrackState.playlist.id,
+            trackId: playerTrackState.currentTrack.id,
+            positionMs: event.positionMs);
       }
+    } on NoActiveDeviceFoundException catch (_) {
+      OverlayModal.show(
+          icon: Icon(
+            Icons.info,
+            color: CustomColors.primaryTextColor,
+            size: 72.0,
+          ),
+          message:
+              'In order to use the playback feature, an active Spotify player is needed'
+              '\n\nOpen Spotify app and play the playlist to enable playback',
+          actionText: 'OPEN SPOTIFY',
+          onConfirm: () async {
+            final url = playerTrackState.playlist.externalUrl;
+            Uri uri = Uri.parse(url);
+            if (await canLaunchUrl(uri)) {
+              await launchUrl(uri);
+            } else {
+              CustomToast.showTextToast(
+                  text: 'Failed to open spotify link',
+                  toastType: ToastType.error);
+            }
+          });
+    } on PremiumRequiredException catch (_) {
+      CustomToast.showTextToast(
+          text: 'You must be a Spotify premium user',
+          toastType: ToastType.error);
     }
+  }
 
-    if (event is CurrentPlaybackPaused) {
+  Future _currentPlaybackPaused(
+      CurrentPlaybackPaused event, Emitter<CurrentPlaybackState> emit) async {
+    final playerTrackState = playerTracksBloc.state;
+    if (playerTrackState is PlayerTracksSuccess) {
       try {
-        if (playerTrackState is PlayerTracksSuccess) await SpotifyApi.pause();
+        await SpotifyApi.pause();
       } on PremiumRequiredException catch (_) {
         CustomToast.showTextToast(
             text: 'You must be a Spotify premium user',
@@ -91,47 +107,44 @@ class CurrentPlaybackBloc
             text: 'Failed to pause', toastType: ToastType.error);
       }
     }
+  }
 
-    if (event is CurrentPlaybackTrackChanged &&
-        playerTrackState is PlayerTracksSuccess &&
+  Future _currentPlaybackTrackChanged(CurrentPlaybackTrackChanged event,
+      Emitter<CurrentPlaybackState> emit) async {
+    final playerTrackState = playerTracksBloc.state;
+    final currentState = state;
+
+    if (playerTrackState is PlayerTracksSuccess &&
         currentState is CurrentPlaybackSuccess) {
       final changedTrackNotBeingPlayed =
           currentState.playback.trackId != playerTrackState.currentTrack.id;
       final isWithinPlaylistContext =
           currentState.playback.playlistId == playerTrackState.playlist.id;
+
       if (currentState.playback.isPlaying &&
           isWithinPlaylistContext &&
           changedTrackNotBeingPlayed) add(CurrentPlaybackPlayed());
     }
+  }
 
-    if (event is CurrentPlaybackAppPaused) {
-      _currentPlaybackSubscription?.pause();
-    }
+  Future _currentPlaybackAppPaused(CurrentPlaybackAppPaused event,
+      Emitter<CurrentPlaybackState> emit) async {
+    _currentPlaybackSubscription?.pause();
+  }
 
-    if (event is CurrentPlaybackAppResumed) {
-      _currentPlaybackSubscription?.resume();
-    }
+  Future _currentPlaybackAppResumed(CurrentPlaybackAppResumed event,
+      Emitter<CurrentPlaybackState> emit) async {
+    _currentPlaybackSubscription?.resume();
+  }
+
+  EventTransformer<CurrentPlaybackEvent> debounce<CurrentPlaybackEvent>(
+      Duration duration) {
+    return (events, mapper) => events.debounceTime(duration).flatMap(mapper);
   }
 
   @override
   Future<void> close() {
     _currentPlaybackSubscription?.cancel();
     return super.close();
-  }
-
-  @override
-  Stream<Transition<CurrentPlaybackEvent, CurrentPlaybackState>>
-      transformEvents(
-    Stream<CurrentPlaybackEvent> events,
-    TransitionFunction<CurrentPlaybackEvent, CurrentPlaybackState> transitionFn,
-  ) {
-    final nonDebounceStream = events.where((event) =>
-        (event is! CurrentPlaybackPlayed && event is! CurrentPlaybackPaused));
-    final debounceStream = events
-        .where((event) =>
-            (event is CurrentPlaybackPlayed || event is CurrentPlaybackPaused))
-        .debounceTime(Duration(milliseconds: Constants.debounceMillisecond));
-    return super.transformEvents(
-        MergeStream([nonDebounceStream, debounceStream]), transitionFn);
   }
 }

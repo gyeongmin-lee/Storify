@@ -29,18 +29,20 @@ class CustomRoundedButton extends StatelessWidget {
     return ButtonTheme(
       minWidth: 36.0,
       height: 10.0,
-      child: FlatButton(
+      child: TextButton(
         onPressed: !disabled ? onPressed : null,
-        color: backgroundColor,
-        disabledColor: backgroundColor.withOpacity(0.5),
-        padding: size == ButtonSize.regular
-            ? const EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0)
-            : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32.0),
-            side: BorderSide(
-                color: disabled ? borderColor.withOpacity(0.5) : borderColor,
-                width: size == ButtonSize.regular ? 2.0 : 1.0)),
+        style: TextButton.styleFrom(
+          backgroundColor: backgroundColor,
+          disabledBackgroundColor: backgroundColor.withOpacity(0.5),
+          padding: size == ButtonSize.regular
+              ? const EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0)
+              : EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+              side: BorderSide(
+                  color: disabled ? borderColor.withOpacity(0.5) : borderColor,
+                  width: size == ButtonSize.regular ? 2.0 : 1.0)),
+        ),
         child: Text(buttonText,
             style: size == ButtonSize.regular
                 ? TextStyles.secondary.copyWith(

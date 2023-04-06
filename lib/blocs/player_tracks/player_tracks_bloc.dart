@@ -10,31 +10,40 @@ import 'package:storify/services/spotify_api.dart';
 
 class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
   final Playlist playlist;
-  PlayerTracksBloc({this.playlist}) : super(PlayerTracksInitial(playlist));
+  PlayerTracksBloc({this.playlist}) : super(PlayerTracksInitial(playlist)) {
+    on<PlayerTracksFetched>(_onPlayerTracksFetched);
+    on<PlayerTracksTrackSelected>(_onPlayerTracksTrackSelected);
+    on<PlayerTrackStoryTextAndArtistImageUrlLoaded>(
+        _onPlayerTrackStoryTextAndArtistImageUrlLoaded,
+        transformer: debounce(
+            const Duration(milliseconds: Constants.debounceMillisecond)));
+    on<PlayerTrackStoryTextUpdated>(_onPlayerTrackStoryTextUpdated);
+  }
 
   final FirebaseDB _firebaseDB = FirebaseDB();
   StreamSubscription _storyTextSubscription;
 
-  @override
-  Stream<PlayerTracksState> mapEventToState(PlayerTracksEvent event) async* {
-    final currentState = state;
-    if (event is PlayerTracksFetched) {
-      try {
-        final tracks = await SpotifyApi.getTracks(playlist.id);
-        final currentTrack = tracks[0];
+  Future _onPlayerTracksFetched(
+      PlayerTracksFetched event, Emitter<PlayerTracksState> emit) async {
+    try {
+      final tracks = await SpotifyApi.getTracks(playlist.id);
+      final currentTrack = tracks[0];
 
-        yield PlayerTracksSuccess(
-            playlist: playlist,
-            currentTrack: currentTrack,
-            tracks: tracks,
-            isAllDataLoaded: false);
-        add(PlayerTrackStoryTextAndArtistImageUrlLoaded());
-      } catch (_) {
-        yield PlayerTracksFailure(playlist);
-      }
+      emit(PlayerTracksSuccess(
+          playlist: playlist,
+          currentTrack: currentTrack,
+          tracks: tracks,
+          isAllDataLoaded: false));
+      add(PlayerTrackStoryTextAndArtistImageUrlLoaded());
+    } catch (_) {
+      emit(PlayerTracksFailure(playlist));
     }
-    if (event is PlayerTracksTrackSelected &&
-        currentState is PlayerTracksSuccess) {
+  }
+
+  Future _onPlayerTracksTrackSelected(
+      PlayerTracksTrackSelected event, Emitter<PlayerTracksState> emit) async {
+    final currentState = state;
+    if (currentState is PlayerTracksSuccess) {
       try {
         final currentTrack = currentState.currentTrack;
         final selectedTrack = currentState.tracks[event.selectedTrackIndex];
@@ -42,31 +51,44 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
             currentTrack.artists[0] == selectedTrack.artists[0] &&
                 currentState.currentTrackArtistImageUrl != null;
 
-        yield currentState.copyWith(
+        emit(currentState.copyWith(
             currentTrack: selectedTrack,
             currentTrackArtistImageUrl: isArtistImageLoaded
                 ? currentState.currentTrackArtistImageUrl
                 : '',
             storyText: '',
-            isAllDataLoaded: false);
-
+            isAllDataLoaded: false));
         add(PlayerTrackStoryTextAndArtistImageUrlLoaded());
       } catch (_) {
-        yield PlayerTracksFailure(playlist);
+        emit(PlayerTracksFailure(playlist));
       }
     }
+  }
 
-    if (event is PlayerTrackStoryTextAndArtistImageUrlLoaded &&
-        currentState is PlayerTracksSuccess) {
-      if (currentState.currentTrackArtistImageUrl.isEmpty)
-        yield* _loadArtistImageUrl();
-      yield* _loadStoryText();
-      yield* _completeLoad();
+  Future _onPlayerTrackStoryTextAndArtistImageUrlLoaded(
+      PlayerTrackStoryTextAndArtistImageUrlLoaded event,
+      Emitter<PlayerTracksState> emit) async {
+    final currentState = state;
+    if (currentState is PlayerTracksSuccess) {
+      if (currentState.currentTrackArtistImageUrl.isEmpty) {
+        await for (final result in _loadArtistImageUrl()) {
+          emit(result);
+        }
+      }
+
+      await for (final result in _loadStoryText()) {
+        emit(result);
+      }
+
+      emit(currentState.copyWith(isAllDataLoaded: true));
     }
+  }
 
-    if (event is PlayerTrackStoryTextUpdated &&
-        currentState is PlayerTracksSuccess) {
-      yield currentState.copyWith(storyText: event.storyText);
+  Future _onPlayerTrackStoryTextUpdated(PlayerTrackStoryTextUpdated event,
+      Emitter<PlayerTracksState> emit) async {
+    final currentState = state;
+    if (currentState is PlayerTracksSuccess) {
+      emit(currentState.copyWith(storyText: event.storyText));
     }
   }
 
@@ -91,29 +113,14 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
         .listen((storyText) => add(PlayerTrackStoryTextUpdated(storyText)));
   }
 
-  Stream<PlayerTracksState> _completeLoad() async* {
-    final PlayerTracksSuccess currentState = state;
-    yield currentState.copyWith(isAllDataLoaded: true);
-  }
-
   @override
   Future<void> close() {
     _storyTextSubscription?.cancel();
     return super.close();
   }
 
-  @override
-  Stream<Transition<PlayerTracksEvent, PlayerTracksState>> transformEvents(
-    Stream<PlayerTracksEvent> events,
-    TransitionFunction<PlayerTracksEvent, PlayerTracksState> transitionFn,
-  ) {
-    final nonDebounceStream = events.where(
-        (event) => event is! PlayerTrackStoryTextAndArtistImageUrlLoaded);
-    final debounceStream = events
-        .where((event) => event is PlayerTrackStoryTextAndArtistImageUrlLoaded)
-        .debounceTime(
-            const Duration(milliseconds: Constants.debounceMillisecond));
-    return super.transformEvents(
-        MergeStream([nonDebounceStream, debounceStream]), transitionFn);
+  EventTransformer<PlayerTracksEvent> debounce<PlayerTracksEvent>(
+      Duration duration) {
+    return (events, mapper) => events.debounceTime(duration).flatMap(mapper);
   }
 }

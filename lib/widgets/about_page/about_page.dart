@@ -8,8 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 class AboutPage extends StatelessWidget {
   void _showProfile() async {
     final url = 'https://github.com/gyeongmin-lee';
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       CustomToast.showTextToast(
           text: 'Failed to open link', toastType: ToastType.error);
@@ -20,8 +20,8 @@ class AboutPage extends StatelessWidget {
     var url = Platform.isAndroid
         ? 'https://play.google.com/store/apps/details?id=com.minlee.storify'
         : 'https://play.google.com/store/apps/details?id=com.minlee.storify';
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       CustomToast.showTextToast(
           text: 'Failed to open link', toastType: ToastType.error);

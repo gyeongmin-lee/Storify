@@ -37,7 +37,7 @@ class _AppState extends State<App> {
   Future<void> initLoadFromUri() async {
     final auth = context.read<SpotifyAuth>();
     final uriManager = SpotifyUriManager(auth);
-    _sub = getUriLinksStream().listen((Uri uri) async {
+    _sub = uriLinkStream.listen((Uri uri) async {
       if (!mounted) return;
       if (uri == null) return;
       try {
@@ -72,19 +72,16 @@ class _AppState extends State<App> {
         initialRoute: SplashPage.routeName,
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: Color(0xFF191414),
-          cursorColor: Colors.green[700],
-          textSelectionColor: Colors.green[100].withOpacity(0.1),
-          textSelectionHandleColor: Colors.green[700],
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: Colors.green[700],
+            selectionColor: Colors.green[100].withOpacity(0.1),
+            selectionHandleColor: Colors.green[700],
+          ),
           textTheme: Theme.of(context).textTheme.apply(
               displayColor: Colors.white70,
               bodyColor: CustomColors.secondaryTextColor),
         ),
         builder: (context, child) {
-          child = ScrollConfiguration(
-            behavior: DisableGlowScrollBehaviour(),
-            child: child,
-          );
-
           child = botToastBuilder(context, child);
           return child;
         },
