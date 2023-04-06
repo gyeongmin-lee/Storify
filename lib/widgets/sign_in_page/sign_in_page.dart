@@ -51,7 +51,8 @@ class _SignInPageState extends State<SignInPage> {
     try {
       await auth.signInFromSavedTokens();
       Navigator.popAndPushNamed(context, HomePage.routeName);
-    } catch (_) {} finally {
+    } catch (_) {
+    } finally {
       setState(() => _isLoading = false);
     }
   }

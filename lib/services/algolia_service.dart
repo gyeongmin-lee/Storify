@@ -8,7 +8,7 @@ class AlgoliaService {
   AlgoliaService._() {
     this.algolia = Algolia.init(
       applicationId: 'AM3NYQWJOW',
-      apiKey: DotEnv().env['API_KEY']!,
+      apiKey: dotenv.env['API_KEY']!,
     );
   }
 

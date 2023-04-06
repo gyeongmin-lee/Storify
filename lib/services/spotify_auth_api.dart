@@ -7,8 +7,8 @@ import 'package:storify/models/auth_tokens.dart';
 import 'package:storify/services/api_path.dart';
 
 class SpotifyAuthApi {
-  static final clientId = DotEnv().env['CLIENT_ID'];
-  static final clientSecret = DotEnv().env['CLIENT_SECRET'];
+  static final clientId = dotenv.env['CLIENT_ID'];
+  static final clientSecret = dotenv.env['CLIENT_SECRET'];
   static final base64Credential =
       utf8.fuse(base64).encode('$clientId:$clientSecret');
 

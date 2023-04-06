@@ -18,14 +18,14 @@ class SpotifyAuth extends ChangeNotifier {
   /// Implemented using 'Authorization Code' flow from Spotify auth guide:
   /// https://developer.spotify.com/documentation/general/guides/authorization-guide/
   Future<void> authenticate() async {
-    final clientId = DotEnv().env['CLIENT_ID'];
-    final redirectUri = DotEnv().env['REDIRECT_URI'];
-    final state = _getRandomString(6);
-
     try {
+      final clientId = dotenv.env['CLIENT_ID'];
+      final redirectUri = dotenv.env['REDIRECT_URI'];
+      final state = _getRandomString(6);
+
       final result = await FlutterWebAuth.authenticate(
         url: APIPath.requestAuthorization(clientId, redirectUri, state),
-        callbackUrlScheme: DotEnv().env['CALLBACK_URL_SCHEME']!,
+        callbackUrlScheme: dotenv.env['CALLBACK_URL_SCHEME']!,
       );
 
       // Validate state from response

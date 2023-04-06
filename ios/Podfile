@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '11.0'
+platform :ios, '11.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -32,9 +32,21 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.7.0'
 end
 
 post_install do |installer|
+  # FIX: Temporary fix for XCode 14.3 See 
+  # https://github.com/CocoaPods/CocoaPods/pull/11828
+  # https://stackoverflow.com/questions/75894992/missing-file-libarclite-iphoneos-a-in-xcode-14-3-after-update-flutter-and-xcod
+  installer.generated_projects.each do |project|
+    project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
+      end
+    end
+  end
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
