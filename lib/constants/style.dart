@@ -10,8 +10,7 @@ class TextStyles {
 
   static final secondary = TextStyle(color: CustomColors.secondaryTextColor);
 
-  static final buttonText =
-      primary.copyWith(fontWeight: FontWeight.w300, letterSpacing: 4.0);
+  static final buttonText = primary.copyWith(fontWeight: FontWeight.w300);
 
   static final light = secondary.copyWith(fontWeight: FontWeight.w300);
 

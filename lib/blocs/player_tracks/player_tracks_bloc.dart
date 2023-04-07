@@ -58,6 +58,7 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
                 : '',
             storyText: '',
             isAllDataLoaded: false));
+
         add(PlayerTrackStoryTextAndArtistImageUrlLoaded());
       } catch (_) {
         emit(PlayerTracksFailure(playlist));
@@ -68,17 +69,20 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
   Future _onPlayerTrackStoryTextAndArtistImageUrlLoaded(
       PlayerTrackStoryTextAndArtistImageUrlLoaded event,
       Emitter<PlayerTracksState> emit) async {
-    final PlayerTracksState currentState = state;
-    if (currentState is PlayerTracksSuccess) {
+    if (state is PlayerTracksSuccess) {
+      PlayerTracksSuccess currentState = state as PlayerTracksSuccess;
+
       if (currentState.currentTrackArtistImageUrl.isEmpty) {
-        await for (final result in _loadArtistImageUrl()) {
-          emit(result);
-        }
+        try {
+          final artistImageUrl = await SpotifyApi.getArtistImageUrl(
+              currentState.currentTrack.artists[0].href!);
+          currentState =
+              currentState.copyWith(currentTrackArtistImageUrl: artistImageUrl);
+          emit(currentState);
+        } catch (_) {}
       }
 
-      await for (final result in _loadStoryText()) {
-        emit(result);
-      }
+      await _loadStoryText();
 
       emit(currentState.copyWith(isAllDataLoaded: true));
     }
@@ -92,18 +96,7 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
     }
   }
 
-  Stream<PlayerTracksState> _loadArtistImageUrl() async* {
-    final PlayerTracksSuccess currentState = state as PlayerTracksSuccess;
-    try {
-      final artistImageUrl = await SpotifyApi.getArtistImageUrl(
-          currentState.currentTrack.artists[0].href!);
-      yield currentState.copyWith(currentTrackArtistImageUrl: artistImageUrl);
-    } catch (_) {
-      yield currentState;
-    }
-  }
-
-  Stream<PlayerTracksState> _loadStoryText() async* {
+  Future _loadStoryText() async {
     final PlayerTracksSuccess currentState = state as PlayerTracksSuccess;
     await _storyTextSubscription?.cancel();
     _storyTextSubscription = _firebaseDB

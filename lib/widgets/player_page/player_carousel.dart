@@ -64,7 +64,9 @@ class _PlayerCarouselState extends State<PlayerCarousel> {
       items: widget.tracks.map((track) {
         return GestureDetector(
           onTap: () => _onTrackTapped(track),
-          child: Image.network(track.albumImageUrl!, fit: BoxFit.fill),
+          child: track.albumImageUrl != null && track.albumImageUrl != ''
+              ? Image.network(track.albumImageUrl!, fit: BoxFit.fill)
+              : Container(),
         );
       }).toList(),
     );

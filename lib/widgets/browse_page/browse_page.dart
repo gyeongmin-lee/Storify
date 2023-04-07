@@ -50,33 +50,33 @@ class BrowsePage extends StatelessWidget {
               stream: FirebaseDB().playlistsStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
-                  final playlists = snapshot.data!;
-                  if (playlists.isEmpty) {
+                  final playlists = snapshot.data;
+                  if (playlists == null || playlists.isEmpty) {
                     return Container();
-                  } else {
-                    return ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.only(top: 0.0),
-                        itemBuilder: (context, index) {
-                          final playlist = playlists[index];
-                          return PlayListItem(
-                              subtitleText: 'BY ${playlist.owner.name}',
-                              playlist: playlist,
-                              onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PlayerPage.create(
-                                            playlist: playlist)),
-                                  ));
-                        },
-                        itemCount: playlists.length,
-                        separatorBuilder: (context, index) => Divider(
-                              color: Colors.white10,
-                              thickness: 1.0,
-                              height: 1.0,
-                            ));
                   }
+
+                  return ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.only(top: 0.0),
+                      itemBuilder: (context, index) {
+                        final playlist = playlists[index];
+                        return PlayListItem(
+                            subtitleText: 'BY ${playlist.owner.name}',
+                            playlist: playlist,
+                            onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PlayerPage.create(
+                                          playlist: playlist)),
+                                ));
+                      },
+                      itemCount: playlists.length,
+                      separatorBuilder: (context, index) => Divider(
+                            color: Colors.white10,
+                            thickness: 1.0,
+                            height: 1.0,
+                          ));
                 } else {
                   return Padding(
                     padding: const EdgeInsets.only(top: 128.0),

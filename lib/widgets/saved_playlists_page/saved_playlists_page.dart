@@ -28,32 +28,33 @@ class _SavedPlaylistsPageState extends State<SavedPlaylistsPage> {
       stream: _firebaseDB.savedPlaylistsStream(userId: userId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          final playlists = snapshot.data!;
-          if (playlists.isEmpty) {
+          final playlists = snapshot.data;
+
+          if (playlists == null || playlists.isEmpty) {
             return StatusIndicator(
                 status: Status.warning,
                 message:
                     'You do not have a saved playlist yet. \nTap \'BROWSE\' to find more playlists');
-          } else {
-            return ListView.separated(
-                itemBuilder: (context, index) {
-                  final playlist = playlists[index];
-                  return PlayListItem(
-                      playlist: playlist,
-                      onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    PlayerPage.create(playlist: playlist)),
-                          ));
-                },
-                itemCount: playlists.length,
-                separatorBuilder: (context, index) => Divider(
-                      color: Colors.white10,
-                      thickness: 1.0,
-                      height: 1.0,
-                    ));
           }
+
+          return ListView.separated(
+              itemBuilder: (context, index) {
+                final playlist = playlists[index];
+                return PlayListItem(
+                    playlist: playlist,
+                    onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PlayerPage.create(playlist: playlist)),
+                        ));
+              },
+              itemCount: playlists.length,
+              separatorBuilder: (context, index) => Divider(
+                    color: Colors.white10,
+                    thickness: 1.0,
+                    height: 1.0,
+                  ));
         } else {
           return StatusIndicator(
             message: 'Loading Saved Playlists',

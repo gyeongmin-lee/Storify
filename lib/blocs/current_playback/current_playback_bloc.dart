@@ -36,7 +36,7 @@ class CurrentPlaybackBloc
       CurrentPlaybackLoaded event, Emitter<CurrentPlaybackState> emit) async {
     await _currentPlaybackSubscription?.cancel();
     _currentPlaybackSubscription =
-        SpotifyApi.getCurrentPlaybackStream().listen((Playback playback) {
+        SpotifyApi.getCurrentPlaybackStream().listen((Playback? playback) {
       add(CurrentPlaybackUpdated(playback));
     });
   }

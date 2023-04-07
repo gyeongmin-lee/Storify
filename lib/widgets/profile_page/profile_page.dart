@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
@@ -31,6 +32,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<SpotifyAuth>();
+    final avatarImageUrl = auth.user?.avatarImageUrl;
 
     return SafeArea(
       child: Center(
@@ -48,8 +50,9 @@ class ProfilePage extends StatelessWidget {
                 child: CircleAvatar(
                     radius: 54.0,
                     backgroundColor: Colors.transparent,
-                    backgroundImage: CustomImageProvider.cachedImage(
-                        auth.user!.avatarImageUrl)),
+                    backgroundImage: avatarImageUrl != null
+                        ? CachedNetworkImageProvider(avatarImageUrl)
+                        : null),
               ),
               title: Text(auth.user!.name!,
                   style: TextStyles.primary.copyWith(

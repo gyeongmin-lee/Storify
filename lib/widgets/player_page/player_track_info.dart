@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/artist.dart';
@@ -35,10 +36,9 @@ class PlayerTrackInfo extends StatelessWidget {
             CircleAvatar(
                 radius: 54.0,
                 backgroundColor: Colors.transparent,
-                backgroundImage:
-                    CustomImageProvider.cachedImage(artistImageUrl)),
+                backgroundImage: CachedNetworkImageProvider(artistImageUrl)),
             SizedBox(
-              height: 8.0,
+              height: 16.0,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),

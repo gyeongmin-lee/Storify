@@ -5,11 +5,11 @@ class CustomFlatTextButton extends StatelessWidget {
   const CustomFlatTextButton({
     Key? key,
     this.onPressed,
-    this.text,
+    required this.text,
     this.leadingWidget,
   }) : super(key: key);
   final VoidCallback? onPressed;
-  final String? text;
+  final String text;
   final Widget? leadingWidget;
 
   @override
@@ -26,10 +26,7 @@ class CustomFlatTextButton extends StatelessWidget {
             width: 12.0,
           ),
         ],
-        Text(text!,
-            style: TextStyles.buttonText.copyWith(
-              fontSize: 22.0,
-            )),
+        Text(text, style: TextStyles.buttonText.copyWith(fontSize: 22.0)),
       ]),
       onPressed: onPressed,
     );

@@ -163,7 +163,7 @@ class SpotifyApi {
     }
   }
 
-  static Stream<Playback> getCurrentPlaybackStream() async* {
+  static Stream<Playback?> getCurrentPlaybackStream() async* {
     yield* Stream.periodic(Constants.playerStatePollDuration, (_) async {
       try {
         final currentPlayback = await _getCurrentPlayback();
@@ -171,7 +171,7 @@ class SpotifyApi {
       } catch (_) {
         return null;
       }
-    }).asyncMap(((event) async => (await event)!));
+    }).asyncMap(((event) async => (await event)));
   }
 
   static Future _expandNestedParam(

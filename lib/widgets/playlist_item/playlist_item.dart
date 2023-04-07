@@ -1,12 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/models/playlist.dart';
 import 'package:storify/services/firebase_db.dart';
 import 'package:storify/services/playlist_actions.dart';
 import 'package:storify/services/spotify_auth.dart';
-import 'package:storify/widgets/_common/custom_image_provider.dart';
-import 'package:provider/provider.dart';
 
 class PlayListItem extends StatefulWidget {
   const PlayListItem(
@@ -65,6 +65,8 @@ class _PlayListItemState extends State<PlayListItem> {
   @override
   Widget build(BuildContext context) {
     final userId = context.watch<SpotifyAuth>().user!.id;
+    final playlistImageUrl = widget.playlist.playlistImageUrl;
+
     return Slidable(
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
@@ -129,9 +131,10 @@ class _PlayListItemState extends State<PlayListItem> {
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
           leading: CircleAvatar(
             radius: 25,
-            backgroundImage: CustomImageProvider.cachedImage(
-                widget.playlist.playlistImageUrl),
-            backgroundColor: Colors.transparent,
+            backgroundImage: playlistImageUrl != null
+                ? CachedNetworkImageProvider(playlistImageUrl)
+                : null,
+            backgroundColor: Colors.black,
           ),
           title: Text(widget.titleText ?? widget.playlist.name!,
               style: TextStyles.primary.copyWith(

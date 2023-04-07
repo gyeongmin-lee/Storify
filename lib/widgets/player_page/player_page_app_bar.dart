@@ -17,8 +17,8 @@ class PlayerPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   AppBar build(BuildContext context) {
     return AppBar(
       title: Text(
-        playlist!.name!,
-        style: TextStyles.appBarTitle.copyWith(letterSpacing: 0),
+        playlist?.name ?? '',
+        style: TextStyles.appBarTitle.copyWith(letterSpacing: -2.0),
       ),
       leading: isOpenedFromDeepLink
           ? CustomFlatIconButton(

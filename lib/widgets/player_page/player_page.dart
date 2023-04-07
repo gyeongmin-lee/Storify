@@ -190,12 +190,14 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
         if (state is PlayerTracksSuccess) {
           return Stack(
             children: [
-              Image.network(
-                state.currentTrack.albumImageUrl!,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-              ),
+              state.currentTrack.albumImageUrl != null
+                  ? Image.network(
+                      state.currentTrack.albumImageUrl!,
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+                    )
+                  : Container(decoration: BoxDecoration(color: Colors.black)),
               Container(
                 decoration: BoxDecoration(color: Colors.black.withOpacity(0.7)),
               ),
