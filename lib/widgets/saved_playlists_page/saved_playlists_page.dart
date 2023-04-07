@@ -42,6 +42,7 @@ class _SavedPlaylistsPageState extends State<SavedPlaylistsPage> {
                 final playlist = playlists[index];
                 return PlayListItem(
                     playlist: playlist,
+                    subtitleText: 'By ${playlist.owner.name}',
                     onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -62,7 +62,7 @@ class BrowsePage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final playlist = playlists[index];
                         return PlayListItem(
-                            subtitleText: 'BY ${playlist.owner.name}',
+                            subtitleText: 'By ${playlist.owner.name}',
                             playlist: playlist,
                             onPressed: () => Navigator.push(
                                   context,

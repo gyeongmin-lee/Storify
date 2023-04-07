@@ -169,7 +169,7 @@ class _SearchPlaylistsPageState extends State<SearchPlaylistsPage> {
               }
               final playlist = _playlists[index - 1];
               return PlayListItem(
-                  subtitleText: 'BY ${playlist.owner.name}',
+                  subtitleText: 'By ${playlist.owner.name}',
                   playlist: playlist,
                   onPressed: () => Navigator.push(
                         context,
