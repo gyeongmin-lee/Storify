@@ -89,4 +89,13 @@ class FirestoreService {
     return snapshots.map((snapshot) =>
         builder(snapshot.data() as Map<String, dynamic>?, snapshot.id));
   }
+
+  Future<T> documentData<T>({
+    required String path,
+    required T builder(Map<String, dynamic>? data),
+  }) async {
+    final DocumentReference reference = FirebaseFirestore.instance.doc(path);
+    final DocumentSnapshot snapshot = await reference.get();
+    return builder(snapshot.data() as Map<String, dynamic>?);
+  }
 }

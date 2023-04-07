@@ -54,7 +54,7 @@ class EditStoryPage extends StatefulWidget {
 }
 
 class _EditStoryPageState extends State<EditStoryPage> {
-  TextEditingController? _controller;
+  late TextEditingController _controller;
 
   @override
   void initState() {
@@ -64,12 +64,12 @@ class _EditStoryPageState extends State<EditStoryPage> {
 
   Future<void> _onSubmitted(BuildContext context) async {
     OverlayLoader.show(loadingText: 'UPDATING');
-    await widget.onStoryTextEdited(_controller!.text);
+    await widget.onStoryTextEdited(_controller.text);
     Navigator.of(context).pop();
   }
 
   bool get _shouldDisplayCounter =>
-      _controller!.text.length > Constants.displayCounterWhenLength;
+      _controller.text.length > Constants.displayCounterWhenLength;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class _EditStoryPageState extends State<EditStoryPage> {
                         border: InputBorder.none,
                         counter: _shouldDisplayCounter
                             ? TextCounter(
-                                textLength: _controller!.text.length,
+                                textLength: _controller.text.length,
                                 maxLength: Constants.storyTextMaxLength,
                               )
                             : null,

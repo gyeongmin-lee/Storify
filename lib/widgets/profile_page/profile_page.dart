@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
-import 'package:storify/widgets/_common/custom_image_provider.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/about_page/about_page.dart';
 import 'package:url_launcher/url_launcher.dart';

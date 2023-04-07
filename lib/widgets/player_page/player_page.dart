@@ -113,6 +113,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
       String newStoryText, Playlist playlist, String? currentTrackId) async {
     try {
       await _firebaseDB.setStory(newStoryText, playlist, currentTrackId);
+      _playerTracksBloc.add(PlayerTrackStoryTextAndArtistImageUrlLoaded());
       CustomToast.showTextToast(text: 'Updated', toastType: ToastType.success);
     } catch (e) {
       print(e);

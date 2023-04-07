@@ -59,7 +59,8 @@ class _PlayListItemState extends State<PlayListItem> {
   }
 
   void _onLongPress(BuildContext context) {
-    _slidableController!.openEndActionPane();
+    // TODO Implement
+    _slidableController?.openEndActionPane();
   }
 
   @override
@@ -69,7 +70,7 @@ class _PlayListItemState extends State<PlayListItem> {
 
     return Slidable(
       endActionPane: ActionPane(
-        motion: const DrawerMotion(),
+        motion: const ScrollMotion(),
         children: [
           CustomSlidableAction(
             child: Column(children: [

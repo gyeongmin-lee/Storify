@@ -72,19 +72,27 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
     if (state is PlayerTracksSuccess) {
       PlayerTracksSuccess currentState = state as PlayerTracksSuccess;
 
-      if (currentState.currentTrackArtistImageUrl.isEmpty) {
-        try {
-          final artistImageUrl = await SpotifyApi.getArtistImageUrl(
-              currentState.currentTrack.artists[0].href!);
-          currentState =
-              currentState.copyWith(currentTrackArtistImageUrl: artistImageUrl);
-          emit(currentState);
-        } catch (_) {}
-      }
+      try {
+        String? artistImageUrl;
+        String? storyText;
 
-      await _loadStoryText();
+        final artistUrl = currentState.currentTrack.artists[0].href;
+        if (artistUrl != null) {
+          artistImageUrl = await SpotifyApi.getArtistImageUrl(artistUrl);
+        }
 
-      emit(currentState.copyWith(isAllDataLoaded: true));
+        final playlistId = currentState.playlist?.id;
+        final trackId = currentState.currentTrack.id;
+        if (playlistId != null && trackId != null) {
+          storyText = await _firebaseDB.storyText(
+              playlistId: playlistId, trackId: trackId);
+        }
+
+        emit(currentState.copyWith(
+            currentTrackArtistImageUrl: artistImageUrl,
+            storyText: storyText,
+            isAllDataLoaded: true));
+      } catch (_) {}
     }
   }
 
@@ -94,16 +102,6 @@ class PlayerTracksBloc extends Bloc<PlayerTracksEvent, PlayerTracksState> {
     if (currentState is PlayerTracksSuccess) {
       emit(currentState.copyWith(storyText: event.storyText));
     }
-  }
-
-  Future _loadStoryText() async {
-    final PlayerTracksSuccess currentState = state as PlayerTracksSuccess;
-    await _storyTextSubscription?.cancel();
-    _storyTextSubscription = _firebaseDB
-        .storyStream(
-            playlistId: currentState.playlist!.id,
-            trackId: currentState.currentTrack.id)
-        .listen((storyText) => add(PlayerTrackStoryTextUpdated(storyText)));
   }
 
   @override

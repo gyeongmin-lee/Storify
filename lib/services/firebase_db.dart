@@ -20,11 +20,13 @@ class FirebaseDB {
     await _angoliaService.updateIndexWithPlaylist(playlist.toJson());
   }
 
-  Stream<String?> storyStream(
-          {required String? playlistId, required String? trackId}) =>
-      _service.documentStream(
-          path: APIPath.story(playlistId, trackId),
-          builder: (data, _) => data != null ? (data['text'] as String?) : '');
+  Future<String?> storyText(
+      {required String playlistId, required String trackId}) async {
+    final data = await _service.documentData(
+        path: APIPath.story(playlistId, trackId),
+        builder: (data) => data != null ? (data['text'] as String?) : '');
+    return data;
+  }
 
   Stream<List<Playlist>> playlistsStream() => _service.collectionStream(
         path: APIPath.playlists,

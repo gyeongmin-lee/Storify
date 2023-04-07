@@ -4,7 +4,6 @@ import 'package:storify/constants/style.dart';
 import 'package:storify/models/artist.dart';
 import 'package:storify/models/track.dart';
 import 'package:storify/widgets/_common/custom_auto_size_text.dart';
-import 'package:storify/widgets/_common/custom_image_provider.dart';
 
 class PlayerTrackInfo extends StatelessWidget {
   const PlayerTrackInfo(

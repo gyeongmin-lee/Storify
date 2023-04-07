@@ -91,9 +91,14 @@ class SpotifyApi {
     }
   }
 
-  static Future<String?> getArtistImageUrl(String href) async {
-    final response = await client.get(Uri.parse(href));
+  static Map<String, String> artistUrlToImageUrlCache = {};
 
+  static Future<String?> getArtistImageUrl(String href) async {
+    // Check if the image url is already cached
+    if (artistUrlToImageUrlCache[href] != null)
+      return artistUrlToImageUrlCache[href];
+
+    final response = await client.get(Uri.parse(href));
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
       final images = responseBody['images'];
@@ -103,9 +108,12 @@ class SpotifyApi {
         final imageHeight = image['height'];
         if (imageWidth < Constants.artistImageMaxSize ||
             imageHeight < Constants.artistImageMaxSize) {
+          artistUrlToImageUrlCache[href] = image['url'];
           return image['url'];
         }
       }
+
+      artistUrlToImageUrlCache[href] = images[0]['url'];
       return images[0]['url'];
     } else {
       throw Exception(
