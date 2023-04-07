@@ -18,7 +18,7 @@ class TextStyles {
       fontSize: 36.0, fontWeight: FontWeight.bold, letterSpacing: 5.0);
 
   static final appBarTitle = primary.copyWith(
-      fontSize: 20.0, letterSpacing: 2.0, fontWeight: FontWeight.bold);
+      fontSize: 20.0, letterSpacing: 0.0, fontWeight: FontWeight.bold);
 
   static final smallButtonText = secondary.copyWith(
     fontSize: 12.0,

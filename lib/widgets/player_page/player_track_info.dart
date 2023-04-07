@@ -37,7 +37,7 @@ class PlayerTrackInfo extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 backgroundImage: CachedNetworkImageProvider(artistImageUrl)),
             SizedBox(
-              height: 16.0,
+              height: 8.0,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -45,6 +45,9 @@ class PlayerTrackInfo extends StatelessWidget {
                 Text(_artistNames(currentTrack.artists),
                     textAlign: TextAlign.center,
                     style: TextStyles.secondary.copyWith(fontSize: 16.0)),
+                SizedBox(
+                  height: 8.0,
+                ),
                 CustomAutoSizeText(
                   currentTrack.name,
                   maxLines: 1,

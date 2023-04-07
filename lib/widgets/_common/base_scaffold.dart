@@ -5,7 +5,7 @@ class BaseScaffold extends StatelessWidget {
   final String? titleText;
   final Widget bottomNavigationBar;
   final Widget? body;
-  final bool? hideAppBar;
+  final bool hideAppBar;
 
   const BaseScaffold(
       {Key? key,
@@ -19,10 +19,10 @@ class BaseScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: false,
-      appBar: !hideAppBar!
+      appBar: !hideAppBar
           ? AppBar(
               title: Text(
-                titleText!,
+                titleText ?? "",
                 style: TextStyles.appBarTitle,
               ),
               centerTitle: true,

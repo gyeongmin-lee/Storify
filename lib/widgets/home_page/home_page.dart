@@ -18,18 +18,17 @@ class _HomePageState extends State<HomePage> {
 
   static final List<Map<String, dynamic>> _widgetOptions = [
     {
-      'titleText': 'MY PLAYLISTS',
+      'titleText': 'My Playlists',
       'hideAppBar': false,
       'widget': MyPlaylistsPage.create(),
     },
     {
-      'titleText': '',
       'hideAppBar': true,
       'widget': BrowsePage(),
     },
     {
       'hideAppBar': false,
-      'titleText': 'SAVED PLAYLISTS',
+      'titleText': 'Saved Playlists',
       'widget': SavedPlaylistsPage(),
     },
     {

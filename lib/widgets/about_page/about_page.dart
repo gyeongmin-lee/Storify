@@ -30,59 +30,72 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            ListTile(
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              leading: Image.asset(
-                'images/logo.png',
-                width: 64.0,
-              ),
-              title: Text('Storify',
-                  style: TextStyles.primary
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 20.0)),
-              subtitle: Text(
-                'Add captions to your Spotify playlists',
-                style: TextStyles.secondary.copyWith(fontSize: 16.0),
-              ),
-            ),
-            Divider(
-              color: Colors.white10,
-              thickness: 1.0,
-              height: 1.0,
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.star,
-                color: CustomColors.primaryTextColor,
-              ),
-              title: Text('Rate our app',
-                  style: TextStyles.primary
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0)),
-              onTap: _showRatingPage,
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.person,
-                color: CustomColors.primaryTextColor,
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Developer profile',
-                      style: TextStyles.primary.copyWith(
-                          fontWeight: FontWeight.bold, fontSize: 16.0)),
-                  Text('Created by Gyeongmin Lee',
-                      style: TextStyles.secondary.copyWith(fontSize: 14.0))
-                ],
-              ),
-              onTap: _showProfile,
-            )
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("About App", style: TextStyles.appBarTitle),
+        iconTheme: IconThemeData(color: CustomColors.primaryTextColor),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Divider(
+            color: Colors.white10,
+            thickness: 1.0,
+            height: 1.0,
+          ),
         ),
+      ),
+      body: Column(
+        children: [
+          ListTile(
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            leading: Image.asset(
+              'images/logo.png',
+              width: 64.0,
+            ),
+            title: Text('Storify',
+                style: TextStyles.primary
+                    .copyWith(fontWeight: FontWeight.w600, fontSize: 20.0)),
+            subtitle: Text(
+              'Version 1.0.0',
+              style: TextStyles.secondary.copyWith(fontSize: 16.0),
+            ),
+          ),
+          Divider(
+            color: Colors.white10,
+            thickness: 1.0,
+            height: 1.0,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.star,
+              color: CustomColors.primaryTextColor,
+            ),
+            title: Text('Rate our app',
+                style: TextStyles.primary
+                    .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0)),
+            onTap: _showRatingPage,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.person,
+              color: CustomColors.primaryTextColor,
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Developer profile',
+                    style: TextStyles.primary
+                        .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                Text('Created by Gyeongmin Lee',
+                    style: TextStyles.secondary.copyWith(fontSize: 14.0))
+              ],
+            ),
+            onTap: _showProfile,
+          )
+        ],
       ),
     );
   }
