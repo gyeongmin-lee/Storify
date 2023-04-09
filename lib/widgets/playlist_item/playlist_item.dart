@@ -30,13 +30,11 @@ class PlayListItem extends StatefulWidget {
 
 class _PlayListItemState extends State<PlayListItem> {
   late FirebaseDB _firebaseDB;
-  SlidableController? _slidableController;
 
   @override
   void initState() {
     super.initState();
     _firebaseDB = FirebaseDB();
-    _slidableController = Slidable.of(context);
   }
 
   Future<void> _onOpenInSpotify() async {
@@ -59,7 +57,7 @@ class _PlayListItemState extends State<PlayListItem> {
   }
 
   void _onLongPress(BuildContext context) {
-    // TODO Implement
+    final _slidableController = Slidable.of(context);
     _slidableController?.openEndActionPane();
   }
 
@@ -73,11 +71,13 @@ class _PlayListItemState extends State<PlayListItem> {
         motion: const ScrollMotion(),
         children: [
           CustomSlidableAction(
-            child: Column(children: [
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Opacity(
                   opacity: 0.75,
                   child: Image.asset('images/spotify_white.png', width: 24.0)),
-              Text('OPEN IN\nSPOTIFY'),
+              SizedBox(height: 5.0),
+              Text('OPEN'),
             ]),
             backgroundColor: Colors.white.withOpacity(0.05),
             foregroundColor: CustomColors.primaryTextColor,
@@ -87,7 +87,7 @@ class _PlayListItemState extends State<PlayListItem> {
           SlidableAction(
             padding: const EdgeInsets.only(bottom: 4.0),
             icon: Icons.link,
-            label: 'SHARE LINK',
+            label: 'SHARE',
             backgroundColor: Colors.white.withOpacity(0.05),
             foregroundColor: CustomColors.primaryTextColor,
             onPressed: (_) => _onShareLink(),
