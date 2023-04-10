@@ -2,19 +2,16 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:storify/constants/style.dart';
 
-enum ToastType { error, warning, info, success }
+enum ToastType { error, info, success }
 
 class CustomToast {
   static Map<ToastType, Widget> toastIcon = {
-    ToastType.error: Icon(
-      Icons.error,
-      color: Colors.red,
-    ),
-    ToastType.warning: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 4.0),
-        child: Icon(Icons.warning, color: Colors.orange, size: 16.0)),
-    ToastType.info: Icon(Icons.info, color: CustomColors.primaryTextColor),
-    ToastType.success: Icon(Icons.check_circle, color: Colors.green),
+    ToastType.error:
+        Icon(Icons.error_outline_sharp, color: Colors.red, size: 32.0),
+    ToastType.info: Icon(Icons.info_outline,
+        color: CustomColors.primaryTextColor, size: 32.0),
+    ToastType.success:
+        Icon(Icons.check_circle_outline_sharp, color: Colors.green, size: 32.0),
   };
 
   static void showTextToast(
@@ -25,23 +22,21 @@ class CustomToast {
           borderRadius: BorderRadius.circular(30.0),
         ),
         elevation: 0,
-        color: Colors.grey[850],
+        color: Colors.grey.shade900,
         child: Padding(
           padding: const EdgeInsets.only(
-              left: 4.0, right: 8.0, top: 4.0, bottom: 4.0),
+              left: 8.0, right: 16.0, top: 8.0, bottom: 8.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               toastIcon[toastType]!,
               SizedBox(
-                width: 4.0,
+                width: 12.0,
               ),
               Text(
                 text,
-                style: TextStyles.primary.copyWith(
-                    fontSize: 14.0,
-                    letterSpacing: 0.6,
-                    fontWeight: FontWeight.bold),
+                style: TextStyles.primary
+                    .copyWith(fontSize: 14.0, fontWeight: FontWeight.w300),
               ),
             ],
           ),

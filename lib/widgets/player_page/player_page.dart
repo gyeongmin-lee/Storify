@@ -228,6 +228,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
     final artistImageUrl = state.currentTrackArtistImageUrl;
     final tracks = state.tracks;
     final storyText = state.storyText ?? '';
+    final isLoaded = state.isAllDataLoaded;
 
     final auth = context.read<SpotifyAuth>();
     bool isOwned = playlist.owner.id == auth.user!.id;
@@ -244,7 +245,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
           ),
           BlocBuilder<CurrentPlaybackBloc, CurrentPlaybackState>(
               builder: (context, state) {
-            var _isPlaying = false;
+            bool _isPlaying = false;
             if (state is CurrentPlaybackSuccess)
               _isPlaying = state.playback.isPlaying! &&
                   state.playback.playlistId == playlist.id;
@@ -254,7 +255,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
                 SizedBox(
                   height: 8.0,
                 ),
-                if (isOwned)
+                if (isOwned && isLoaded)
                   CustomRoundedButton(
                     size: ButtonSize.small,
                     buttonText:

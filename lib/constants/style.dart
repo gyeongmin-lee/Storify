@@ -23,7 +23,7 @@ class TextStyles {
   static final smallButtonText = secondary.copyWith(
     fontSize: 12.0,
     fontWeight: FontWeight.bold,
-    letterSpacing: 1.5,
+    letterSpacing: 0.5,
   );
 
   static final loadingButtonText = secondary.copyWith(

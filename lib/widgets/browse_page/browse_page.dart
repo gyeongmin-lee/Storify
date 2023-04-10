@@ -34,10 +34,8 @@ class BrowsePage extends StatelessWidget {
                 child: Text(
                   'Recently Updated',
                   textAlign: TextAlign.left,
-                  style: TextStyles.primary.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
-                      letterSpacing: 0.5),
+                  style: TextStyles.primary
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0),
                 ),
               ),
             ),
@@ -126,8 +124,7 @@ class BrowsePage extends StatelessWidget {
               style: TextStyle(
                   fontSize: 16.0,
                   color: Colors.white38,
-                  fontWeight: FontWeight.w300,
-                  letterSpacing: 0.5),
+                  fontWeight: FontWeight.w300),
             ),
           ],
         ),

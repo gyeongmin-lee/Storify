@@ -135,8 +135,10 @@ class SpotifyApi {
 
     if (response.statusCode == 204) return;
     if (response.statusCode == 403) {
-      final reason = json.decode(response.body)['error']['reason'];
-      if (reason == 'PREMIUM_REQUIRED ') throw PremiumRequiredException();
+      String? reason = json.decode(response.body)['error']['reason'];
+      if (reason != null && reason.contains("PREMIUM_REQUIRED")) {
+        throw PremiumRequiredException();
+      }
     }
     if (response.statusCode == 404) throw NoActiveDeviceFoundException();
   }
