@@ -40,6 +40,12 @@ class AuthTokens {
     return AuthTokens(accessKey, refreshKey);
   }
 
+  static Future<void> clearStorage() async {
+    final storage = new FlutterSecureStorage();
+    await storage.delete(key: accessTokenKey);
+    await storage.delete(key: refreshTokenKey);
+  }
+
   static Future<void> updateTokenToLatest() async {
     final savedTokens = await readFromStorage();
     if (savedTokens == null) throw Exception("No saved token found");

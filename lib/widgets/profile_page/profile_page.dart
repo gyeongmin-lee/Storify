@@ -5,11 +5,12 @@ import 'package:storify/constants/style.dart';
 import 'package:storify/services/spotify_auth.dart';
 import 'package:storify/widgets/_common/custom_toast.dart';
 import 'package:storify/widgets/about_page/about_page.dart';
+import 'package:storify/widgets/sign_in_page/sign_in_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatelessWidget {
   void _openSpotify() async {
-    final url = 'http://open.spotify.com/user';
+    final url = 'http://open.spotify.com/';
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     } else {
@@ -19,13 +20,23 @@ class ProfilePage extends StatelessWidget {
   }
 
   void _openFeedback() async {
-    final url = 'https://forms.gle/xj5uPgKtkEawxwPu5';
+    final url = 'https://forms.gle/BS2SbHL6uHjfgh3X8';
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     } else {
       CustomToast.showTextToast(
           text: 'Failed to open feedback link', toastType: ToastType.error);
     }
+  }
+
+  void _onSignout(BuildContext context) {
+    final navigator = Navigator.of(context);
+    navigator.push(MaterialPageRoute(
+      builder: (context) => SignInPage(),
+    ));
+
+    final auth = context.read<SpotifyAuth>();
+    auth.signOut();
   }
 
   @override
@@ -96,6 +107,15 @@ class ProfilePage extends StatelessWidget {
                 builder: (context) => AboutPage(),
               )),
             ),
+            ListTile(
+                leading: Icon(
+                  Icons.logout,
+                  color: CustomColors.primaryTextColor,
+                ),
+                title: Text('Log out',
+                    style: TextStyles.primary
+                        .copyWith(fontWeight: FontWeight.bold)),
+                onTap: () => _onSignout(context)),
           ],
         ),
       ),

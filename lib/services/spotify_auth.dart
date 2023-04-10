@@ -57,6 +57,17 @@ class SpotifyAuth extends ChangeNotifier {
     }
   }
 
+  /// Sign out user
+  Future<void> signOut() async {
+    try {
+      await AuthTokens.clearStorage();
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
   static String _getRandomString(int length) {
     const _chars =
         'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';

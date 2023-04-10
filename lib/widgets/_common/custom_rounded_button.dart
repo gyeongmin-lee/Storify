@@ -13,7 +13,7 @@ class CustomRoundedButton extends StatelessWidget {
     this.backgroundColor = Colors.transparent,
     this.textColor = CustomColors.secondaryTextColor,
     this.disabled = false,
-    this.regularLetterSpacing = 1.5,
+    this.regularLetterSpacing = 1.0,
   }) : super(key: key);
   final VoidCallback onPressed;
   final String buttonText;
