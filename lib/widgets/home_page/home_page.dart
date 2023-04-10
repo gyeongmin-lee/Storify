@@ -19,7 +19,6 @@ class _HomePageState extends State<HomePage> {
   static final List<Map<String, dynamic>> _widgetOptions = [
     {
       'titleText': 'My Playlists',
-      'hideAppBar': false,
       'widget': MyPlaylistsPage.create(),
     },
     {
@@ -27,7 +26,6 @@ class _HomePageState extends State<HomePage> {
       'widget': BrowsePage(),
     },
     {
-      'hideAppBar': false,
       'titleText': 'Saved Playlists',
       'widget': SavedPlaylistsPage(),
     },
@@ -43,7 +41,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return BaseScaffold(
       titleText: _widgetOptions.elementAt(_selectedIndex)['titleText'],
-      hideAppBar: _widgetOptions.elementAt(_selectedIndex)['hideAppBar'],
+      hideAppBar:
+          _widgetOptions.elementAt(_selectedIndex)['hideAppBar'] ?? false,
       bottomNavigationBar: Theme(
         data: ThemeData(
             splashColor: Colors.transparent,

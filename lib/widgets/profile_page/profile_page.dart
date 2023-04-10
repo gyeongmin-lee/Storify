@@ -31,7 +31,7 @@ class ProfilePage extends StatelessWidget {
 
   void _onSignout(BuildContext context) {
     final navigator = Navigator.of(context);
-    navigator.push(MaterialPageRoute(
+    navigator.pushReplacement(MaterialPageRoute(
       builder: (context) => SignInPage(),
     ));
 
