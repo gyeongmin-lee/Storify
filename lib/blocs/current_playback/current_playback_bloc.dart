@@ -87,7 +87,7 @@ class CurrentPlaybackBloc
           });
     } on PremiumRequiredException catch (_) {
       CustomToast.showTextToast(
-          text: 'You must be a Spotify premium user',
+          text: 'You must be a Spotify premium user to play individual tracks',
           toastType: ToastType.error);
     }
   }

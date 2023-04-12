@@ -17,28 +17,34 @@ class CustomToast {
   static void showTextToast(
       {required String text, required ToastType toastType}) {
     BotToast.showCustomText(
-      toastBuilder: (_) => Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        elevation: 0,
-        color: Colors.grey.shade900,
-        child: Padding(
-          padding: const EdgeInsets.only(
-              left: 8.0, right: 16.0, top: 8.0, bottom: 8.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              toastIcon[toastType]!,
-              SizedBox(
-                width: 12.0,
-              ),
-              Text(
-                text,
-                style: TextStyles.primary
-                    .copyWith(fontSize: 14.0, fontWeight: FontWeight.w300),
-              ),
-            ],
+      useSafeArea: true,
+      toastBuilder: (_) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          elevation: 0,
+          color: Colors.grey.shade900,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: 8.0, right: 16.0, top: 8.0, bottom: 8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                toastIcon[toastType]!,
+                SizedBox(
+                  width: 10.0,
+                ),
+                Flexible(
+                  child: Text(
+                    text,
+                    style: TextStyles.primary
+                        .copyWith(fontSize: 14.0, fontWeight: FontWeight.w300),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
