@@ -71,7 +71,7 @@ class _AppState extends State<App> {
         themeMode: ThemeMode.dark,
         initialRoute: SplashPage.routeName,
         theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: Color(0xFF191414),
+          scaffoldBackgroundColor: CustomColors.backgroundColor,
           textSelectionTheme: TextSelectionThemeData(
             cursorColor: Colors.green[700],
             selectionColor: Colors.green[100]!.withOpacity(0.1),

@@ -10,85 +10,105 @@ import 'package:storify/widgets/search_playlists_page.dart/search_playlists_page
 class BrowsePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 128.0),
-        child: Column(
-          children: [
-            Text('Browse',
-                style: TextStyles.primary.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 48.0,
-                    letterSpacing: -2.0)),
-            SizedBox(
-              height: 16.0,
-            ),
-            _buildSearchBox(context),
-            SizedBox(
-              height: 24.0,
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
-                child: Text(
-                  'Recently Updated',
-                  textAlign: TextAlign.left,
-                  style: TextStyles.primary
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0),
-                ),
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          backgroundColor: CustomColors.backgroundColor,
+          pinned: true,
+          expandedHeight: 200.0,
+          toolbarHeight: 70.0,
+          flexibleSpace: FlexibleSpaceBar(
+            expandedTitleScale: 1.1,
+            title: _buildSearchBox(context),
+            centerTitle: true,
+            collapseMode: CollapseMode.pin,
+            background: Padding(
+              padding: const EdgeInsets.only(top: 128.0),
+              child: Column(
+                children: [
+                  Text('Browse',
+                      style: TextStyles.primary.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 48.0,
+                          letterSpacing: -2.0)),
+                ],
               ),
             ),
-            Divider(
-              color: Colors.white10,
-              thickness: 1.0,
-              height: 1.0,
-            ),
-            StreamBuilder<List<Playlist>>(
-              stream: FirebaseDB().playlistsStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active) {
-                  final playlists = snapshot.data;
-                  if (playlists == null || playlists.isEmpty) {
-                    return Container();
-                  }
-
-                  return ListView.separated(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.only(top: 0.0),
-                      itemBuilder: (context, index) {
-                        final playlist = playlists[index];
-                        return PlayListItem(
-                            subtitleText: 'By ${playlist.owner.name}',
-                            playlist: playlist,
-                            onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PlayerPage.create(
-                                          playlist: playlist)),
-                                ));
-                      },
-                      itemCount: playlists.length,
-                      separatorBuilder: (context, index) => Divider(
-                            color: Colors.white10,
-                            thickness: 1.0,
-                            height: 1.0,
-                          ));
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 128.0),
-                    child: StatusIndicator(
-                      message: 'Loading Saved Playlists',
-                      status: Status.loading,
-                    ),
-                  );
-                }
-              },
-            )
-          ],
+          ),
         ),
-      ),
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 8.0,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
+                  child: Text(
+                    'Recently Updated',
+                    textAlign: TextAlign.left,
+                    style: TextStyles.primary
+                        .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0),
+                  ),
+                ),
+              ),
+              Divider(
+                color: Colors.white10,
+                thickness: 1.0,
+                height: 1.0,
+              ),
+              _buildPlaylists(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  StreamBuilder<List<Playlist>> _buildPlaylists() {
+    return StreamBuilder<List<Playlist>>(
+      stream: FirebaseDB().playlistsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final playlists = snapshot.data;
+          if (playlists == null || playlists.isEmpty) {
+            return Container();
+          }
+
+          return ListView.separated(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.only(top: 0.0),
+              itemBuilder: (context, index) {
+                final playlist = playlists[index];
+                return PlayListItem(
+                    subtitleText: 'By ${playlist.owner.name}',
+                    playlist: playlist,
+                    onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PlayerPage.create(playlist: playlist)),
+                        ));
+              },
+              itemCount: playlists.length,
+              separatorBuilder: (context, index) => Divider(
+                    color: Colors.white10,
+                    thickness: 1.0,
+                    height: 1.0,
+                  ));
+        } else {
+          return Padding(
+            padding: const EdgeInsets.only(top: 128.0),
+            child: StatusIndicator(
+              message: 'Loading Saved Playlists',
+              status: Status.loading,
+            ),
+          );
+        }
+      },
     );
   }
 
