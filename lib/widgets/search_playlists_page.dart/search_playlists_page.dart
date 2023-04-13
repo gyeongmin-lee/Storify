@@ -90,6 +90,9 @@ class _SearchPlaylistsPageState extends State<SearchPlaylistsPage> {
                   filled: true,
                   fillColor: Colors.white12,
                   hintText: 'Search for playlists',
+                  prefixIcon: BackButton(
+                    color: CustomColors.secondaryTextColor,
+                  ),
                   suffixIcon: _controller.text.isNotEmpty
                       ? GestureDetector(
                           onTap: () {
