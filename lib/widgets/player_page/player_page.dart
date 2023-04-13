@@ -72,7 +72,7 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
   }
 
   void _handleTrackChanged(int index) {
-    _controller!.animateTo(0,
+    _controller?.animateTo(0,
         duration: Constants.scrollResetDuration, curve: Curves.ease);
     _playerTracksBloc.add(PlayerTracksTrackSelected(selectedTrackIndex: index));
   }
@@ -233,75 +233,84 @@ class _PlayerState extends State<PlayerPage> with WidgetsBindingObserver {
 
     final auth = context.read<SpotifyAuth>();
     bool isOwned = playlist.owner.id == auth.user!.id;
-    return Padding(
-      padding: const EdgeInsets.only(top: 80.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          PlayerTrackInfo(
-            storyText: storyText,
-            artistImageUrl: artistImageUrl,
-            currentTrack: currentTrack,
-            controller: _controller,
-          ),
-          BlocBuilder<CurrentPlaybackBloc, CurrentPlaybackState>(
-              builder: (context, state) {
-            bool _isPlaying = false;
-            if (state is CurrentPlaybackSuccess)
-              _isPlaying = state.playback.isPlaying! &&
-                  state.playback.playlistId == playlist.id;
 
-            return Column(children: [
-              Column(children: [
-                SizedBox(
-                  height: 8.0,
+    return Builder(builder: (context) {
+      double? maxHeight = Scaffold.of(context).appBarMaxHeight;
+
+      return Padding(
+        padding: EdgeInsets.only(top: maxHeight ?? 112.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+              child: Stack(alignment: Alignment.topCenter, children: [
+                PlayerTrackInfo(
+                  storyText: storyText,
+                  artistImageUrl: artistImageUrl,
+                  currentTrack: currentTrack,
+                  controller: _controller,
                 ),
                 if (isOwned && isLoaded)
-                  CustomRoundedButton(
-                    size: ButtonSize.small,
-                    buttonText:
-                        storyText == '' ? 'ADD A CAPTION' : 'EDIT CAPTION',
-                    onPressed: () =>
-                        _onEditOrAddPressed(storyText, currentTrack, playlist),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: CustomRoundedButton(
+                        size: ButtonSize.small,
+                        backgroundColor: Colors.black.withOpacity(0.35),
+                        buttonText:
+                            storyText == '' ? 'ADD A CAPTION' : 'EDIT CAPTION',
+                        onPressed: () => _onEditOrAddPressed(
+                            storyText, currentTrack, playlist),
+                      ),
+                    ),
                   ),
-                SizedBox(
-                  height: 16.0,
-                )
               ]),
-              _buildProgressBar(state, currentTrack),
-              Stack(
-                alignment: AlignmentDirectional.center,
-                children: <Widget>[
-                  Positioned.fill(
-                    child: Container(
-                      color: Colors.white10,
-                    ),
-                  ),
-                  PlayerCarousel(
-                      tracks: tracks,
-                      onPageChanged: _handleTrackChanged,
-                      carouselController: _carouselController,
-                      onPlayButtonTap: _onPlayButtonTapped),
-                  IgnorePointer(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 5,
-                      height: MediaQuery.of(context).size.width / 5,
-                      padding: EdgeInsets.all(6.0),
-                      decoration: new BoxDecoration(
-                        color: Colors.black54,
-                      ),
-                      child: PlayerPlayButton(
-                        isPlaying: _isPlaying,
+            ),
+            BlocBuilder<CurrentPlaybackBloc, CurrentPlaybackState>(
+                builder: (context, state) {
+              bool _isPlaying = false;
+              if (state is CurrentPlaybackSuccess) {
+                _isPlaying = state.playback.isPlaying! &&
+                    state.playback.playlistId == playlist.id;
+              }
+
+              return Column(children: [
+                _buildProgressBar(state, currentTrack),
+                Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.white10,
                       ),
                     ),
-                  )
-                ],
-              )
-            ]);
-          }),
-        ],
-      ),
-    );
+                    PlayerCarousel(
+                        tracks: tracks,
+                        onPageChanged: _handleTrackChanged,
+                        carouselController: _carouselController,
+                        onPlayButtonTap: _onPlayButtonTapped),
+                    IgnorePointer(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 5,
+                        height: MediaQuery.of(context).size.width / 5,
+                        padding: EdgeInsets.all(6.0),
+                        decoration: new BoxDecoration(
+                          color: Colors.black54,
+                        ),
+                        child: PlayerPlayButton(
+                          isPlaying: _isPlaying,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ]);
+            }),
+          ],
+        ),
+      );
+    });
   }
 
   _buildProgressBar(CurrentPlaybackState state, Track currentTrack) {

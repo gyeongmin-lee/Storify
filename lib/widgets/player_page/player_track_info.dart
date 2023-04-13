@@ -23,59 +23,74 @@ class PlayerTrackInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
-        controller: controller,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: 48.0,
-            ),
-            CircleAvatar(
-                radius: 54.0,
-                backgroundColor: Colors.transparent,
-                backgroundImage: CachedNetworkImageProvider(artistImageUrl)),
-            SizedBox(
-              height: 8.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(children: [
-                Text(_artistNames(currentTrack.artists),
-                    textAlign: TextAlign.center,
-                    style: TextStyles.secondary.copyWith(fontSize: 16.0)),
+    return ShaderMask(
+      shaderCallback: (Rect bounds) {
+        return LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.white, Colors.white.withOpacity(0.05)],
+          stops: [0.7, 1],
+          tileMode: TileMode.mirror,
+        ).createShader(bounds);
+      },
+      child: Expanded(
+        child: SingleChildScrollView(
+          controller: controller,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 160.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: 48.0,
+                ),
+                CircleAvatar(
+                    radius: 54.0,
+                    backgroundColor: Colors.transparent,
+                    backgroundImage:
+                        CachedNetworkImageProvider(artistImageUrl)),
                 SizedBox(
                   height: 8.0,
                 ),
-                CustomAutoSizeText(
-                  currentTrack.name,
-                  maxLines: 1,
-                  minFontSize: 32.0,
-                  fontSize: 48.0,
-                  overflowReplacement: CustomAutoSizeText(currentTrack.name,
-                      maxLines: 2,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(children: [
+                    Text(_artistNames(currentTrack.artists),
+                        textAlign: TextAlign.center,
+                        style: TextStyles.secondary.copyWith(fontSize: 16.0)),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    CustomAutoSizeText(
+                      currentTrack.name,
+                      maxLines: 1,
                       minFontSize: 32.0,
-                      fontSize: 32.0,
-                      overflow: TextOverflow.ellipsis),
+                      fontSize: 48.0,
+                      overflowReplacement: CustomAutoSizeText(currentTrack.name,
+                          maxLines: 2,
+                          minFontSize: 32.0,
+                          fontSize: 32.0,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  ]),
                 ),
-              ]),
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            if (storyText != '')
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 24.0),
-                width: double.infinity,
-                child: Text(
-                  storyText,
-                  textAlign: TextAlign.start,
-                  style: TextStyles.secondary
-                      .copyWith(fontSize: 18.0, height: 1.5),
+                SizedBox(
+                  height: 16.0,
                 ),
-              ),
-          ],
+                if (storyText != '')
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 24.0),
+                    width: double.infinity,
+                    child: Text(
+                      storyText,
+                      textAlign: TextAlign.start,
+                      style: TextStyles.secondary
+                          .copyWith(fontSize: 18.0, height: 1.5),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
